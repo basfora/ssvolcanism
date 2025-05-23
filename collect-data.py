@@ -118,32 +118,41 @@ class VolData:
         if "Piton" in self.name:
             title = "Piton de la Fournaise"
             xlabel = "Collection Date (year)"
-            ylabel = "Cumulative Volume ($m^3$)"
+            ylabel = "Volume ($m^3$)"
+            legend = ["Cumulative Volume", "Erupted Volume"]
         else:
             title = "Unknown"
             xlabel = "Collection Date (year)"
             ylabel = "Cumulative Volume ($m^3$)"
+            legend = ["Cumulative Volume", "Erupted Volume"]
 
-        return title, xlabel, ylabel
+        return title, xlabel, ylabel, legend
 
     def plot_volume(self):
         """Plot the cumulative volume of the volcano and date the data was collected"""
 
+        title, xlabel, ylabel, mylegend = self.get_plot_title()
         fig, ax = plt.subplots()
+
 
         # convert date to string for plotting
         xvalues = self.date_to_str(self.df_date)
         yvalues = self.list_cumvol
 
         # PLOT
-        ax.plot(xvalues, yvalues, linestyle='dashed', color='b', linewidth=0.5, marker='.', markersize=10, mfc='red')
+        # cumulative volume
+        ax.plot(xvalues, yvalues, linestyle='dashed', color='b', linewidth=0.5, marker='.', markersize=10, mfc='red', label=mylegend[0])
+        # erupted volume
+        yvalues2 = self.list_eruptvol
+        ax.plot(xvalues, yvalues2 , linestyle='dashed', color='g', linewidth=0.5, marker='.', markersize=10,
+                mfc='red', label=mylegend[1])
 
         # set limits for x and y axes
         th = 1e8
         ax.set(ylim=(min(yvalues) - th, max(yvalues) + th))
         # title and labels
-        title, xlabel, ylabel = self.get_plot_title()
         ax.set(title=title, xlabel=xlabel, ylabel=ylabel)
+        ax.legend()
         # grid
         ax.grid()
         ax.set_xticks(xvalues[::1])
@@ -164,10 +173,14 @@ class VolData:
         for obj in df_date:
             # convert to datetime (Timestamp)
             obj = pd.to_datetime(obj)
-            b = str(obj.year - 1900)  # + "-" + str(obj.month) #+ "-" + str(obj.day)
+            b = str(obj.month) + '.' + str(obj.year - 1900)  #+ "-" +  #+ "-" + str(obj.day)
             list_date.append(b)
 
         return list_date
+
+    # TODO: add a function to convert date to datetime and get time between measurements
+    # TODO: is there a trend here? Days, Months, Years?;
+
 
 if __name__ == "__main__":
     # create an instance of the class for a volcano
