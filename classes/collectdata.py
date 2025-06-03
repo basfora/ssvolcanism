@@ -24,6 +24,7 @@ class VolcanoData:
         self.current_dir = ''
         # path to the raw data folder (where Excel file is)
         self.raw_data_path = ''
+        self.path_to_file = ''
 
         # --------------------------------
         # DATA HANDLING
