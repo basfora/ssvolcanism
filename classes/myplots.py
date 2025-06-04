@@ -96,6 +96,8 @@ class MyPlots:
         plt.tight_layout()
         plt.show()
 
+        return values_dt_days
+
 
     @staticmethod
     def plot_cvol(dates: list, values: list, cvalues: list):
@@ -188,6 +190,8 @@ class MyPlots:
 
         plt.tight_layout()
         plt.show()
+
+        return q, timeline
 
 
 

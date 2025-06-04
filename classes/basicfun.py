@@ -87,3 +87,6 @@ class basicfun:
         print(f"Period of measurements: {t1} -> {t2}")
         return t1, t2
 
+    @staticmethod
+    def compute_evol(cvol1, cvol2):
+        return cvol2 - cvol1
