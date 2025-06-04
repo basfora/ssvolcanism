@@ -1,5 +1,10 @@
 """Computations for volcano"""
 import datetime
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+from classes.basicfun import basicfun as bf
 
 
 class ComputeThings:
@@ -104,22 +109,12 @@ class ComputeThings:
         if self.printing:
             self.print_simple_stats()
 
-
     def compute_rate(self):
         """Compute rate of volcano eruptions
         given cumulative volume and time"""
 
         # in days
-        self.Qd = (self.cumvol_tf - self.cumvol_t0) / self.dT_days
+        self.Qd = bf.compute_q(self.cumvol_tf, self.cumvol_t0, self.dT_days)
         # in years
-        self.Qy = self.Qdays_to_years(self.Qd)
-
-
-    @staticmethod
-    def Qdays_to_years(Qd: float):
-        """Convert Qdays to Qyears"""
-        Qyears = (Qd/1e9) *  365.25
-        return Qyears
-
-
+        self.Qy = bf.Qmday_to_kmy(self.Qd)
 

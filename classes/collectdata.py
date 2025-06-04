@@ -1,4 +1,4 @@
-"""Importing data from excel files and saving them to plot"""
+"""Importing data from Excel files and saving them to plot"""
 
 import pandas as pd
 import os
@@ -74,9 +74,9 @@ class VolcanoData:
         # Get the current working directory
         self.current_dir = os.getcwd()
         # Get the parent directory
-        # parent_dir = os.path.dirname(current_dir)
+        parent_dir = os.path.dirname(self.current_dir)
         # Get the path to the rawData folder
-        self.raw_data_path = os.path.join(self.current_dir, self.raw_data_dir)
+        self.raw_data_path = os.path.join(parent_dir, self.raw_data_dir)
         # path to file
         self.path_to_file = os.path.join(self.raw_data_path, self.name)
         # add extension (.xlsx) if not present
@@ -95,16 +95,13 @@ class VolcanoData:
 
         return df
 
-    def get_data(self):
+    def get_data(self, r1=1, rend=74):
         """Get data from file and return it as a list
-        TODO: make limits modifiable,
         default: PitondelaFournaise
         years: 1936 - March 1998"""
         # ----------------------------------
         # columns to use: B and E
         cDate, cErupted, cCV = 1, 3, 4
-        # rows to use: 1 - end
-        r1, rend = 1, 74
         # ----------------------------------
         # import dall ata from the file
         self.df_volcano = self.import_data()
@@ -223,7 +220,8 @@ class VolcanoData:
 
     def add_rate_interval(self, Q_idx, dt_idx):
         """Add rate of eruptions to the list
-        :param Q_idx: rate of eruptions in km3/yr"""
+        :param Q_idx: rate of eruptions in km3/yr
+        :param dt_idx: time interval between eruptions in days"""
         self.list_Q.append(Q_idx)
         self.list_dt.append(dt_idx)
 
@@ -263,14 +261,10 @@ class VolcanoData:
         print(f"From all period: [Vcum(tf) - Vcum(t0)] / dT \n>> Q_all = {self.list_Q[-1]:.4f} km3/year")
         print(f"Mean of Q adjusted with each new eruption \n>> Q_iter = {self.mean_Q:.5f} +- {self.std_Q:.5f} km3/year")
 
-
-
-
     def set_long_term_rate(self, Q_long_term: float):
         """Set the long-term rate of eruptions
         as computed in previous studies, in km3/yr """
         self.Q_long = Q_long_term
-
 
 
     @staticmethod
@@ -287,13 +281,11 @@ class VolcanoData:
 
         return list_date
 
-    # TODO: add a function to convert date to datetime and get time between measurements
     @staticmethod
-    def compute_dt(date1, date2, op=1):
+    def compute_dt(date1, date2):
         """Compute time between two dates
         :param date1: first date
         :param date2: second date
-        :param op: dt type (1 = days)
         :return: time difference in days"""
         # convert to datetime
         date1 = pd.to_datetime(date1)
