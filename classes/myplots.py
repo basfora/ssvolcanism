@@ -125,10 +125,7 @@ class MyPlots:
         label3 = "Error ($m^3$)"
 
         # FIT TO LINE
-        timeline = [0]
-        for i in range(n-1):
-            dt = values_dt_days[i]
-            timeline.append(timeline[i-1] + dt)
+        timeline = bf.compute_timeline(values_dt_days)
 
         # linear squares fit
         a, b = np.polyfit(timeline, cvalues, 1)
@@ -138,7 +135,7 @@ class MyPlots:
         # using computed q
         q_pred_values = [q * t + cvalues[0] for t in timeline]
 
-
+        # CVOL PLOT
         plt.subplot(nrow, ncol, 1)
         myleg = 'Q = ' + str(round(q_years, 4)) +' m3/day'
         plt.scatter(dates, cvol_theory, marker='x', color='r', label=myleg)

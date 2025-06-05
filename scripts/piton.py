@@ -21,18 +21,26 @@ if __name__ == '__main__':
     # get data from the file
     # period 1: 1 to 74 | period 2: 74 to 120
     # let's try to estimate eruptions 69 - 72, r1 = 1, rend = 69
-    r1, rend = 1, 69
+    r1, rend = 1, 6
     piton_data.get_data(r1, rend)
 
     # whole period data
     idxf = piton_data.n - 1
     edates, evol, cvol = piton_data.output_rel_data(0, piton_data.n)
+
     # print period and number of eruptions
     print('==================================================')
+    print(f"Cvol list: {cvol}")
+    print(f"Edates list: {edates}")
 
     # plot eruption volumes
     dt_days = mp.plot_data(edates, evol)
     q_est, timeline = mp.plot_cvol(edates, evol, cvol)
+
+    # print period and number of eruptions
+    print(f"Intervals between eruptions (days): {dt_days}")
+    print(f"Timeline of eruptions: {timeline}")
+    print('==================================================')
 
     # ------------------------------------------------------------
     # ESTIMATION: NON-PARAMETRIC UNCERTAINTY PROPAGATION
@@ -56,7 +64,7 @@ if __name__ == '__main__':
     evol_lower = bf.compute_evol(cv1, lower)
     evol_upper = bf.compute_evol(cv1, upper)
 
-    print(f"Mean cumulative volume at T2: {mean_cv2:.0f} m3 (evol(T2) = {evol_mean:.0f} m3)")
+    print(f"---- Mean cumulative volume at T2: {mean_cv2:.0f} m3 (evol(T2) = {evol_mean:.0f} m3)")
     print(f"95% CI: [{lower:.0f}, {upper:.0f}] m3 (or {evol_lower:.0f}, {evol_upper:.0f} m3)")
 
     # find most likely value

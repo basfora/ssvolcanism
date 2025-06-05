@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="histograms">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="non parametric, uncertainty propagation draft">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
@@ -203,13 +203,22 @@
       <option name="project" value="LOCAL" />
       <updated>1749014684674</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="non parametric, uncertainty propagation draft">
+      <option name="closed" value="true" />
+      <created>1749066345288</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1749066345288</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="import and plot data" />
     <MESSAGE value="venv" />
     <MESSAGE value="histograms" />
-    <option name="LAST_COMMIT_MESSAGE" value="histograms" />
+    <MESSAGE value="non parametric, uncertainty propagation draft" />
+    <option name="LAST_COMMIT_MESSAGE" value="non parametric, uncertainty propagation draft" />
   </component>
 </project>

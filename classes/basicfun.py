@@ -90,3 +90,12 @@ class basicfun:
     @staticmethod
     def compute_evol(cvol1, cvol2):
         return cvol2 - cvol1
+
+    @staticmethod
+    def compute_timeline(dT_days: list) -> list:
+        """Compute the timeline of eruptions based on intervals"""
+        timeline = [0]
+        for dt in dT_days:
+            previous_time = timeline[-1]
+            timeline.append(previous_time + dt)
+        return timeline
