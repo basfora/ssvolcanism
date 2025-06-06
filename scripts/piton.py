@@ -75,7 +75,7 @@ if __name__ == '__main__':
     # Find most frequent value
     mode = bins[h.argmax()]
     evol_mode = bf.compute_evol(cv1, mode)
-    print(f"Most likely cumulative volume at T2: {mode:.0f} m3 (evol(T2) = {evol_mode:.0f} m3)")
+    print(f"Mode cumulative volume at T2: {mode:.0f} m3 (evol(T2) = {evol_mode:.0f} m3)")
 
     # find most likely value for T2
     print(f"Mean time interval (simulated) : {np.mean(dT_sim):.0f} days after T1")

@@ -34,7 +34,7 @@ class MyPlots:
         # VOLUME ERUPTIONS (EVOL)
         n = len(dates)
         # mean and std
-        mean_v, std_v, _ = bf.compute_mean_var(values)
+        mean_v, std_v = bf.compute_mean_std(values)
         mean_values = [mean_v] * n
 
         print(f"Number of eruptions: {n}")
@@ -75,7 +75,7 @@ class MyPlots:
         label3 = '$\Delta~T$ (days)'
 
         # mean and std
-        mean_dt, std_dt, _ = bf.compute_mean_var(values_dt_days)
+        mean_dt, std_dt = bf.compute_mean_std(values_dt_days)
         mean_dt_values = [mean_dt] * (n-1)
 
         print(f"Time interval between eruptions (days): \n Mean: {mean_dt:.0f} \n Std Dev: {std_dt:.0f}")
@@ -166,7 +166,7 @@ class MyPlots:
         q_error = [cvol_theory[i-1] - cvalues[i] for i in range(1, n)]
         title3 = 'Error '
         aux_x = [i for i in range(n - 1)]
-        error_mean, error_std, _ = bf.compute_mean_var(q_error)
+        error_mean, error_std = bf.compute_mean_std(q_error)
         error_mean_values = [error_mean] * (n - 1)
         print(f"Error Cvol theory and data: {abs(error_mean):.4f} +- {error_std:.4f} m3")
 

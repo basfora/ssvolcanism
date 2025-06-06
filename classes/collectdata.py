@@ -1,4 +1,5 @@
-"""Importing data from Excel files and saving them to plot"""
+"""Importing all data from Excel files and saving them
+Return 3 lists: edates, evol, cvol"""
 
 import pandas as pd
 import os
