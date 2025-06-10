@@ -8,10 +8,12 @@ class MyPrediction:
 
         # for storage and information purposes
         # inputs (real data collection)
-        self.in_edates = edates
-        self.in_evol = evol
-        self.in_cvol = cvol
+        self.in_edates = None
+        self.in_evol = None
+        self.in_cvol = None
         self.n = 0
+
+        self.save_input_data(edates, evol, cvol, idx)
 
         # actual data for prediction
         self.real_next_date = None
@@ -33,18 +35,32 @@ class MyPrediction:
 
 
         # save real data (if idx is none, save all)
+    def save_input_data(self, edates: list, evol: list, cvol: list, idx=None):
+        """Save input data for prediction"""
 
-        # get and print period info
+        if idx is None:
+            self.in_edates = edates
+            self.in_evol = evol
+            self.in_cvol = cvol
+        else:
+            # save only the data up to idx
+            self.in_edates = edates[:idx]
+            self.in_evol = evol[:idx]
+            self.in_cvol = cvol[:idx]
 
-        # compute intervals
+        self.n = len(self.in_evol)
 
-        # prediction (stochastic forecast)
+    # get and print period info
 
-        # compare with real
+    # compute intervals
 
-        # output results and error
+    # prediction (stochastic forecast)
 
-        # TO BE CALLED IN PLOTS: use this class to plot stuff
+    # compare with real
+
+    # output results and error
+
+    # TO BE CALLED IN PLOTS: call this class IN PLOTS to plot stuff
 
 
 
