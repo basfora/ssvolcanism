@@ -4,13 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="save and print real dataset">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="prediction class &gt; pred">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/sketch.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -231,7 +229,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749576684299</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="prediction class &gt; pred">
+      <option name="closed" value="true" />
+      <created>1749592416628</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1749592416628</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -241,7 +247,8 @@
     <MESSAGE value="non parametric, uncertainty propagation draft" />
     <MESSAGE value="started myprediction" />
     <MESSAGE value="save and print real dataset" />
-    <option name="LAST_COMMIT_MESSAGE" value="save and print real dataset" />
+    <MESSAGE value="prediction class &gt; pred" />
+    <option name="LAST_COMMIT_MESSAGE" value="prediction class &gt; pred" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

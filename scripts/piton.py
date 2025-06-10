@@ -35,6 +35,7 @@ if __name__ == '__main__':
     last_eruption = 5
     # start prediction instance (PredictionData)
     mypred = pred(edates, evol, cvol, idx=last_eruption)
+    mypred.one_step_ahead()
 
 
 

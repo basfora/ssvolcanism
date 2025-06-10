@@ -194,3 +194,13 @@ class basicfun:
     def print_list(list_values: list, what: str):
         """For checking only"""
         print(f"{what} list (len = {len(list_values)}): {list_values}")
+
+    @staticmethod
+    def print_prediction(dT_hat, cvol_hat, ci: tuple):
+
+        dec = 1e6
+
+        print(f".....PREDICTION.....")
+        print(f"Mean time interval: {dT_hat:.0f} days after T1")
+        print(f"Mean cumulative volume at T2: {cvol_hat/dec:.4f} ({dec} m3)")
+        print(f"95% CI: [{ci[0]/dec:.0f}, {ci[1]/dec:.0f}] ({dec} m3)")

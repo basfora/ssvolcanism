@@ -159,21 +159,28 @@ class PredictionData:
         # TODO DO THIS BEFORE LEAVING TODAY!!
 
         # simple>
-
+        # TODO check if need the self.N
+        # T1 = self.timeline[-1]
+        CV1 = self.cvol_tf
+        dT_sim = np.random.choice(self.dT_days, self.N, replace=True)
+        # compute cv(t2) = cv(t1) + qhat * dT_sim for each dT
+        CV2 = CV1 + self.qhat * dT_sim
+        # ------------------------------------
+        # TODO change variable names (too convoluted!!)
         # current time and cvol(t1)
         self.t1 = [self.timeline[-1]] * self.N
         self.cvol_t1 = [self.cvol_tf] * self.N
         # sampling time intervals
         self.dT_sim = np.random.choice(self.dT_days, self.N, replace=True)
         # compute cv(t2) = cv(t1) + qhat * dT_sim for each dT
-        # TODO check if need the self.N
         self.cvol_t2_sim = self.cvol_t1 + self.qhat * self.dT_sim
         # compute mean and std of cv2_sim
         self.cvol_sim_mean = np.mean(self.cvol_t2_sim)
         self.cvol_sim_std = np.std(self.cvol_t2_sim)
-        self.cvol_sim_lower, self.cvol_sim_upper = np.percentile(self.cvol_sim, [2.5, 97.5])
+        self.cvol_sim_lower, self.cvol_sim_upper = np.percentile(self.cvol_t2_sim, [2.5, 97.5])
 
         # TODO bf.print_sim_results
+        bf.print_prediction(np.mean(self.dT_sim), self.cvol_sim_mean, (self.cvol_sim_lower, self.cvol_sim_upper))
 
 
     # output results and error
