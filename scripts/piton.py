@@ -4,6 +4,7 @@ from classes.collectdata import VolcanoData as vd
 from classes.computethings import ComputeThings as ct
 from classes.basicfun import basicfun as bf
 from classes.myplots import MyPlots as mp
+from classes.prediction import MyPrediction as pred
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,13 +21,12 @@ if __name__ == '__main__':
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
     # period 1: 1 to 74 | period 2: 74 to 120
-    # let's try to estimate eruptions 69 - 72, r1 = 1, rend = 69
-    r1, rend = 1, 6
-    piton_data.get_data(r1, rend)
+    r1, rend = 1, 74
+    edates, evol, cvol = piton_data.get_data(r1, rend)
 
-    # whole period data
-    idxf = piton_data.n - 1
-    edates, evol, cvol = piton_data.output_rel_data(0, piton_data.n)
+    # start prediction instance (eruption # you want to predict)
+    last_eruption = 10
+    mypred = pred(edates, evol, cvol, idx=last_eruption)
 
     # print period and number of eruptions
     print('==================================================')

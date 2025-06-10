@@ -129,7 +129,7 @@ class VolcanoData:
             print('dt in days: ', self.list_dt)
 
         # only need date and cumulative volume
-        return self.list_date, self.list_cumvol, self.list_eruptvol
+        return self.list_date, self.list_eruptvol, self.list_cumvol,
 
     def get_plot_title(self):
         if "Piton" in self.name:
