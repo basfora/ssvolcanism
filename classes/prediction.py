@@ -62,6 +62,8 @@ class MyPrediction:
 
     # TO BE CALLED IN PLOTS: call this class IN PLOTS to plot stuff
 
+    # todo COMPARE WITH REAL DATA >> save next eruption here or compare outside with collect data?
+
 
 
 
