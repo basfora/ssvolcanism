@@ -28,12 +28,13 @@ if __name__ == '__main__':
     edates, evol, cvol = piton_data.get_data(r1, rend)
     # ------------------------------------------------------
 
+    # ------------------------------------------------------
     # PREDICTION
     # ------------------------------------------------------
     # last eruption ID (real data, prediction will be ID + 1)
-    last_eruption = 10
+    last_eruption = 5
     # start prediction instance (PredictionData)
-    mypred = pred(edates, evol, cvol)#, idx=last_eruption)
+    mypred = pred(edates, evol, cvol, idx=last_eruption)
 
 
 

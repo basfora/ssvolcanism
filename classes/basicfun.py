@@ -21,6 +21,7 @@ class basicfun:
         if not isinstance(values, np.ndarray):
             values = np.array(values)
         mean_value = np.mean(values)
+        # TODO check np.std with excel!!
         std_value = np.std(values)
         return mean_value, std_value
 
@@ -148,7 +149,7 @@ class basicfun:
         print(f"Number of eruptions: {n}")
 
     @staticmethod
-    def print_vol_stats(mean_value, std_value, delta_cvol=None):
+    def print_vol_stats(mean_value, std_value, delta_vol=None):
 
         # to visualize better
         dec = 1e6
@@ -157,11 +158,19 @@ class basicfun:
 
         # Erupted Volume
         print(f"Volume ({dec:.0f} m3)")
-        print(f"  Per eruption (EVOL): Mean: {mean_value:.4f} | Std: {std_value:.4f}")
+        print(f"..Per eruption (EVOL): Mean: {mean_value:.4f} | Std: {std_value:.4f}")
 
         # cumulative volume
-        if delta_cvol is not None:
-            print(f"  Total (deltaCVOL): {delta_cvol/dec:.4f}")
+        if delta_vol is not None:
+            print(f"..Total (SUM_EVOL): {delta_vol/dec:.2f}")
+
+    @staticmethod
+    def print_cvol(cvol1, cvol2):
+        dec = 1e6
+
+        print(f"..Initial, CVOL(t0) =  {cvol1/dec:.2f}")
+        print(f"..Final, CVOL(t0) =  {cvol2/dec:.2f}")
+        print(f"..Delta, dCVOL(t0->tf) = {(cvol2 - cvol1)/dec:.2f}")
 
     @staticmethod
     def print_time(mean_value, std_value, dt_total=None):
@@ -180,3 +189,8 @@ class basicfun:
 
         qyears = basicfun.Qmday_to_kmy(q)
         print(f"Rate of eruptions: Q = {q:.4f} (m3/day) = {qyears:.4f} (km3/year)")
+
+    @staticmethod
+    def print_list(list_values: list, what: str):
+        """For checking only"""
+        print(f"{what} list (len = {len(list_values)}): {list_values}")

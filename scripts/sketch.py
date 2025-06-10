@@ -14,7 +14,7 @@
 
     # ------------------------------------------------------------
     # ESTIMATION: NON-PARAMETRIC UNCERTAINTY PROPAGATION
-    # what I need for estimation: qhat, DT_list (days), T1 (timeline, day) and cvol(t1) = vcol[-1]
+    #
     # ------------------------------------------------------------
     t1 = timeline[-1]
     cv1 = cvol[-1]

@@ -1,10 +1,14 @@
 """Importing all data from Excel files and saving them
 Return 3 lists: edates, evol, cvol"""
 
+# TODO integrate with basicfun and delete obsolete functions
+# TODO this class: only COLLECT and SAVE data (save error here too or do I need another class?)
+
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import statistics
+
 
 class VolcanoData:
     """Class to import data from excel files"""
@@ -115,7 +119,8 @@ class VolcanoData:
         # -----------------------------------
         # turn into lists to make it easier to see/plot
         self.list_eruptvol = self.series_eruptvol.tolist()
-        self.list_cumvol = self.series_cumvol.tolist()
+        # adjust for fake zero init
+        self.list_cumvol = [0] + self.series_cumvol.tolist()
         self.list_date = self.series_date.tolist()
         # some other computation (might delete later)
         self.compute_intervals_eruption()
@@ -266,7 +271,6 @@ class VolcanoData:
         """Set the long-term rate of eruptions
         as computed in previous studies, in km3/yr """
         self.Q_long = Q_long_term
-
 
     @staticmethod
     def date_to_str(df_date):
