@@ -114,7 +114,7 @@ class ComputeThings:
         given cumulative volume and time"""
 
         # in days
-        self.Qd = bf.compute_q(self.cumvol_tf, self.cumvol_t0, self.dT_days)
+        self.Qd = bf.compute_q(self.cumvol_t0, self.cumvol_tf, self.dT_days)
         # in years
         self.Qy = bf.Qmday_to_kmy(self.Qd)
 

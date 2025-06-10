@@ -48,7 +48,7 @@ class basicfun:
 
     # VOLUME FUNCTIONS
     @staticmethod
-    def compute_evol(cvol1: int, cvol2: int) -> int:
+    def compute_delta_vol(cvol1: int or float, cvol2: int or float) -> int:
         """Compute Eruption Volume based on Cumulative Volume before/after eruption"""
         return cvol2 - cvol1
 
@@ -84,8 +84,12 @@ class basicfun:
         return intervals
 
     @staticmethod
+    def compute_total_days(date1, date2):
+        return (date2 - date1).days
+
+    @staticmethod
     def compute_timeline(dT_days: list) -> list:
-        """Compute the timeline of eruptions based on intervals"""
+        """Compute the timeline of eruptions based on LIST OF INTERVALS"""
         timeline = [0]
         for dt in dT_days:
             previous_time = timeline[-1]
@@ -102,7 +106,7 @@ class basicfun:
         return Qyears
 
     @staticmethod
-    def compute_q(cvol_tf: float, cvol_t0: float, dt_days: int) -> float:
+    def compute_q(cvol_t0: float, cvol_tf: float, dt_days: int) -> float:
         """Compute the rate Q in m3/day or km3/year"""
         delta_cvol = cvol_tf - cvol_t0
         if dt_days > 0:
@@ -128,9 +132,51 @@ class basicfun:
     # PRINT FUNCTIONS
     # ------------------------------------------------------
     @staticmethod
-    def print_period(t0, tf):
+    def print_period_measurements(t0, tf):
         """Print the period of measurements"""
         t1 = t0.strftime("%Y-%m-%d")
         t2 = tf.strftime("%Y-%m-%d")
         print(f"Period of measurements: {t1} -> {t2}")
         return t1, t2
+
+    @staticmethod
+    def print_mark():
+        print(f"=================================================")
+
+    @staticmethod
+    def print_n_eruptions(n: int):
+        print(f"Number of eruptions: {n}")
+
+    @staticmethod
+    def print_vol_stats(mean_value, std_value, delta_cvol=None):
+
+        # to visualize better
+        dec = 1e6
+        mean_value = mean_value / dec
+        std_value = std_value / dec
+
+        # Erupted Volume
+        print(f"Volume ({dec:.0f} m3)")
+        print(f"  Per eruption (EVOL): Mean: {mean_value:.4f} | Std: {std_value:.4f}")
+
+        # cumulative volume
+        if delta_cvol is not None:
+            print(f"  Total (deltaCVOL): {delta_cvol/dec:.4f}")
+
+    @staticmethod
+    def print_time(mean_value, std_value, dt_total=None):
+
+        # Erupted Volume
+        print(f"Time interval between eruptions (days)")
+        print(f"  Mean: {mean_value:.4f} | Std: {std_value:.4f}")
+
+        # cumulative volume
+        if dt_total is not None:
+            print(f"  Total period: {dt_total}")
+
+    @staticmethod
+    def print_rate(q: float):
+        """Rate q in mr/day"""
+
+        qyears = basicfun.Qmday_to_kmy(q)
+        print(f"Rate of eruptions: Q = {q:.4f} (m3/day) = {qyears:.4f} (km3/year)")

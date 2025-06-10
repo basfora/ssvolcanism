@@ -5,8 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="started myprediction">
+      <change afterPath="$PROJECT_DIR$/scripts/sketch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Volcano.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Volcano.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/computethings.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/computethings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +75,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "last_opened_file_path": "/home/basfora/02ProjectSources/PycharmProjects/milp_mespp/requirements.txt",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -78,7 +86,6 @@
   <component name="RunManager" selected="Python.piton">
     <configuration name="collectdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
-      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -100,7 +107,6 @@
     </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
-      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -122,7 +128,6 @@
     </configuration>
     <configuration name="piton" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
-      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
