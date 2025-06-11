@@ -52,7 +52,7 @@ class PredictionData:
         # next eruption ID (for prediction)
         self.next_id = None
         # samples
-        self.N = 10000
+        self.N = 1000
         # "current" time, T1
         self.t1 = None
         self.cvolT1 = None
