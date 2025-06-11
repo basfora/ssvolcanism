@@ -64,6 +64,16 @@ class basicfun:
             km3 = m3 / 1e9
         return km3
 
+    @staticmethod
+    def compute_error(valuehat: float, value: float) -> (float, float):
+        """Compute error percentage"""
+        if value == 0:
+            return 0, 0
+        else:
+            error = abs(value - valuehat)
+            error_per = (error/ value) * 100
+            return error, error_per
+
     # -----------------------------------------------------
     # TIME FUNCTIONS
     # -----------------------------------------------------
@@ -85,7 +95,7 @@ class basicfun:
         return intervals
 
     @staticmethod
-    def compute_total_days(date1, date2):
+    def compute_days(date1, date2):
         return (date2 - date1).days
 
     @staticmethod
@@ -196,11 +206,33 @@ class basicfun:
         print(f"{what} list (len = {len(list_values)}): {list_values}")
 
     @staticmethod
-    def print_prediction(dT_hat, cvol_hat, ci: tuple):
+    def print_prediction(next_id: int, dT_hat, evol_hat, cvol_hat, ci: tuple):
 
         dec = 1e6
 
-        print(f".....PREDICTION.....")
+        print(f"..........STOCHASTIC FORECAST")
+        print(f"Next eruption ID: {next_id}")
         print(f"Mean time interval: {dT_hat:.0f} days after T1")
+        print(f"Mean eruption volume at T2: {evol_hat/dec:.4f} ({dec} m3)")
         print(f"Mean cumulative volume at T2: {cvol_hat/dec:.4f} ({dec} m3)")
         print(f"95% CI: [{ci[0]/dec:.0f}, {ci[1]/dec:.0f}] ({dec} m3)")
+
+    @staticmethod
+    def print_one_eruption(edate, evol, cvol, dT_days):
+        """Print one eruption (real)"""
+        dec = 1e6
+
+        print(f"..........REAL ERUPTION")
+        print(f"  Date: {edate.strftime('%Y-%m-%d')} | dT = {dT_days:.0f} days")
+        print(f"  Eruption Volume EVOL(t2) = {evol/dec:.2f} ({dec} m3)")
+        print(f"  Cumulative Volume CVOL(t2) = {cvol/dec:.2f} ({dec} m3)")
+
+    @staticmethod
+    def print_prediction_error(error_dt, error_evol, error_cvol, error_evol_perc, error_cvol_perc):
+        """Print prediction error"""
+        dec = 1e6
+
+        print(f"..........ERROR:")
+        print(f"  Time interval EdT = {error_dt:.0f} days")
+        print(f"  Eruption Volume Eevol(t2) = {error_evol/dec:.2f} ({dec:.0f} m3) | {error_evol_perc:.1f}%")
+        print(f"  Cumulative Volume Ecvol(t2) = {error_cvol/dec:.2f} ({dec:.0f} m3) | {error_cvol_perc:.1f}%")

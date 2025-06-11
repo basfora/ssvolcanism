@@ -22,20 +22,42 @@ if __name__ == '__main__':
     # PITON period 1: 1 to 74 | period 2: 74 to 120
     r1, rend = 1, 74
 
+    # ------------------------------------------------------
+    # GET REAL DATA (ALL)
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
     edates, evol, cvol = piton_data.get_data(r1, rend)
-    # ------------------------------------------------------
 
     # ------------------------------------------------------
     # PREDICTION
     # ------------------------------------------------------
     # last eruption ID (real data, prediction will be ID + 1)
-    last_eruption = 5
-    # start prediction instance (PredictionData)
-    mypred = pred(edates, evol, cvol, idx=last_eruption)
-    mypred.one_step_ahead()
+    start_iter = 2
+    error_evol = []
+
+
+    last_eruption = start_iter
+    while last_eruption < 73:
+        # start prediction instance (PredictionData)
+        mp = pred(edates, evol, cvol, idx=last_eruption)
+        mp.one_step_ahead()
+        mp.forecast_error()
+
+        # ------------------------ quick analysis
+        error_evol.append(mp.error_evol_per)
+        # iterate to next eruption
+        last_eruption += 1
+
+    # ---------------------------- quick analysis
+    bf.print_mark()
+    print(f"Error EVOL(t2) %: \nMEAN: {np.mean(error_evol):.1f} | MAX {max(error_evol):.1f}| MIN {min(error_evol):.1f} ")
+    j = start_iter
+    for er in error_evol:
+        j += 1
+        print(f"({j}) {er:.2f} %", end=" | ")
+
+
 
 
 
