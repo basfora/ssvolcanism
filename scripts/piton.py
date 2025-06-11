@@ -2,7 +2,7 @@
 
 from classes.collectdata import VolcanoData as vd
 from classes.computethings import ComputeThings as ct
-from classes.basicfun import basicfun as bf
+from classes.basicfun import Basicfun as bf
 from classes.myplots import MyPlots as mp
 from classes.prediction import PredictionData as pred
 
@@ -33,12 +33,13 @@ if __name__ == '__main__':
     # PREDICTION
     # ------------------------------------------------------
     # last eruption ID (real data, prediction will be ID + 1)
-    start_iter = 2
+    start_after_eruption = 3
+    stop_before_eruption = 73
     error_evol = []
 
 
-    last_eruption = start_iter
-    while last_eruption < 73:
+    last_eruption = start_after_eruption
+    while last_eruption < stop_before_eruption:
         # start prediction instance (PredictionData)
         mp = pred(edates, evol, cvol, idx=last_eruption)
         mp.one_step_ahead()
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     # ---------------------------- quick analysis
     bf.print_mark()
     print(f"Error EVOL(t2) %: \nMEAN: {np.mean(error_evol):.1f} | MAX {max(error_evol):.1f}| MIN {min(error_evol):.1f} ")
-    j = start_iter
+    j = start_after_eruption
     for er in error_evol:
         j += 1
         print(f"({j}) {er:.2f} %", end=" | ")

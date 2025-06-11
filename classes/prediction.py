@@ -1,6 +1,6 @@
 """Data used for analysis and prediction
 One instance for each prediction pt"""
-from classes.basicfun import basicfun as bf
+from classes.basicfun import Basicfun as bf
 import numpy as np
 
 
@@ -113,7 +113,7 @@ class PredictionData:
 
             # we have real next data to compare later
             id_next = id_last_eruption # python index starts on zero
-            edatenext, evolnext, cvolnext = edates[id_next], evol[id_next], cvol[id_next]
+            edatenext, evolnext, cvolnext = edates[id_next], evol[id_next], cvol[id_next+1]
             self.add_real_next(edatenext, evolnext, cvolnext)
 
         # number of data points for prediction
@@ -128,7 +128,6 @@ class PredictionData:
         # cumulative volume (m3)
         self.cvol_t0 = self.in_cvol[0]
         self.cvol_tf = self.in_cvol[-1]
-
 
     def compute_real_stats(self):
 
@@ -156,7 +155,7 @@ class PredictionData:
         """Print info about the period of real data to be used for prediction"""
 
         bf.print_mark()
-        bf.print_period_measurements(self.date_t0, self.date_tf)
+        bf.print_period(self.date_t0, self.date_tf)
         bf.print_n_eruptions(self.n)
         bf.print_vol_stats(self.evol_mean, self.evol_std, self.evol_sum)
         bf.print_cvol(self.cvol_t0, self.cvol_tf)
@@ -172,6 +171,7 @@ class PredictionData:
         qhat, DT_list (days), T1 (timeline, day)
         and cvol(t1) = vcol[-1]"""
 
+        # todo TEST WITH PREDICTION ERUPTION 11
         # current cumulative volume at T1
         CV1 = [self.cvol_tf] * self.N
         dTdata = self.dT_days
@@ -196,6 +196,11 @@ class PredictionData:
         self.cvolT2_std = np.std(self.cvolT2)
         self.cvolT2_lower, self.cvolT2_upper = np.percentile(self.cvolT2, [2.5, 97.5])
 
+        # compute mean and std of dTsim
+        self.dTsim_mean = np.mean(self.dTsim)
+        self.dTsim_std = np.std(self.dTsim)
+        self.dTsim_lower, self.dTsim_upper = np.percentile(self.dTsim, [2.5, 97.5])
+
         # choose estimate
         self.choose_estimate()
 
@@ -209,7 +214,6 @@ class PredictionData:
         self.cvolT2_hat = self.cvolT2_mean
         self.evolT2_hat = self.cvolT2_hat - self.cvol_tf  # next eruption volume
         self.dT_hat = self.dTsim_mean  # next eruption time interval
-
 
     def add_real_next(self, edate, evol: int, cvol: int):
         """Add real next eruption data (of what really happened) to compare with prediction

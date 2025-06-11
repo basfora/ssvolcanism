@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
-from classes.basicfun import basicfun as bf
+from classes.basicfun import Basicfun as bf
 
 
 class ComputeThings:

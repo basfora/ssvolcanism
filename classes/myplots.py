@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-from classes.basicfun import basicfun as bf
+from classes.basicfun import Basicfun as bf
 
 class MyPlots:
     def __init__(self):

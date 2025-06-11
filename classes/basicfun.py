@@ -5,7 +5,7 @@ import seaborn as sns
 from scipy import stats
 
 
-class basicfun:
+class Basicfun:
     def __init__(self):
         self.name = "basicfun"
 
@@ -13,18 +13,34 @@ class basicfun:
     # BASIC STATS
     # -----------------------------------------------------
 
+    # UT - ok
     @staticmethod
     def compute_mean_std(values: list) -> tuple:
-        """Compute mean and standard deviation of a list of values"""
+        """Compute mean and standard deviation of a list of values
+        Uses population standard deviation (ddof=0)
+        To change that, use ddof=1 for sample standard deviation"""
+
         if not values:
             return 0, 0
         if not isinstance(values, np.ndarray):
             values = np.array(values)
         mean_value = np.mean(values)
         # TODO check np.std with excel!!
-        std_value = np.std(values)
+        std_value = np.std(values, ddof=0)
         return mean_value, std_value
 
+    # UT - ok
+    @staticmethod
+    def compute_error(valuehat: float, value: float) -> (float, float):
+        """Compute error percentage"""
+        if value == 0:
+            return 0, 0
+        else:
+            error = abs(value - valuehat)
+            error_per = (error/ value) * 100
+            return error, error_per
+
+    # UT - ok
     @staticmethod
     def std_from_var(var: float) -> float:
         """Compute standard deviation from variance value"""
@@ -33,26 +49,31 @@ class basicfun:
         else:
             return np.sqrt(var)
 
+    # UT - ok
+    @staticmethod
+    def var_from_std(std: float) -> float:
+        return std * std
+
+    # UT - ok
     @staticmethod
     def get_limits(values: list) -> tuple:
         v_max = max(values)
         v_min = min(values)
         return v_min, v_max
 
+    # UT - ok
     @staticmethod
     def get_total(values: list) -> float:
         return sum(values)
 
-    @staticmethod
-    def var_from_std(std: float) -> float:
-        return std * std
-
     # VOLUME FUNCTIONS
+    # UT - ok
     @staticmethod
     def compute_delta_vol(cvol1: int or float, cvol2: int or float) -> int:
         """Compute Eruption Volume based on Cumulative Volume before/after eruption"""
         return cvol2 - cvol1
 
+    # UT - ok
     @staticmethod
     def m3_to_km3(m3: float or list) -> float or list:
         """Convert m3 to km3"""
@@ -64,44 +85,49 @@ class basicfun:
             km3 = m3 / 1e9
         return km3
 
-    @staticmethod
-    def compute_error(valuehat: float, value: float) -> (float, float):
-        """Compute error percentage"""
-        if value == 0:
-            return 0, 0
-        else:
-            error = abs(value - valuehat)
-            error_per = (error/ value) * 100
-            return error, error_per
-
     # -----------------------------------------------------
     # TIME FUNCTIONS
     # -----------------------------------------------------
+    # UT - ok
     @staticmethod
     def days_to_years(days: float) -> float:
         """Convert days to years"""
-        years = days * 365.25
-        return years
+        years = days / 365.25
+        return round(years, 4)
 
+    # UT - ok
+    @staticmethod
+    def years_to_days(years: float) -> float:
+        """Convert years to days"""
+        days = years * 365.25
+        return round(days, 4)
+
+    # UT - OK
     @staticmethod
     def compute_intervals(dates: list):
-        """Compute intervals between dates in days"""
-        if not dates:
+        """Compute intervals between dates in days
+        :return list of intervals in days (len(dates) - 1)"""
+        if len(dates) < 2:
             return []
+
         intervals = []
         for i in range(1, len(dates)):
-            delta_days = (dates[i] - dates[i - 1]).days
+            delta_days = Basicfun.compute_days(dates[i], dates[i - 1])
             intervals.append(delta_days)
+
         return intervals
 
+    # UT - OK
     @staticmethod
     def compute_days(date1, date2):
-        return (date2 - date1).days
+        """Compute the number of days between two dates"""
+        return abs((date2 - date1).days)
 
+    # UT - OK
     @staticmethod
-    def compute_timeline(dT_days: list) -> list:
+    def compute_timeline(dT_days: list, first=0) -> list:
         """Compute the timeline of eruptions based on LIST OF INTERVALS"""
-        timeline = [0]
+        timeline = [first]
         for dt in dT_days:
             previous_time = timeline[-1]
             timeline.append(previous_time + dt)
@@ -130,7 +156,7 @@ class basicfun:
     def get_q_line(q: float, dates: list, cvol: list) -> list:
         """Get a line of Q values for plotting"""
         n = len(dates)
-        days = basicfun.compute_intervals(dates)
+        days = Basicfun.compute_intervals(dates)
 
         cvol_theory = [cvol[0]]  # Start with the first cumulative volume
         for i in range(1, n):
@@ -140,10 +166,10 @@ class basicfun:
         return cvol_theory
 
     # ------------------------------------------------------
-    # PRINT FUNCTIONS
+    # PRINTING FUNCTIONS
     # ------------------------------------------------------
     @staticmethod
-    def print_period_measurements(t0, tf):
+    def print_period(t0, tf):
         """Print the period of measurements"""
         t1 = t0.strftime("%Y-%m-%d")
         t2 = tf.strftime("%Y-%m-%d")
@@ -179,8 +205,8 @@ class basicfun:
         dec = 1e6
 
         print(f"..Initial, CVOL(t0) =  {cvol1/dec:.2f}")
-        print(f"..Final, CVOL(t0) =  {cvol2/dec:.2f}")
-        print(f"..Delta, dCVOL(t0->tf) = {(cvol2 - cvol1)/dec:.2f}")
+        print(f"..Final, CVOL(t1) =  {cvol2/dec:.2f}")
+        print(f"..Delta, dCVOL(t0->t1) = {(cvol2 - cvol1)/dec:.2f}")
 
     @staticmethod
     def print_time(mean_value, std_value, dt_total=None):
@@ -197,7 +223,7 @@ class basicfun:
     def print_rate(q: float):
         """Rate q in mr/day"""
 
-        qyears = basicfun.Qmday_to_kmy(q)
+        qyears = Basicfun.Qmday_to_kmy(q)
         print(f"Rate of eruptions: Q = {q:.4f} (m3/day) = {qyears:.4f} (km3/year)")
 
     @staticmethod
