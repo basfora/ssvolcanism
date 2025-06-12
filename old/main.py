@@ -1,5 +1,5 @@
 from classes.collectdata import VolcanoData as vd
-from classes.computethings import ComputeThings as ct
+from old.computethings import ComputeThings as ct
 
 
 

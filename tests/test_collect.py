@@ -70,6 +70,7 @@ def test_get_data():
 
     th = 1e-4
 
+
 def test_basic_stats():
     name_file, r, qlong = parameters_piton_periodI()
 
@@ -174,7 +175,6 @@ def test_time_functions():
     assert sum(bintervals) == btimeline[-1] == 4019
 
 
-
 def test_prediction_data():
     """Test prediction data collection."""
     name_file, r, qlong = parameters_piton_periodI()
@@ -194,7 +194,7 @@ def test_prediction_data():
     assert mypred.in_cvol == cvol[:6]
     assert mypred.n == len(edates[:5])
 
-    assert sum(mypred.dT_days) == mypred.dT_total
+    assert sum(mypred.dT_days) == mypred.time_total
     assert sum(mypred.in_evol) == mypred.cvol_delta
 
 
@@ -215,6 +215,7 @@ def test_dimension():
     assert len(CV2_simple) == N
     assert len(CV2) == N
     assert CV2.all() == CV2_simple.all()
+
 
 
 

@@ -1,12 +1,13 @@
 """Data used for analysis and prediction
 One instance for each prediction pt"""
 from classes.basicfun import Basicfun as bf
+from classes.eruption import OneEruption as oe
 import numpy as np
 
 
 class PredictionData:
 
-    def __init__(self, edates: list, evol: list, cvol: list, idx=None):
+    def __init__(self, edates: list, evol: list, cvol: list, idx=None, qtheory=None):
 
         # for storage and information purposes
         # inputs (real data collection)
@@ -17,48 +18,52 @@ class PredictionData:
 
         # period being used for prediction
         self.date_t0 = None
-        self.date_tf = None
+        self.date_t1 = None
+        # current time, T1
+        self.day_t1 = None
 
         # cumulative volume
         self.cvol_t0 = 0.0
         self.cvol_t1 = 0.0
 
         # actual data for prediction
-        self.real_next_date = None
-        self.real_next_dT = None
-        self.real_next_evol = None
-        self.real_next_cvol = None
+        self.real_date_t2 = None
+        self.real_dT = None
+        self.real_evol_t2 = None
+        self.real_cvol_t2 = None
+        self.qtheory = None
 
         # COMPUTED (BASIC STATS) - to be used in analysis
         # EVOL (m3)
         self.evol_mean = 0.0
         self.evol_std = 0.0
         self.evol_sum = 0.0
-
         # CVOL (m3)
         self.cvol_delta = 0.0
-
         # TIME (DAYS)
         self.dT_days = []
-        self.timeline = []
-        self.dT_total = 0.0
         self.dT_mean, self.dT_std = 0.0, 0.0
-
+        # for timeline
+        self.time_total = 0.0
+        self.timeline = []
         # RATE (m3/day)
         self.qhat = 0.0
 
         # -----------------------------------------------------
-        # PREDICTED DATA
+        # METHOD 3: PREDICTED DATA
         # next eruption ID (for prediction)
         self.next_id = None
         # samples
         self.N = 1000
-        # "current" time, T1
-        self.t1 = None
-        self.cvolT1 = None
         # simulated time interval and cvol2
-        self.dTsim = None
-        self.cvolT2 = None
+        self.sim_dT = None
+        self.sim_cvolT2 = None
+
+        # estimates (CHOSEN FROM SIM)
+        self.cvolT2_hat = 0.0
+        self.evolT2_hat = 0.0
+        self.dT_hat = 0.0
+        self.T2_hat = 0.0  # estimate date of next eruption
 
         # STATS
         # first moment (time)
@@ -70,13 +75,17 @@ class PredictionData:
         # confidence interval
         self.dTsim_lower, self.dTsim_upper = 0.0, 0.0
         self.cvolT2_lower, self.cvolT2_upper = 0.0, 0.0
-        # estimates
-        self.cvolT2_hat = 0.0
-        self.evolT2_hat = 0.0
-        self.dT_hat = 0.0
-        self.T2_hat = 0.0 # estimate date of next eruption
         # -----------------------------------------------------
+        # METHOD 2: DETERMINISTIC
+        self.cvolT2_det = None
+        self.evolT2_det = None
 
+        self.error_cvolT2_det = None
+        self.error_evolT2_det = None
+        self.error_evolT2_det_per = None
+        self.error_cvolT2_det_per = None
+
+        # -----------------------------------------------------
         # ERROR
         self.error_dT2 = None
         self.error_evolT2 = None
@@ -89,11 +98,11 @@ class PredictionData:
 
         # -----------------------------------------------------
         # INIT FUNCTIONS
-        self.save_input_data(edates, evol, cvol, idx)
+        self.save_input_data(edates, evol, cvol, idx, qtheory)
         self.compute_real_stats()
         self.print_real_dataset()
 
-    def save_input_data(self, edates: list, evol: list, cvol: list, id_last_eruption=None):
+    def save_input_data(self, edates: list, evol: list, cvol: list, id_last_eruption=None, qtheory=None):
         """Save input real data for prediction, if idx is none, save all
         :param edates: list of TimeSeries [int](n)
         :param evol: list of eruption volumes (m3), [int](n)
@@ -116,6 +125,11 @@ class PredictionData:
             edatenext, evolnext, cvolnext = edates[id_next], evol[id_next], cvol[id_next+1]
             self.add_real_next(edatenext, evolnext, cvolnext)
 
+        # save q theory if provided
+        if qtheory is not None:
+            self.qtheory = qtheory
+
+
         # number of data points for prediction
         self.n = len(self.in_evol)
         # next eruption ID
@@ -123,7 +137,7 @@ class PredictionData:
 
         # period
         self.date_t0 = self.in_edates[0]
-        self.date_tf = self.in_edates[-1]
+        self.date_t1 = self.in_edates[-1]
 
         # cumulative volume (m3)
         self.cvol_t0 = self.in_cvol[0]
@@ -146,20 +160,20 @@ class PredictionData:
         self.dT_days = bf.compute_intervals(self.in_edates)
         self.dT_mean, self.dT_std = bf.compute_mean_std(self.dT_days)
         self.timeline = bf.compute_timeline(self.dT_days)
-        self.dT_total = bf.compute_days(self.date_t0, self.date_tf)
+        self.time_total = bf.compute_days(self.date_t0, self.date_t1)
 
         # compute RATE Q
-        self.qhat = bf.compute_q(self.cvol_t0, self.cvol_t1, self.dT_total)
+        self.qhat = bf.compute_q(self.cvol_t0, self.cvol_t1, self.time_total)
 
     def print_real_dataset(self):
         """Print info about the period of real data to be used for prediction"""
 
         bf.print_mark()
-        bf.print_period(self.date_t0, self.date_tf)
+        bf.print_period(self.date_t0, self.date_t1)
         bf.print_n_eruptions(self.n)
         bf.print_vol_stats(self.evol_mean, self.evol_std, self.evol_sum)
         bf.print_cvol(self.cvol_t0, self.cvol_t1)
-        bf.print_time(self.dT_mean, self.dT_std, self.dT_total)
+        bf.print_time(self.dT_mean, self.dT_std, self.time_total)
         bf.print_rate(self.qhat)
 
     def add_real_next(self, edate, evol: int, cvol: int):
@@ -169,12 +183,59 @@ class PredictionData:
         :param cvol: cumulative volume at next eruption (m3)"""
 
         # save real data
-        self.real_next_date = edate
-        self.real_next_dT = bf.compute_days(self.in_edates[-1], self.real_next_date)
-        self.real_next_evol = evol
-        self.real_next_cvol = cvol
+        self.real_date_t2 = edate
+        self.real_dT = bf.compute_days(self.in_edates[-1], self.real_date_t2)
+        self.real_evol_t2 = evol
+        self.real_cvol_t2 = cvol
 
     # ------------------------------------------------------------
+    def run_prediction_methods(self):
+
+        # stochastic forecast
+        self.one_step_ahead()
+        # choose estimate
+        self.choose_estimate()
+        self.compute_stats()
+        # error
+        self.forecast_error()
+
+        # deterministic forecast
+        self.deterministic()
+
+        # PRINT
+        bf.print_submark()
+        # print real
+        bf.print_one_eruption(self.next_id, self.real_evol_t2, self.real_cvol_t2,
+                              self.real_date_t2, self.real_dT)
+
+        # print results
+        bf.print_deterministic(self.evolT2_det, self.cvolT2_det)
+
+        bf.print_deterministic_error(self.error_evolT2_det, self.error_cvolT2_det,
+                                     self.error_evolT2_det_per, self.error_cvolT2_det_per)
+
+
+        # print results
+        bf.print_prediction(self.evolT2_hat, self.cvolT2_hat, self.dT_hat,
+                            (self.cvolT2_lower, self.cvolT2_upper))
+
+
+        # print error
+        bf.print_prediction_error(self.error_evolT2, self.error_cvolT2,
+                                  self.error_evol_per, self.error_cvol_per, self.error_dT2)
+
+        bf.print_mark()
+
+    def organize_stuff(self):
+
+        # TODO THIS AND PLOT!
+
+        moe = oe()
+
+        moe.evol.real = self.real_evol_t2
+        print(f'ORGANIZE STUFF {moe.evol.real}')
+
+
     # ESTIMATION: NON-PARAMETRIC UNCERTAINTY PROPAGATION
     # (stochastic forecast)
     def one_step_ahead(self):
@@ -183,7 +244,6 @@ class PredictionData:
         qhat, DT_list (days), T1 (timeline, day)
         and cvol(t1) = vcol[-1]"""
 
-        # todo TEST WITH PREDICTION ERUPTION 11
         # current cumulative volume at T1
         CV1 = [self.cvol_t1] * self.N
         dTdata = self.dT_days
@@ -192,6 +252,7 @@ class PredictionData:
 
         # ------------------------------------ SIMULATION
         # sampling time intervals
+        # TODO change this for normal skewed?
         dTsim = np.random.choice(dTdata, N, replace=True)
 
         # compute CVOL(T2) = CVOL(T1) + Qhat * dTsim (for each dT)
@@ -199,61 +260,75 @@ class PredictionData:
         # ------------------------------------
 
         # save simulated data
-        self.cvolT2 = CV2
-        self.dTsim = dTsim
+        self.sim_cvolT2 = CV2
+        self.sim_dT = dTsim
 
     def compute_stats(self):
         # STATS
         # compute mean and std of cv2_sim
-        self.cvolT2_mean = np.mean(self.cvolT2)
-        self.cvolT2_std = np.std(self.cvolT2)
-        self.cvolT2_lower, self.cvolT2_upper = np.percentile(self.cvolT2, [2.5, 97.5])
+        self.cvolT2_mean = np.mean(self.sim_cvolT2)
+        self.cvolT2_std = np.std(self.sim_cvolT2)
+        self.cvolT2_lower, self.cvolT2_upper = np.percentile(self.sim_cvolT2, [2.5, 97.5])
 
         # compute mean and std of dTsim
-        self.dTsim_mean = np.mean(self.dTsim)
-        self.dTsim_std = np.std(self.dTsim)
-        self.dTsim_lower, self.dTsim_upper = np.percentile(self.dTsim, [2.5, 97.5])
+        self.dTsim_mean = np.mean(self.sim_dT)
+        self.dTsim_std = np.std(self.sim_dT)
+        self.dTsim_lower, self.dTsim_upper = np.percentile(self.sim_dT, [2.5, 97.5])
 
-        # choose estimate
-        self.choose_estimate()
 
-        # print results
-        bf.print_prediction(self.next_id, self.dT_hat, self.evolT2_hat, self.cvolT2_hat,
-                            (self.cvolT2_lower, self.cvolT2_upper))
-
-    def choose_estimate(self):
+    def choose_estimate(self, best='median'):
         """Choose estimate, for now use mean or median of dTsim and cvolT2"""
-        self.cvolT2_hat = np.median(self.cvolT2)
-        self.evolT2_hat = self.cvolT2_hat - self.cvol_t1  # next eruption volume
-        self.dT_hat = self.dTsim_mean  # next eruption time interval
+
+        if best == 'mean':
+            # choose mean
+            CV2hat = np.mean(self.sim_cvolT2)
+            dThat = np.mean(self.sim_dT)
+        elif best == 'median':
+            # choose median
+            CV2hat = np.median(self.sim_cvolT2)
+            dThat = np.median(self.sim_dT)
+        else:
+            # if no best is specified, use mean (for now)
+            CV2hat = np.mean(self.sim_cvolT2)
+            dThat = np.mean(self.sim_dT)
+
+        # save estimates
+        self.cvolT2_hat = CV2hat
+        self.dT_hat = dThat  # next eruption time interval
+        # next eruption volume
+        self.evolT2_hat = self.cvolT2_hat - self.cvol_t1
 
     def forecast_error(self):
         """Compute forecast error between predicted and real data"""
 
-        if self.real_next_dT is None or self.real_next_evol is None or self.real_next_cvol is None:
+        if self.real_dT is None or self.real_evol_t2 is None or self.real_cvol_t2 is None:
             print("Real next eruption data not set. Please use add_real_next() to set it.")
             return
 
         # compute ERROR
-        self.error_dT2, _ = bf.compute_error(self.dT_hat, self.real_next_dT)
-        self.error_evolT2, self.error_evol_per = bf.compute_error(self.evolT2_hat, self.real_next_evol)
-        self.error_cvolT2, self.error_cvol_per = bf.compute_error(self.cvolT2_hat, self.real_next_cvol)
+        self.error_dT2, _ = bf.compute_error(self.dT_hat, self.real_dT)
+        self.error_evolT2, self.error_evol_per = bf.compute_error(self.evolT2_hat, self.real_evol_t2)
+        self.error_cvolT2, self.error_cvol_per = bf.compute_error(self.cvolT2_hat, self.real_cvol_t2)
 
-        # print real
-        bf.print_one_eruption(self.real_next_date, self.real_next_evol, self.real_next_cvol, self.real_next_dT)
-
-        # print error
-        bf.print_prediction_error(self.error_dT2, self.error_evolT2, self.error_cvolT2,
-                                  self.error_evol_per, self.error_cvol_per)
-
-        bf.print_mark()
-
-    # TODO: add other methods for prediction
-    def other_methods(self):
-        """Compute cvol for
-        method 1: q_rate line
-        method 2: deterministic with known T2
+    def deterministic(self):
+        """Compute cvol using method 1:
+        deterministic with known T2, q from all period of real data
         """
+
+        # compute cvol using method 2
+        cvolT1 = self.cvol_t1
+        dT = self.real_dT
+        q = self.qtheory
+
+        cvolT2 = bf.state_equation(cvolT1, dT, q)
+
+        # save results
+        self.cvolT2_det = cvolT2
+        self.evolT2_det = cvolT2 - cvolT1
+
+        # compute error
+        self.error_cvolT2_det, self.error_cvolT2_det_per = bf.compute_error(cvolT2, self.real_cvol_t2)
+        self.error_evolT2_det, self.error_evolT2_det_per = bf.compute_error(self.evolT2_det, self.real_evol_t2)
 
         return
 

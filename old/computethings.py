@@ -116,5 +116,5 @@ class ComputeThings:
         # in days
         self.Qd = bf.compute_q(self.cumvol_t0, self.cumvol_tf, self.dT_days)
         # in years
-        self.Qy = bf.Qmday_to_kmy(self.Qd)
+        self.Qy = bf.Qday_to_Qy(self.Qd)
 

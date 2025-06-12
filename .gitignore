@@ -174,5 +174,5 @@ cython_debug/
 .pypirc
 
 
-# My files
-scripts/sketch.py
+# My old files
+old/

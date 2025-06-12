@@ -137,10 +137,16 @@ class Basicfun:
     # RATE FUNCTIONS
     # ------------------------------------------------------
     @staticmethod
-    def Qmday_to_kmy(Qd: float) -> float:
+    def Qday_to_Qy(Qd: float) -> float:
         """Convert Q units from m3/day to km3/year"""
         Qyears = (Qd / 1e9) * 365.25
         return Qyears
+
+    @staticmethod
+    def Qy_to_Qday(Qy: float) -> float:
+        """Convert Q units from m3/day to km3/year"""
+        Qd = (Qy * 1e9) / 365.25
+        return Qd
 
     @staticmethod
     def compute_q(cvol_t0: float, cvol_tf: float, dt_days: int) -> float:
@@ -165,9 +171,30 @@ class Basicfun:
 
         return cvol_theory
 
+    @staticmethod
+    def state_equation(CV1: float, q: float, dT: float) -> float:
+        """State equatiion"""
+
+        # compute CVOL(T2) = CVOL(T1) + Qhat * dTsim (for each dT)
+        CV2 = CV1 + q * dT
+
+        return CV2
+
     # ------------------------------------------------------
     # PRINTING FUNCTIONS
     # ------------------------------------------------------
+    @staticmethod
+    def pevol(t: int):
+        return 'Erupted Volume EVOL(t{})'.format(t)
+
+    @staticmethod
+    def pcvol(t: int):
+        return 'Cumulative Volume CVOL(t{})'.format(t)
+
+    @staticmethod
+    def dec():
+        return 1e6  # 1 million for m3 to km3 conversion
+
     @staticmethod
     def print_period(t0, tf):
         """Print the period of measurements"""
@@ -179,6 +206,42 @@ class Basicfun:
     @staticmethod
     def print_mark():
         print(f"=================================================")
+
+    @staticmethod
+    def print_submark():
+        print(f"...................................................")
+
+    @staticmethod
+    def print_one_eruption(eid: int, evol, cvol, edate, dT_days):
+        """Print one eruption (real)"""
+        dec = Basicfun.dec()
+
+        print(f"..........REAL ERUPTION")
+        print(f"  Eruption ID: {eid}")
+        print(f"  Date: {edate.strftime('%Y-%m-%d')} | dT = {dT_days:.0f} days")
+        print(f"  {Basicfun.pevol(2)} = {evol / dec:.2f} ({dec} m3)")
+        print(f"  {Basicfun.pcvol(2)} = {cvol / dec:.2f} ({dec} m3)")
+
+    @staticmethod
+    def print_prediction(evol_hat, cvol_hat, dT_hat, ci: tuple):
+
+        dec = Basicfun.dec()
+
+        print(f"..........STOCHASTIC METHOD")
+        print(f"Mean time interval: {dT_hat:.0f} days after T1")
+        print(f"{Basicfun.pevol(2)}: {evol_hat / dec:.4f} ({dec} m3)")
+        print(f"{Basicfun.pcvol(2)}: {cvol_hat / dec:.4f} ({dec} m3)")
+        print(f"95% CI: [{ci[0] / dec:.0f}, {ci[1] / dec:.0f}] ({dec} m3)")
+
+    @staticmethod
+    def print_deterministic(evol, cvol):
+        """Print deterministic prediction"""
+        dec = Basicfun.dec()
+
+        print(f"..........DETERMINISTIC METHOD")
+        print(f"{Basicfun.pevol(2)} = {evol / dec:.2f} ({dec} m3)")
+        print(f"{Basicfun.pcvol(2)} = {cvol / dec:.2f} ({dec} m3)")
+
 
     @staticmethod
     def print_n_eruptions(n: int):
@@ -223,7 +286,7 @@ class Basicfun:
     def print_rate(q: float):
         """Rate q in mr/day"""
 
-        qyears = Basicfun.Qmday_to_kmy(q)
+        qyears = Basicfun.Qday_to_Qy(q)
         print(f"Rate of eruptions: Q = {q:.4f} (m3/day) = {qyears:.4f} (km3/year)")
 
     @staticmethod
@@ -231,34 +294,23 @@ class Basicfun:
         """For checking only"""
         print(f"{what} list (len = {len(list_values)}): {list_values}")
 
-    @staticmethod
-    def print_prediction(next_id: int, dT_hat, evol_hat, cvol_hat, ci: tuple):
 
+    @staticmethod
+    def print_deterministic_error(eevol, ecvol, eevol_perc, ecvol_perc):
+        """Print deterministic prediction error"""
         dec = 1e6
 
-        print(f"..........STOCHASTIC FORECAST")
-        print(f"Next eruption ID: {next_id}")
-        print(f"Mean time interval: {dT_hat:.0f} days after T1")
-        print(f"Mean eruption volume at T2: {evol_hat/dec:.4f} ({dec} m3)")
-        print(f"Mean cumulative volume at T2: {cvol_hat/dec:.4f} ({dec} m3)")
-        print(f"95% CI: [{ci[0]/dec:.0f}, {ci[1]/dec:.0f}] ({dec} m3)")
+        print(f"..........DETERMINISTIC ERROR")
+        print(f"Error {Basicfun.pevol(2)} = {eevol/dec:.2f} ({dec} m3) | {eevol_perc:.1f}%")
+        print(f"Error {Basicfun.pcvol(2)} = {ecvol/dec:.2f} ({dec} m3) | {ecvol_perc:.1f}%")
+
 
     @staticmethod
-    def print_one_eruption(edate, evol, cvol, dT_days):
-        """Print one eruption (real)"""
-        dec = 1e6
-
-        print(f"..........REAL ERUPTION")
-        print(f"  Date: {edate.strftime('%Y-%m-%d')} | dT = {dT_days:.0f} days")
-        print(f"  Eruption Volume EVOL(t2) = {evol/dec:.2f} ({dec} m3)")
-        print(f"  Cumulative Volume CVOL(t2) = {cvol/dec:.2f} ({dec} m3)")
-
-    @staticmethod
-    def print_prediction_error(error_dt, error_evol, error_cvol, error_evol_perc, error_cvol_perc):
+    def print_prediction_error(eevol, ecvol, eevol_perc, ecvol_perc, edt):
         """Print prediction error"""
         dec = 1e6
 
-        print(f"..........ERROR:")
-        print(f"  Time interval EdT = {error_dt:.0f} days")
-        print(f"  Eruption Volume Eevol(t2) = {error_evol/dec:.2f} ({dec:.0f} m3) | {error_evol_perc:.1f}%")
-        print(f"  Cumulative Volume Ecvol(t2) = {error_cvol/dec:.2f} ({dec:.0f} m3) | {error_cvol_perc:.1f}%")
+        print(f"..........STHOCASTIC ERROR")
+        print(f"  Time interval EdT = {edt:.0f} days")
+        print(f"  Error {Basicfun.pevol(2)}  = {eevol/dec:.2f} ({dec:.0f} m3) | {eevol_perc:.1f}%")
+        print(f"  Error {Basicfun.pcvol(2)}  = {ecvol/dec:.2f} ({dec:.0f} m3) | {ecvol_perc:.1f}%")

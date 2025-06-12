@@ -106,7 +106,7 @@ class MyPlots:
         plt.figure(figsize=(12, 12))
 
         q = bf.compute_q(cvalues[0], cvalues[-1], (dates[-1] - dates[0]).days)
-        q_years = bf.Qmday_to_kmy(q)
+        q_years = bf.Qday_to_Qy(q)
         print(f"Computed rate Q = {q:.4f} m3/day ({q_years:.5f} km3/year)")
         cvol_theory = bf.get_q_line(q, dates, cvalues)
 

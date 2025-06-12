@@ -1,9 +1,5 @@
 """Importing all data from Excel files and saving them
 Return 3 lists: edates, evol, cvol"""
-
-# TODO integrate with basicfun and delete obsolete functions
-# TODO this class: only COLLECT and SAVE data (save error here too or do I need another class?)
-
 from classes.basicfun import Basicfun as bf
 
 import pandas as pd
@@ -40,25 +36,19 @@ class VolcanoData:
         self.series_eruptvol = None
         self.series_cumvol = None
 
-        # as lists
+        # as lists (to be outputed)
         self.list_date = []
         self.list_eruptvol = []
         self.list_cumvol = []
 
         # --------------------------------
         # for computing stuff
-        self.timeline = [0]
         self.n = 0  # number of eruptions
+        # rates
         self.Q_long = None
-
-        # stats
-        self.list_Q = []  # list of rates of eruptions
-        self.mean_Q = None
-        self.std_Q = None
-
-        self.list_dt = []  # list of time intervals between eruptions
-        self.mean_dt = None
-        self.std_dt = None
+        self.Q1 = None  # rate for period 1
+        self.Q2 = None  # rate for period 2
+        self.Q3 = None  # rate for other period
 
         # --------------------------------
         # INIT FUNCTIONS
@@ -132,17 +122,6 @@ class VolcanoData:
         self.list_cumvol = [0] + self.series_cumvol.tolist()
         self.list_date = self.series_date.tolist()
 
-        # some other computation (might delete later)
-        self.list_dt = bf.compute_intervals(self.list_date)
-        self.timeline = bf.compute_timeline(self.list_dt, 0)  # start from 1
-
-        if self.printing:
-            # all dataframe
-            print('Volcano df ', self.df_volcano)
-            print('Cum Vol ', self.list_cumvol)
-            # dates
-            print('dt in days: ', self.list_dt)
-
         # only need date and cumulative volume
         return self.list_date, self.list_eruptvol, self.list_cumvol,
 
@@ -184,6 +163,23 @@ class VolcanoData:
         else:
             print(f"Unknown rate type: {which}. Use 'long', '1', or '2'.")
             return None
+
+    def piton_rates(self):
+        """Set the rates of eruptions for PitondelaFournaise
+        Source: manuscript by Galetto (2025), Q unit: km3/yr
+        Q unit for computation: m3/day"""
+
+        # Transform km3/yr ro m3/day
+        qlong = bf.Qy_to_Qday(0.0024)
+        qperiod1 = bf.Qy_to_Qday(0.0107)
+        qperiod2 = bf.Qy_to_Qday(0.0228)
+
+        # long-term rate
+        self.set_Q(qlong, 'long')
+        # period 1 rate
+        self.set_Q(qperiod1, '1')
+        # period 2 rate
+        self.set_Q(qperiod2, '2')
 
 
 if __name__ == "__main__":

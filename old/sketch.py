@@ -102,7 +102,17 @@ def print_rate_stats(self):
     print(f"Mean of Q adjusted with each new eruption \n>> Q_iter = {self.mean_Q:.5f} +- {self.std_Q:.5f} km3/year")
 
 
+# from collect data
+    # some other computation (might delete later)
+    self.list_dt = bf.compute_intervals(self.list_date)
+    self.timeline = bf.compute_timeline(self.list_dt, 0)  # start from 1
 
+    if self.printing:
+        # all dataframe
+        print('Volcano df ', self.df_volcano)
+        print('Cum Vol ', self.list_cumvol)
+        # dates
+        print('dt in days: ', self.list_dt)
 
 
     def plot_volume(self):
