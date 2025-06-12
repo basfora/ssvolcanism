@@ -81,7 +81,62 @@
     plt.show()
 
 
+def print_rate_stats(self):
+    time_period_days = (self.list_date[-1] - self.list_date[0]).days
+    time_period_years = self.list_date[-1].year - self.list_date[0].year  # approximate conversion to years
+    # sanity check
+    print(f"Period analyzed: {self.list_date[0]} - {self.list_date[-1]}")
+    print(f"Time period: {time_period_days} days ({time_period_years} years)")
+    print(f"Number of eruptions: {self.n}")
+    print("...Time between between eruptions (dt in days):")
+    print(f"From all period: tf - t0 / n \n> dt_all = {time_period_days / self.n:.2f} days")
+    print(f"Mean adjusted with each new eruption\n> dt_iter = {self.mean_dt:.2f} +- {self.std_dt:.2f} days")
+
+    print(f"...Rate of eruptions (Q in km3/year):")
+    if self.Q_long is not None:
+        print(f"Long-term: Q_long = {self.Q_long:.4f} km3/year")
+    else:
+        print("Long-term rate of eruptions not set.")
+
+    print(f"From all period: [Vcum(tf) - Vcum(t0)] / dT \n>> Q_all = {self.list_Q[-1]:.4f} km3/year")
+    print(f"Mean of Q adjusted with each new eruption \n>> Q_iter = {self.mean_Q:.5f} +- {self.std_Q:.5f} km3/year")
 
 
 
 
+
+    def plot_volume(self):
+        """Plot the cumulative volume of the volcano and date the data was collected"""
+
+        title, xlabel, ylabel, mylegend = self.get_plot_title()
+        fig, ax = plt.subplots()
+
+
+        # convert date to string for plotting
+        xvalues = self.timeline
+        yvalues = self.list_cumvol
+
+        # PLOT
+        # cumulative volume
+        ax.plot(xvalues, yvalues, linestyle='dashed', color='b', linewidth=0.5, marker='.', markersize=10, mfc='red', label=mylegend[0])
+        # erupted volume
+        yvalues2 = self.list_eruptvol
+        ax.plot(xvalues, yvalues2 , linestyle='dashed', color='g', linewidth=0.5, marker='.', markersize=10,
+                mfc='red', label=mylegend[1])
+
+        # set limits for x and y axes
+        th = 1e8
+        ax.set(ylim=(min(yvalues) - th, max(yvalues) + th))
+        # title and labels
+        ax.set(title=title, xlabel=xlabel, ylabel=ylabel)
+        ax.legend()
+        # grid
+        ax.grid()
+        ax.set_xticks(xvalues[::1])
+        ax.set_xticklabels(xvalues[::1], rotation=45, ha='right', fontsize=8)
+
+        # show
+        plt.show()
+        # save the figure
+        save_path = os.path.join(self.current_dir, self.plot_dir)
+        fig.savefig(save_path + "/piton-cumvol.png")

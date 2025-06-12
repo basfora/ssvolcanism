@@ -15,28 +15,25 @@ from scipy import stats
 
 if __name__ == '__main__':
 
-    # IMPORT REAL DATA (BY PERIOD OR ALL)
     # ------------------------------------------------------
     # Excel file >> Piton de la Fournaise
     name_file = 'PitondelaFournaise_data'
     # PITON period 1: 1 to 74 | period 2: 74 to 120
     r1, rend = 1, 74
-
     # ------------------------------------------------------
-    # GET REAL DATA (ALL)
+    # IMPORT REAL DATA PER PERIOD
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.get_data(r1, rend)
+    edates, evol, cvol = piton_data.organize(r1, rend)
 
     # ------------------------------------------------------
     # PREDICTION
     # ------------------------------------------------------
     # last eruption ID (real data, prediction will be ID + 1)
-    start_after_eruption = 3
+    start_after_eruption = 15
     stop_before_eruption = 73
     error_evol = []
-
 
     last_eruption = start_after_eruption
     while last_eruption < stop_before_eruption:

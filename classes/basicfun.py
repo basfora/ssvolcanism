@@ -104,7 +104,7 @@ class Basicfun:
 
     # UT - OK
     @staticmethod
-    def compute_intervals(dates: list):
+    def compute_intervals(dates: list) -> list:
         """Compute intervals between dates in days
         :return list of intervals in days (len(dates) - 1)"""
         if len(dates) < 2:
@@ -125,9 +125,9 @@ class Basicfun:
 
     # UT - OK
     @staticmethod
-    def compute_timeline(dT_days: list, first=0) -> list:
+    def compute_timeline(dT_days: list, first_day=0) -> list:
         """Compute the timeline of eruptions based on LIST OF INTERVALS"""
-        timeline = [first]
+        timeline = [first_day]
         for dt in dT_days:
             previous_time = timeline[-1]
             timeline.append(previous_time + dt)

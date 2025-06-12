@@ -191,6 +191,17 @@ class MyPlots:
         return q, timeline
 
 
+    @staticmethod
+    def get_plot_title(name: str):
+        if "Piton" in name:
+            title = "Piton de la Fournaise"
+            xlabel = "Collection Date (year)"
+            ylabel = "Volume ($m^3$)"
+            legend = ["Cumulative Volume", "Erupted Volume"]
+        else:
+            title = "Unknown"
+            xlabel = "Collection Date (year)"
+            ylabel = "Cumulative Volume ($m^3$)"
+            legend = ["Cumulative Volume", "Erupted Volume"]
 
-
-
+        return title, xlabel, ylabel, legend

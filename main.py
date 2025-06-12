@@ -11,9 +11,9 @@ if __name__ == '__main__':
     # import data from Excel file >> Piton de la Fournaise
     piton_data = vd(name=name_file, printing=True)
     # get data from the file
-    piton_data.get_data()
+    piton_data.organize()
 
-    piton_data.set_long_term_rate(Q_long_term=0.0024)
+    piton_data.set_Qlong(Q_long_term=0.0024)
 
     print('...\n...Getting simple stats...')
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         piton = ct(printing=True)
         # set data for analysis
         piton.set_data(dates, eruptvol, cumvol)
-        piton_data.add_rate_interval(piton.Qy, piton.avg_dt_days)
+        piton_data.set_Qperiod(piton.Qy, piton.avg_dt_days)
 
     print('==================================================')
     #print(piton_data.list_Q)

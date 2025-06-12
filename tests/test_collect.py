@@ -23,7 +23,7 @@ def periodI_first5():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.get_data(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(r[0], r[1])
     # consider first 5
     mydates = edates[:5]
     myevol = evol[:5]
@@ -37,7 +37,7 @@ def test_get_data():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.get_data(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(r[0], r[1])
 
     # DATA IMPORT
     # size of the data
@@ -76,7 +76,7 @@ def test_basic_stats():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.get_data(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(r[0], r[1])
     thv = 1e-1
     tht = 1e-4
 
@@ -182,7 +182,7 @@ def test_prediction_data():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.get_data(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(r[0], r[1])
 
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5

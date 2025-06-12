@@ -4,10 +4,10 @@ Return 3 lists: edates, evol, cvol"""
 # TODO integrate with basicfun and delete obsolete functions
 # TODO this class: only COLLECT and SAVE data (save error here too or do I need another class?)
 
+from classes.basicfun import Basicfun as bf
+
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
-import statistics
 
 
 class VolcanoData:
@@ -73,6 +73,7 @@ class VolcanoData:
             name = input("Enter the name of the file: ")
         self.name = name
 
+    # UT - OK
     def collect_from(self):
         """Return path to Excel file: current > parent > rawData"""
 
@@ -93,6 +94,7 @@ class VolcanoData:
 
         return self.path_to_file
 
+    # UT - OK
     def import_data(self):
         """Import data from an Excel file and return as DataFrame"""
 
@@ -103,10 +105,13 @@ class VolcanoData:
 
         return df
 
-    def get_data(self, r1=1, rend=74):
+    # UT - OK
+    def organize(self, r1=1, rend=74):
         """Get data from file and return it as a list
         default: PitondelaFournaise
-        years: 1936 - March 1998"""
+        years: 1936 - March 1998
+        :param r1: row to start from (default 1), period II: 74
+        :param rend: row to end at (default 74), period II: 120"""
         # ----------------------------------
         # columns to use: B and E
         cDate, cErupted, cCV = 1, 3, 4
@@ -122,12 +127,14 @@ class VolcanoData:
         # -----------------------------------
         # turn into lists to make it easier to see/plot
         self.list_eruptvol = self.series_eruptvol.tolist()
+
         # adjust for fake zero init
         self.list_cumvol = [0] + self.series_cumvol.tolist()
         self.list_date = self.series_date.tolist()
+
         # some other computation (might delete later)
-        self.compute_intervals_eruption()
-        self.compute_timeline()
+        self.list_dt = bf.compute_intervals(self.list_date)
+        self.timeline = bf.compute_timeline(self.list_dt, 0)  # start from 1
 
         if self.printing:
             # all dataframe
@@ -138,81 +145,6 @@ class VolcanoData:
 
         # only need date and cumulative volume
         return self.list_date, self.list_eruptvol, self.list_cumvol,
-
-    def get_plot_title(self):
-        if "Piton" in self.name:
-            title = "Piton de la Fournaise"
-            xlabel = "Collection Date (year)"
-            ylabel = "Volume ($m^3$)"
-            legend = ["Cumulative Volume", "Erupted Volume"]
-        else:
-            title = "Unknown"
-            xlabel = "Collection Date (year)"
-            ylabel = "Cumulative Volume ($m^3$)"
-            legend = ["Cumulative Volume", "Erupted Volume"]
-
-        return title, xlabel, ylabel, legend
-
-    def plot_volume(self):
-        """Plot the cumulative volume of the volcano and date the data was collected"""
-
-        title, xlabel, ylabel, mylegend = self.get_plot_title()
-        fig, ax = plt.subplots()
-
-
-        # convert date to string for plotting
-        xvalues = self.timeline
-        yvalues = self.list_cumvol
-
-        # PLOT
-        # cumulative volume
-        ax.plot(xvalues, yvalues, linestyle='dashed', color='b', linewidth=0.5, marker='.', markersize=10, mfc='red', label=mylegend[0])
-        # erupted volume
-        yvalues2 = self.list_eruptvol
-        ax.plot(xvalues, yvalues2 , linestyle='dashed', color='g', linewidth=0.5, marker='.', markersize=10,
-                mfc='red', label=mylegend[1])
-
-        # set limits for x and y axes
-        th = 1e8
-        ax.set(ylim=(min(yvalues) - th, max(yvalues) + th))
-        # title and labels
-        ax.set(title=title, xlabel=xlabel, ylabel=ylabel)
-        ax.legend()
-        # grid
-        ax.grid()
-        ax.set_xticks(xvalues[::1])
-        ax.set_xticklabels(xvalues[::1], rotation=45, ha='right', fontsize=8)
-
-        # show
-        plt.show()
-        # save the figure
-        save_path = os.path.join(self.current_dir, self.plot_dir)
-        fig.savefig(save_path + "/piton-cumvol.png")
-
-    def compute_intervals_eruption(self):
-        """Compute intervals between eruptions"""
-        # convert date to datetime
-        mydates = self.list_date
-        # compute time between measurements
-        for i in range(1, len(mydates)):
-            date1 = mydates[i - 1]
-            date2 = mydates[i]
-            dt = self.compute_dt(date1, date2)
-            self.list_dt.append(dt)
-
-        if self.printing:
-            print("Time between measurements (days):", self.list_dt)
-
-    def compute_timeline(self):
-        """Compute timeline as:
-        first eruption = day 1 (default 1)
-        next eruption = first eruption + dt """
-
-        timeline = [0]
-        for i in range(self.n-1):
-            dt = self.list_dt[i]
-            timeline.append(timeline[-1] + dt)
-        self.timeline = timeline
 
     def output_rel_data(self, idx_0=None, idx_f=None):
         """Output relevant data for analysis as lists"""
@@ -227,90 +159,35 @@ class VolcanoData:
 
         return rel_dates, rel_eruptvol, rel_cumvol
 
-    def add_rate_interval(self, Q_idx, dt_idx):
-        """Add rate of eruptions to the list
-        :param Q_idx: rate of eruptions in km3/yr
-        :param dt_idx: time interval between eruptions in days"""
-        self.list_Q.append(Q_idx)
-        self.list_dt.append(dt_idx)
-
-    def analyze_Q(self):
-        """Analyze the rate of eruptions"""
-        if len(self.list_Q) > 0:
-            self.mean_Q = sum(self.list_Q) / len(self.list_Q)
-            self.std_Q = statistics.stdev(self.list_Q)
-
-            # self.all_dt = (self.list_date[-1] - self.list_date[0]).days/self.n  # total time of eruptions
-            self.mean_dt = sum(self.list_dt) / len(self.list_dt)
-            self.std_dt = statistics.stdev(self.list_dt)
+    def set_Q(self, q: float, which='long'):
+        """Set the rate of eruptions
+        :param q: rate of eruptions in km3/yr
+        :param which: 'long' for long-term,
+                    '1' for period 1, '2' for period 2"""
+        if which == 'long':
+            self.Q_long = q
+        elif which == '1':
+            self.Q1 = q
+        elif which == '2':
+            self.Q2 = q
         else:
-            print("No rates to analyze.")
+            print(f"Unknown rate type: {which}. Use 'long', '1', or '2'.")
 
-        if self.printing:
-            self.print_rate_stats()
-
-    def print_rate_stats(self):
-
-        time_period_days = (self.list_date[-1] - self.list_date[0]).days
-        time_period_years = self.list_date[-1].year - self.list_date[0].year  # approximate conversion to years
-        # sanity check
-        print(f"Period analyzed: {self.list_date[0]} - {self.list_date[-1]}")
-        print(f"Time period: {time_period_days} days ({time_period_years} years)")
-        print(f"Number of eruptions: {self.n}")
-        print("...Time between between eruptions (dt in days):")
-        print(f"From all period: tf - t0 / n \n> dt_all = {time_period_days / self.n:.2f} days")
-        print(f"Mean adjusted with each new eruption\n> dt_iter = {self.mean_dt:.2f} +- {self.std_dt:.2f} days")
-
-        print(f"...Rate of eruptions (Q in km3/year):")
-        if self.Q_long is not None:
-            print(f"Long-term: Q_long = {self.Q_long:.4f} km3/year")
+    def output_Q(self, which='long'):
+        """Output the rate of eruptions"""
+        if which == 'long':
+            return self.Q_long
+        elif which == '1':
+            return self.Q1
+        elif which == '2':
+            return self.Q2
         else:
-            print("Long-term rate of eruptions not set.")
-
-        print(f"From all period: [Vcum(tf) - Vcum(t0)] / dT \n>> Q_all = {self.list_Q[-1]:.4f} km3/year")
-        print(f"Mean of Q adjusted with each new eruption \n>> Q_iter = {self.mean_Q:.5f} +- {self.std_Q:.5f} km3/year")
-
-    def set_long_term_rate(self, Q_long_term: float):
-        """Set the long-term rate of eruptions
-        as computed in previous studies, in km3/yr """
-        self.Q_long = Q_long_term
-
-    @staticmethod
-    def date_to_str(df_date):
-        """Convert date to string format YY
-        :return list of strings"""
-        list_date = []
-
-        for obj in df_date:
-            # convert to datetime (Timestamp)
-            obj = pd.to_datetime(obj)
-            b = str(obj.month) + '.' + str(obj.year - 1900)  #+ "-" +  #+ "-" + str(obj.day)
-            list_date.append(b)
-
-        return list_date
-
-    @staticmethod
-    def compute_dt(date1, date2):
-        """Compute time between two dates
-        :param date1: first date
-        :param date2: second date
-        :return: time difference in days"""
-        # convert to datetime
-        date1 = pd.to_datetime(date1)
-        date2 = pd.to_datetime(date2)
-
-        dt = (date2 - date1).days
-
-        return dt
-
-
-
+            print(f"Unknown rate type: {which}. Use 'long', '1', or '2'.")
+            return None
 
 
 if __name__ == "__main__":
     # create an instance of the class for a volcano
     piton = VolcanoData(name='PitondelaFournaise_data', printing=True)
     # get data from the file
-    piton.get_data()
-    # plot it (simple)
-    piton.plot_volume()
+    piton.organize()

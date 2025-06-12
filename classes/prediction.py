@@ -21,7 +21,7 @@ class PredictionData:
 
         # cumulative volume
         self.cvol_t0 = 0.0
-        self.cvol_tf = 0.0
+        self.cvol_t1 = 0.0
 
         # actual data for prediction
         self.real_next_date = None
@@ -127,7 +127,7 @@ class PredictionData:
 
         # cumulative volume (m3)
         self.cvol_t0 = self.in_cvol[0]
-        self.cvol_tf = self.in_cvol[-1]
+        self.cvol_t1 = self.in_cvol[-1]
 
     def compute_real_stats(self):
 
@@ -136,7 +136,7 @@ class PredictionData:
             exit()
 
         # compute delta volume CVOL
-        self.cvol_delta = bf.compute_delta_vol(self.cvol_t0, self.cvol_tf)
+        self.cvol_delta = bf.compute_delta_vol(self.cvol_t0, self.cvol_t1)
         self.evol_sum = sum(self.in_evol)
 
         # compute mean, std dev EVOL
@@ -149,7 +149,7 @@ class PredictionData:
         self.dT_total = bf.compute_days(self.date_t0, self.date_tf)
 
         # compute RATE Q
-        self.qhat = bf.compute_q(self.cvol_t0, self.cvol_tf, self.dT_total)
+        self.qhat = bf.compute_q(self.cvol_t0, self.cvol_t1, self.dT_total)
 
     def print_real_dataset(self):
         """Print info about the period of real data to be used for prediction"""
@@ -158,9 +158,21 @@ class PredictionData:
         bf.print_period(self.date_t0, self.date_tf)
         bf.print_n_eruptions(self.n)
         bf.print_vol_stats(self.evol_mean, self.evol_std, self.evol_sum)
-        bf.print_cvol(self.cvol_t0, self.cvol_tf)
+        bf.print_cvol(self.cvol_t0, self.cvol_t1)
         bf.print_time(self.dT_mean, self.dT_std, self.dT_total)
         bf.print_rate(self.qhat)
+
+    def add_real_next(self, edate, evol: int, cvol: int):
+        """Add real next eruption data (of what really happened) to compare with prediction
+        :param dT: time interval (days) of next eruption
+        :param evol: volume of next eruption (m3)
+        :param cvol: cumulative volume at next eruption (m3)"""
+
+        # save real data
+        self.real_next_date = edate
+        self.real_next_dT = bf.compute_days(self.in_edates[-1], self.real_next_date)
+        self.real_next_evol = evol
+        self.real_next_cvol = cvol
 
     # ------------------------------------------------------------
     # ESTIMATION: NON-PARAMETRIC UNCERTAINTY PROPAGATION
@@ -173,7 +185,7 @@ class PredictionData:
 
         # todo TEST WITH PREDICTION ERUPTION 11
         # current cumulative volume at T1
-        CV1 = [self.cvol_tf] * self.N
+        CV1 = [self.cvol_t1] * self.N
         dTdata = self.dT_days
         N = self.N
         qhat = self.qhat
@@ -190,6 +202,7 @@ class PredictionData:
         self.cvolT2 = CV2
         self.dTsim = dTsim
 
+    def compute_stats(self):
         # STATS
         # compute mean and std of cv2_sim
         self.cvolT2_mean = np.mean(self.cvolT2)
@@ -209,23 +222,10 @@ class PredictionData:
                             (self.cvolT2_lower, self.cvolT2_upper))
 
     def choose_estimate(self):
-        """Choose estimate, for now use mean of dTsim and cvolT2"""
-
-        self.cvolT2_hat = self.cvolT2_mean
-        self.evolT2_hat = self.cvolT2_hat - self.cvol_tf  # next eruption volume
+        """Choose estimate, for now use mean or median of dTsim and cvolT2"""
+        self.cvolT2_hat = np.median(self.cvolT2)
+        self.evolT2_hat = self.cvolT2_hat - self.cvol_t1  # next eruption volume
         self.dT_hat = self.dTsim_mean  # next eruption time interval
-
-    def add_real_next(self, edate, evol: int, cvol: int):
-        """Add real next eruption data (of what really happened) to compare with prediction
-        :param dT: time interval (days) of next eruption
-        :param evol: volume of next eruption (m3)
-        :param cvol: cumulative volume at next eruption (m3)"""
-
-        # save real data
-        self.real_next_date = edate
-        self.real_next_dT = bf.compute_days(self.in_edates[-1], self.real_next_date)
-        self.real_next_evol = evol
-        self.real_next_cvol = cvol
 
     def forecast_error(self):
         """Compute forecast error between predicted and real data"""
