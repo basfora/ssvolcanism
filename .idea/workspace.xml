@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="error is still high">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
-    </list>
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="N = 1000 enough" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -279,7 +276,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749680959974</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="N = 1000 enough">
+      <option name="closed" value="true" />
+      <created>1749681127742</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1749681127742</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -293,7 +298,8 @@
     <MESSAGE value="unit tests start" />
     <MESSAGE value="needs dT debug" />
     <MESSAGE value="error is still high" />
-    <option name="LAST_COMMIT_MESSAGE" value="error is still high" />
+    <MESSAGE value="N = 1000 enough" />
+    <option name="LAST_COMMIT_MESSAGE" value="N = 1000 enough" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
