@@ -9,79 +9,36 @@ class OneEruption:
         Initialize the OneEruption instance.
 
         :param date: Date of the eruption.
-        :param erupt_volume: Volume of the eruption.
-        :param cum_volume: Cumulative volume up to this eruption.
+        :param evol: Volume of the eruption.
+        :param cvol: Cumulative volume up to this eruption.
         """
 
         self.date = EDate()
 
-        self.evol = Evol()
+        self.evol = Vol()
 
-        self.cvol = CVol()
+        self.cvol = Vol()
 
         self.dT = TInterval()
 
 
 
-class Evol:
-    """Eruption volume"""
+class Vol:
+    """Eruption or cumulative volume"""
 
     def __init__(self):
 
         self.real = 0.0
-
-        self.predicted = 0.0
-
-        self.deterministic = 0.0
+        self.real_error = EError()
 
         self.linear = 0.0
-
-        self.sim = Sim()
-
-
-class CVol:
-    """Cumulative volume"""
-
-    def __init__(self):
-
-        self.real = 0.0
-
-        self.predicted = 0.0
+        self.linear_error = EError()
 
         self.deterministic = 0.0
+        self.deterministic_error = EError()
 
-        self.linear = 0.0
-
-        self.sim = Sim()
-
-
-class EDate:
-    """Eruption date"""
-
-    def __init__(self):
-
-        self.real = None
-
-        self.predicted = None
-
-        self.deterministic = None
-
-        self.linear = None
-
-        self.simulated = []
-
-class TInterval:
-    """Time interval between eruptions"""
-
-    def __init__(self):
-
-        self.real = 0.0
-
-        self.predicted = 0.0
-
-        self.deterministic = 0.0
-
-        self.linear = 0.0
+        self.estimated = 0.0
+        self.estimated_error = EError()
 
         self.sim = Sim()
 
@@ -92,9 +49,46 @@ class Sim:
     def __init__(self):
 
         self.pts = []  # list of points (date, volume, cumulative volume)
+
         self.mean = 0.0
         self.std = 0.0
+
+        self.lower = 0.0
+        self.upper = 0.0
+
+        self.mode = 0.0
         self.median = 0.0
+
+
+class EDate:
+    """Eruption date"""
+
+    def __init__(self):
+
+        self.real = None
+
+        self.linear = None
+
+        self.deterministic = None
+
+        self.estimated = None
+
+        self.sim = Sim()
+
+class TInterval:
+    """Time interval between eruptions"""
+
+    def __init__(self):
+
+        self.real = 0.0
+
+        self.linear = 0.0
+
+        self.deterministic = 0.0
+
+        self.estimated = 0.0
+
+        self.sim = Sim()
 
 
 class EError:
