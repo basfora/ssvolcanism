@@ -3,25 +3,171 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import os
+import time
 
 from classes.basicfun import Basicfun as bf
 from classes.collectdata import VolcanoData
 
 
 class MyPlots:
-    def __init__(self):
+    def __init__(self, piton=True):
         self.name = "MyPlots"
+
+        # volcano name
+        self.volcano_name: str
+        self.volcano_subname: str
+        self.period: str
+
+        # type data
+        self.words = ["Eruptions",
+                     "Volume",
+                     "Interval"]
+
+        # PLOTSET 1
+        self.width = 14
+        self.height = 6
+
+        self.yth = 0.05  # y-axis limit for volume in m3
+
+        self.label_mean = "Mean = "
+        self.label_median = "Median = "
+        self.short = 6
+        self.unit = [f"10$^{self.short}$ m$^3$",'days']
+
+        # titles
+        self.title_evol = "Eruption Events"
+        self.title_intervals = "Intervals between Eruptions"
+        self.title_cvol = "Cumulative Volume"
+
+        # histogram
+        self.n_bins = 20
+        self.title_hist = "Distribution"
+
+        # fig settings
+        self.label_vol = f"Volume ($m^3$)"
+        self.label_freq = "Frequency"
+        self.label_date = "Date of Eruption"
+        self.label_interval =f"$\Delta~T$"
+        self.label_number = "Eruption Number"
+
+        self.savepath = self.get_save_path()
+
+        if piton:
+            self.set_piton()
+
+        # TODO font type and size
+
+    def set_piton(self):
+        """Set volcano name and subname for Piton de la Fournaise."""
+        self.volcano_name = "Piton de la Fournaise"
+        self.volcano_subname = "Period"
+
+    def save_fig(self, fig, savename=None):
+        """Save figure to the specified path."""
+        if savename is None:
+            savename = 'plot'
+        full_path = os.path.join(self.savepath, f'{savename}.pdf')
+        fig.savefig(full_path, dpi=600, bbox_inches='tight')
+        print(f"Figure saved: {full_path}")
+
+
+    def plot_set01(self, vd: VolcanoData, plot_op=1, savename=None):
+        """Plot eruption volumes (evol)
+        Now: Piton de la Fournaise"""
+
+        # compute stats for plotting
+        vd.compute_for_plotting()
+        self.period = bf.format_period(vd.list_date[0], vd.list_date[-1])
+
+        # TITLE
+        suptitle = f"{self.volcano_name} {self.words[0]} \n{self.period}"
+        fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
+        fig.suptitle(suptitle)
+
+        # -------------------- PLOT 1 (LEFT)
+        if plot_op == 1:
+            xvalues = vd.list_date
+            yvalues = vd.list_eruptvol
+            # mean and median for eruptions
+            mean_value = vd.mean_evol
+            median_value = vd.median_evol
+            # label for volume
+            label_mean = f"{mean_value/10**self.short:.2f} {self.unit[0]}"
+            label_median = f"{median_value/10**self.short:.2f} {self.unit[0]}"
+            labely = self.label_vol
+            labelx = self.label_date
+            # titles
+            title1 = self.title_evol
+            title2 = f"Volume {self.title_hist}"
+        else:
+            xvalues = [i for i in range(1, len(vd.list_date))]
+            yvalues = vd.intervals
+            # mean and median for intervals
+            mean_value = vd.mean_dT
+            median_value = vd.median_dT
+            # label for time
+            label_mean = f"{mean_value:.0f} {self.unit[1]}"
+            label_median = f"{median_value:.0f} {self.unit[1]}"
+            labely = f"{self.label_interval} ({self.unit[1]})"
+            labelx = self.label_number
+            # titles
+            title1 = self.title_intervals
+            title2 = f"Time Interval {self.title_hist}"
+
+
+        # PLOT ERUPTIONS (EVOL)
+        ax[0].scatter(xvalues, yvalues, marker='x', color='b', label=f"{self.words[0]}")
+        # mean
+        ax[0].axhline(mean_value, color='m', linestyle='--',
+                   label=f"{self.label_mean} {label_mean}")
+        # median
+        ax[0].axhline(median_value, color='k', linestyle='--',
+                   label=f"{self.label_median} {label_median}")
+
+        # plot title, labels and legend
+        ax[0].set(title=title1, xlabel=labelx, ylabel=labely)
+        ax[0].legend(frameon=False)
+
+        # set limits for x and y axes
+        ylim = max(yvalues) * self.yth  # threshold for y-axis
+        ax[0].set(ylim=(min(yvalues) - 2*ylim, max(yvalues) + ylim))
+        # ------------------------------------- PLOT 2 (RIGHT)
+
+        # Plot histogram with KDE
+        sns.histplot(yvalues, kde=True, ax=ax[1], color='b', bins=25)
+        # extra stats
+        ax[1].axvline(mean_value, color='m', linestyle='--',
+                      label=f"{self.label_mean} {label_mean}")
+        ax[1].axvline(median_value, color='k', linestyle='--',
+                      label=f"{self.label_median} {label_median}")
+
+        # plot identifiers
+        plt.title(title2)
+        plt.xlabel(labely)
+        plt.ylabel(self.label_freq)
+        plt.legend(frameon=False)
+
+
+        # show, save and close
+        if savename is None:
+            savename = 'evol'
+        self.save_fig(fig, savename)
+        #plt.show()
 
 
     @staticmethod
-    def plot_evol(vd: VolcanoData):
-        """Plot eruption volumes (evol)"""
+    def get_save_path():
+        current_dir = os.getcwd()
+        # Get the parent directory > '../PycharmProjects/volcano'
+        parent_dir = os.path.dirname(current_dir)
+        # fix path for when running unit tests
+        if '/plots' not in parent_dir:
+            parent_dir += '/plots'
 
-        # PLOT PTS AND HISTOGRAM WITH RIGHT TITLE (PERIOD)
-        # TODO THIS FIRST THING AND PASTE TO OVERLEAF
-        # ADD MEAN, MEDIAN and MODE (skewed right normal distribution)
+        save_path = os.path.join(parent_dir, parent_dir)
 
-        return
+        return save_path
 
 
     @staticmethod
@@ -206,7 +352,7 @@ class MyPlots:
 
 
     @staticmethod
-    def get_plot_title(name: str):
+    def get_plot_title(name: str, what="evol"):
         if "Piton" in name:
             title = "Piton de la Fournaise"
             xlabel = "Collection Date (year)"
@@ -219,3 +365,5 @@ class MyPlots:
             legend = ["Cumulative Volume", "Erupted Volume"]
 
         return title, xlabel, ylabel, legend
+
+

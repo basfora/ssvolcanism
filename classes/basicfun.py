@@ -1,4 +1,6 @@
 """Functions I keep using all the time """
+import datetime
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -28,6 +30,18 @@ class Basicfun:
         # TODO check np.std with excel!!
         std_value = np.std(values, ddof=0)
         return mean_value, std_value
+
+
+    @staticmethod
+    def compute_median(values: list) -> float:
+        """Compute median of a list of values"""
+        if not values:
+            return 0
+        if not isinstance(values, np.ndarray):
+            values = np.array(values)
+        median = np.median(values)
+        return median
+
 
     # UT - ok
     @staticmethod
@@ -190,6 +204,15 @@ class Basicfun:
     @staticmethod
     def pcvol(t: int):
         return 'Cumulative Volume CVOL(t{})'.format(t)
+
+
+    @staticmethod
+    def format_period(t1: datetime.datetime, t2: datetime.datetime) -> str:
+        """Format period for printing"""
+
+        link = "to"
+
+        return f"{t1.strftime('%Y-%m-%d')} {link} {t2.strftime('%Y-%m-%d')}"
 
     @staticmethod
     def dec():

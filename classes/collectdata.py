@@ -55,6 +55,20 @@ class VolcanoData:
         self.Q3 = None  # rate for other period
 
         # --------------------------------
+        # To Have for plotting (might delete later)
+        self.mean_evol = None  # mean eruption volume
+        self.median_evol = None  # median eruption volume
+        self.mode_evol = None
+
+        self.intervals = []  # list of intervals between eruptions
+        self.timeline = []  # timeline of eruptions
+
+        self.mean_dT = None  # mean eruption interval
+        self.median_dT = None  # median eruption interval
+        self.mode_dT = None
+
+
+        # --------------------------------
         # INIT FUNCTIONS
         # --------------------------------
         self.set_name(name)
@@ -149,6 +163,22 @@ class VolcanoData:
 
         # only need date and cumulative volume
         return self.list_date, self.list_eruptvol, self.list_cumvol,
+
+    def compute_for_plotting(self):
+        """Compute mean, median and mode for plotting"""
+
+        # mean, median and mode for eruption volumes
+        self.mean_evol = bf.compute_mean_std(self.list_eruptvol)[0]
+        self.median_evol = bf.compute_median(self.list_eruptvol)
+
+        # intervals between eruptions
+        self.intervals = bf.compute_intervals(self.list_date)
+        self.timeline = bf.compute_timeline(self.intervals, 0)  # start from 1
+
+        # mean, median and mode for eruption intervals
+        self.mean_dT = bf.compute_mean_std(self.intervals)[0]
+        self.median_dT = bf.compute_median(self.intervals)
+
 
     def output_rel_data(self, idx_0=None, idx_f=None):
         """Output relevant data for analysis as lists"""

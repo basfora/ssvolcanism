@@ -4,14 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="eruption class">
-      <change afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="historical data start">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/sketch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_collect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/CVT2_69_histogram.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/T2_69_histogram.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton-cumvol.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton-vols.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_cvol_36-90.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_evol_36-90.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_period1_cvol.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_period1_evol.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_period2_cvol.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_period2_evol.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_periodall_cvol.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/piton_periodall_evol.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -341,7 +352,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749936687929</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="historical data start">
+      <option name="closed" value="true" />
+      <created>1750040015759</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1750040015759</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -358,7 +377,8 @@
     <MESSAGE value="N = 1000 enough" />
     <MESSAGE value="cleaned collect data class" />
     <MESSAGE value="eruption class" />
-    <option name="LAST_COMMIT_MESSAGE" value="eruption class" />
+    <MESSAGE value="historical data start" />
+    <option name="LAST_COMMIT_MESSAGE" value="historical data start" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
