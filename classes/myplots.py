@@ -5,10 +5,24 @@ import seaborn as sns
 import numpy as np
 
 from classes.basicfun import Basicfun as bf
+from classes.collectdata import VolcanoData
+
 
 class MyPlots:
     def __init__(self):
         self.name = "MyPlots"
+
+
+    @staticmethod
+    def plot_evol(vd: VolcanoData):
+        """Plot eruption volumes (evol)"""
+
+        # PLOT PTS AND HISTOGRAM WITH RIGHT TITLE (PERIOD)
+        # TODO THIS FIRST THING AND PASTE TO OVERLEAF
+        # ADD MEAN, MEDIAN and MODE (skewed right normal distribution)
+
+        return
+
 
     @staticmethod
     def plot_eruptions(dates, volumes, cumulative_volumes):

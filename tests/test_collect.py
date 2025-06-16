@@ -11,19 +11,20 @@ def parameters_piton_periodI():
     # Excel file >> Piton de la Fournaise
     name_file = 'PitondelaFournaise_data'
     # PITON period 1: 1 to 74 | period 2: 74 to 120
-    r1, rend = 1, 74
+    # r1, rend = 1, 74
+    p = 1
 
     qlong = 0.0024
 
-    return name_file, [r1, rend], qlong
+    return name_file, p, qlong
 
 def periodI_first5():
-    name_file, r, qlong = parameters_piton_periodI()
+    name_file, p, qlong = parameters_piton_periodI()
 
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(p)
     # consider first 5
     mydates = edates[:5]
     myevol = evol[:5]
@@ -32,12 +33,12 @@ def periodI_first5():
 
 def test_get_data():
     """Test data collection function."""
-    name_file, r, qlong = parameters_piton_periodI()
+    name_file, p, qlong = parameters_piton_periodI()
 
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(p)
 
     # DATA IMPORT
     # size of the data
@@ -72,12 +73,12 @@ def test_get_data():
 
 
 def test_basic_stats():
-    name_file, r, qlong = parameters_piton_periodI()
+    name_file, p, qlong = parameters_piton_periodI()
 
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(p)
     thv = 1e-1
     tht = 1e-4
 
@@ -177,12 +178,12 @@ def test_time_functions():
 
 def test_prediction_data():
     """Test prediction data collection."""
-    name_file, r, qlong = parameters_piton_periodI()
+    name_file, p, qlong = parameters_piton_periodI()
 
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(r[0], r[1])
+    edates, evol, cvol = piton_data.organize(p)
 
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5

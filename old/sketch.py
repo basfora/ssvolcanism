@@ -150,3 +150,30 @@ def print_rate_stats(self):
         # save the figure
         save_path = os.path.join(self.current_dir, self.plot_dir)
         fig.savefig(save_path + "/piton-cumvol.png")
+
+
+   def piton_periods(self):
+        """ Useless, todo DELETE    """
+        start_p1 = pd.Timestamp('1936-08-01')
+        end_p1 = pd.Timestamp('1998-03-11')
+        start_p2 = pd.Timestamp('1999-07-19')
+
+        r1, rend = 0, 0
+
+        if self.list_date[-1] < start_p2:
+            # if the last date is before the start of period 2
+            self.period = 1
+            r1, rend = 1, 74
+        else:
+            if self.list_date[0] >= start_p2:
+                # if the first date is after the start of period 2
+                self.period = 2
+                r1, rend = 74, 120
+            else:
+                # if the data is from both periods
+                self.period = 0
+                r1, rend = 1, 120
+
+        self.r1, self.rend = r1, rend
+        return r1, rend
+

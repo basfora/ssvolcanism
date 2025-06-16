@@ -27,6 +27,10 @@ class VolcanoData:
         self.raw_data_path = ''
         self.path_to_file = ''
 
+        # Piton specific
+        self.period = None # 0 for all data, 1 for period 1, 2 for period 2
+        self.r1, self.rend = 0, 0 # row to start and end collection of data
+
         # --------------------------------
         # DATA HANDLING
         # --------------------------------
@@ -96,13 +100,34 @@ class VolcanoData:
         return df
 
     # UT - OK
-    def organize(self, r1=1, rend=74):
+    def organize(self, period=1):
         """Get data from file and return it as a list
         default: PitondelaFournaise
         years: 1936 - March 1998
-        :param r1: row to start from (default 1), period II: 74
-        :param rend: row to end at (default 74), period II: 120"""
+        :param period: 1 for period I (1936-1998), 2 for period II (1999-2023), 0 for all data
+        """
         # ----------------------------------
+
+        # :param r1: row to start from (default 1), period II: 74
+        #         :param rend: row to end at (default 74), period II: 120
+
+        # set rows to use according to the period
+        if 'Piton' in self.name:
+            self.piton_rates()
+            if period == 1:
+                self.period = 1
+                r1, rend = 1, 74
+            elif period == 2:
+                self.period = 2
+                r1, rend = 74, 120
+            else:
+                self.period = 0
+                r1, rend = 1, 120
+        else:
+            # todo under construction
+            # for other volcanoes, set default values
+            r1, rend = 1, 74
+
         # columns to use: B and E
         cDate, cErupted, cCV = 1, 3, 4
         # ----------------------------------
@@ -152,16 +177,22 @@ class VolcanoData:
         else:
             print(f"Unknown rate type: {which}. Use 'long', '1', or '2'.")
 
-    def output_Q(self, which='long'):
+    def output_Q(self, which=None):
         """Output the rate of eruptions"""
-        if which == 'long':
+
+        if which is None:
+            if self.period == 1:
+                return self.Q1
+            elif self.period == 2:
+                return self.Q2
+            elif self.period == 0:
+                return 'will computer latwer (todo'
+            else:
+                return None
+
+        elif which == 'long':
             return self.Q_long
-        elif which == '1':
-            return self.Q1
-        elif which == '2':
-            return self.Q2
         else:
-            print(f"Unknown rate type: {which}. Use 'long', '1', or '2'.")
             return None
 
     def piton_rates(self):

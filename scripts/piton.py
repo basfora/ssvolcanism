@@ -6,16 +6,14 @@ from classes.prediction import PredictionData as pred
 
 import numpy as np
 
-# compute stats for Piton de la Fournaise volcano, period 1 (1936-1998)
+# compute stats for Piton de la Fournaise volcano
 
 if __name__ == '__main__':
 
     # ------------------------------------------------------
     # Excel file >> Piton de la Fournaise (todo: change this to be a parameter inside VolcanoData)
     name_file = 'PitondelaFournaise_data'
-    # PITON period 1: 1 to 74 | period 2: 74 to 120
-    r1, rend = 1, 74
-    period = '1'
+    # PITON period 1: 1 to 74 | period 2: 74 to 120 # r1, rend = 1, 74
     # real code starts here
     # ------------------------------------------------------
     # IMPORT REAL DATA PER PERIOD
@@ -23,8 +21,9 @@ if __name__ == '__main__':
     piton_data = vd(name=name_file, printing=False)
     piton_data.piton_rates()
     # get data from the file
-    edates, evol, cvol = piton_data.organize(r1, rend)
-    qtheory = piton_data.output_Q(period)
+    edates, evol, cvol = piton_data.organize(period=1)
+    # get research rate for period
+    qtheory = piton_data.output_Q()
 
     # LOOP OVER ERUPTIONS
     # last eruption ID (real data, prediction will be ID + 1)
