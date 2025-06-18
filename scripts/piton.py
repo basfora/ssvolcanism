@@ -23,8 +23,8 @@ if __name__ == '__main__':
 
     # LOOP OVER ERUPTIONS
     # last eruption ID (real data, prediction will be ID + 1)
-    start_after_eruption = 5
-    stop_before_eruption = 6
+    start_after_eruption = 1
+    stop_before_eruption = 73
     error_evol = []
 
     last_eruption = start_after_eruption
@@ -38,22 +38,18 @@ if __name__ == '__main__':
         # run prediction methods
         pp.run_methods()
 
-        # pp.set_qtheory(piton_data.output_Q())
-
-        # pp.run_prediction_methods()
-
         # ------------------------ quick analysis
-        # error_evol.append(pp.error_evol_per)
+        error_evol.append(pp.oe.evol.deterministic_error.per)
         # iterate to next eruption
         last_eruption += 1
 
     # ---------------------------- quick analysis
-    # bf.print_mark()
-    # print(f"Error EVOL(t2) %: \nMEAN: {np.mean(error_evol):.1f} | MAX {max(error_evol):.1f}| MIN {min(error_evol):.1f} ")
-    # j = start_after_eruption
-    # for er in error_evol:
-    #     j += 1
-    #     print(f"({j}) {er:.2f} %", end=" | ")
+    bf.print_mark()
+    print(f"Error EVOL(t2) %: \nMEAN: {np.mean(error_evol):.1f} | MAX {max(error_evol):.1f}| MIN {min(error_evol):.1f} ")
+    j = start_after_eruption
+    for er in error_evol:
+        j += 1
+        print(f"({j}) {er:.2f} %", end=" | ")
 
 
 
