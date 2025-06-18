@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # LOOP OVER ERUPTIONS
     # last eruption ID (real data, prediction will be ID + 1)
     start_after_eruption = 10
-    stop_before_eruption = 11
+    stop_before_eruption = 73
     error_evol = []
 
     last_eruption = start_after_eruption

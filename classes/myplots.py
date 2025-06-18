@@ -47,7 +47,7 @@ class MyPlots:
         # fig settings
         self.label_vol = f"Volume ($m^3$)"
         self.label_freq = "Frequency"
-        self.label_date = "Date of Eruption"
+        self.label_date = "End of Eruption (Date)"
         self.label_interval =f"$\Delta~T$"
         self.label_number = "Eruption Number"
 

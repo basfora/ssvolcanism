@@ -6,23 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="historical data start">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/sketch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/CVT2_69_histogram.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/T2_69_histogram.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton-cumvol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton-vols.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_cvol_36-90.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_evol_36-90.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_period1_cvol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_period1_evol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_period2_cvol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_period2_evol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_periodall_cvol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/piton_periodall_evol.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period1_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period1_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period2_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period2_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,30 +62,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in test_collect.py.executor": "Debug",
-    "Python.collect-data.executor": "Run",
-    "Python.collectdata.executor": "Run",
-    "Python.historical_data.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.piton.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/basfora/02ProjectSources/PycharmProjects/volcano",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in test_collect.py.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.collect-data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.collectdata.executor&quot;: &quot;Run&quot;,
+    &quot;Python.historical_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/basfora/02ProjectSources/PycharmProjects/volcano&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/old" />
       <recent name="$PROJECT_DIR$/classes" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.historical_data">
+  <component name="RunManager" selected="Python.piton">
     <configuration name="collectdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -200,8 +191,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.historical_data" />
         <item itemvalue="Python.piton" />
+        <item itemvalue="Python.historical_data" />
         <item itemvalue="Python tests.Python tests in test_collect.py" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.collectdata" />
