@@ -72,6 +72,8 @@ class MyPlots:
         print(f"Figure saved: {full_path}")
 
 
+
+
     def plot_set01(self, vd: VolcanoData, plot_op=1, savename=None):
         """Plot eruption volumes (evol)
         Now: Piton de la Fournaise"""

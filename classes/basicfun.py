@@ -207,7 +207,7 @@ class Basicfun:
 
 
     @staticmethod
-    def format_period(t1: datetime.datetime, t2: datetime.datetime) -> str:
+    def format_period(t1: datetime.date, t2: datetime.date) -> str:
         """Format period for printing"""
 
         link = "to"

@@ -11,24 +11,20 @@ import numpy as np
 if __name__ == '__main__':
 
     # ------------------------------------------------------
-    # Excel file >> Piton de la Fournaise (todo: change this to be a parameter inside VolcanoData)
+    # Excel file >> Piton de la Fournaise
     name_file = 'PitondelaFournaise_data'
-    # PITON period 1: 1 to 74 | period 2: 74 to 120 # r1, rend = 1, 74
-    # real code starts here
-    # ------------------------------------------------------
-    # IMPORT REAL DATA PER PERIOD
-    # init data collection instance (VolcanoData)
+
+    # IMPORT REAL DATA
     piton_data = vd(name=name_file, printing=False)
-    piton_data.piton_rates()
-    # get data from the file
+    # get relevant data from the file
     edates, evol, cvol = piton_data.organize(period=1)
-    # get research rate for period
-    qtheory = piton_data.output_Q()
+    q_period = piton_data.output_Q()
+
 
     # LOOP OVER ERUPTIONS
     # last eruption ID (real data, prediction will be ID + 1)
-    start_after_eruption = 10
-    stop_before_eruption = 73
+    start_after_eruption = 5
+    stop_before_eruption = 6
     error_evol = []
 
     last_eruption = start_after_eruption
@@ -36,22 +32,28 @@ if __name__ == '__main__':
         # ------------------------------------------------------
         # PREDICTION
         # ------------------------------------------------------
-        mp = pred(edates, evol, cvol, idx=last_eruption, qtheory=qtheory)
-        mp.run_prediction_methods()
-        mp.organize_stuff()
+        pp = pred(edates, evol, cvol, id_last=last_eruption)
+        pp.set_qperiod(q_period)
+
+        # run prediction methods
+        pp.run_methods()
+
+        # pp.set_qtheory(piton_data.output_Q())
+
+        # pp.run_prediction_methods()
 
         # ------------------------ quick analysis
-        error_evol.append(mp.error_evol_per)
+        # error_evol.append(pp.error_evol_per)
         # iterate to next eruption
         last_eruption += 1
 
     # ---------------------------- quick analysis
-    bf.print_mark()
-    print(f"Error EVOL(t2) %: \nMEAN: {np.mean(error_evol):.1f} | MAX {max(error_evol):.1f}| MIN {min(error_evol):.1f} ")
-    j = start_after_eruption
-    for er in error_evol:
-        j += 1
-        print(f"({j}) {er:.2f} %", end=" | ")
+    # bf.print_mark()
+    # print(f"Error EVOL(t2) %: \nMEAN: {np.mean(error_evol):.1f} | MAX {max(error_evol):.1f}| MIN {min(error_evol):.1f} ")
+    # j = start_after_eruption
+    # for er in error_evol:
+    #     j += 1
+    #     print(f"({j}) {er:.2f} %", end=" | ")
 
 
 

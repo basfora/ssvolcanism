@@ -1,5 +1,7 @@
+
 from classes.collectdata import VolcanoData as vd
 from classes.basicfun import Basicfun as bf
+from classes.prediction import PredictionData as pred
 from classes.myplots import MyPlots
 
 if __name__ == '__main__':
@@ -11,15 +13,14 @@ if __name__ == '__main__':
     mp = MyPlots()
     # IMPORT REAL DATA
     piton = vd(name=name_file, printing=False)
-    # TO SAVE PLOT
-    base_name = 'Piton_Period'
 
-    # Period 1
-    for p in range(3):
-        piton.organize(period=p)
-        save_evol = f'{base_name}{p}_Evol'
-        save_dT = f'{base_name}{p}_dT'
-        # plot evolution volume and time interval
-        mp.plot_set01(piton, plot_op=1, savename=save_evol)
-        mp.plot_set01(piton, plot_op=2, savename=save_dT)
+    # get relevant data from the file
+    edates, evol, cvol = piton.organize(period=1)
 
+    start_after = 10
+    stop_before = 12
+
+    # ------------------------------------------------------
+
+    # PREDICTION
+    pp = pred(edates, evol, cvol, id_last=10)

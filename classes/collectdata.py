@@ -1,5 +1,7 @@
 """Importing all data from Excel files and saving them
 Return 3 lists: edates, evol, cvol"""
+import datetime
+
 from classes.basicfun import Basicfun as bf
 
 import pandas as pd
@@ -30,6 +32,7 @@ class VolcanoData:
         # Piton specific
         self.period = None # 0 for all data, 1 for period 1, 2 for period 2
         self.r1, self.rend = 0, 0 # row to start and end collection of data
+        self.date0 = None # start of period
 
         # --------------------------------
         # DATA HANDLING
@@ -128,19 +131,27 @@ class VolcanoData:
         # set rows to use according to the period
         if 'Piton' in self.name:
             self.piton_rates()
+            # Define period (I, II or both)
             if period == 1:
                 self.period = 1
                 r1, rend = 1, 74
+                self.date0 = datetime.date(1936,1,8)
+                cvolT0 = 0
             elif period == 2:
                 self.period = 2
                 r1, rend = 74, 120
+                self.date0 = datetime.date(1999, 7, 19)
+                cvolT0 = 659360000
             else:
                 self.period = 0
                 r1, rend = 1, 120
+                self.date0 = datetime.date(1936, 1, 8)
+                cvolT0 = 0
         else:
             # todo under construction
             # for other volcanoes, set default values
             r1, rend = 1, 74
+            cvolT0 = 0
 
         # columns to use: B and E
         cDate, cErupted, cCV = 1, 3, 4
@@ -158,8 +169,8 @@ class VolcanoData:
         self.list_eruptvol = self.series_eruptvol.tolist()
 
         # adjust for fake zero init
-        self.list_cumvol = [0] + self.series_cumvol.tolist()
-        self.list_date = self.series_date.tolist()
+        self.list_cumvol = [cvolT0] + self.series_cumvol.tolist()
+        self.list_date = [d.date() for d in self.series_date]
 
         # only need date and cumulative volume
         return self.list_date, self.list_eruptvol, self.list_cumvol,
@@ -193,16 +204,16 @@ class VolcanoData:
 
         return rel_dates, rel_eruptvol, rel_cumvol
 
-    def set_Q(self, q: float, which='long'):
+    def set_Q(self, q: float, which: int):
         """Set the rate of eruptions
         :param q: rate of eruptions in km3/yr
         :param which: 'long' for long-term,
                     '1' for period 1, '2' for period 2"""
-        if which == 'long':
+        if which == -1:
             self.Q_long = q
-        elif which == '1':
+        elif which == 1:
             self.Q1 = q
-        elif which == '2':
+        elif which == 2:
             self.Q2 = q
         else:
             print(f"Unknown rate type: {which}. Use 'long', '1', or '2'.")
@@ -216,11 +227,11 @@ class VolcanoData:
             elif self.period == 2:
                 return self.Q2
             elif self.period == 0:
-                return 'will computer latwer (todo'
+                return 'will computer later (todo)'
             else:
                 return None
 
-        elif which == 'long':
+        elif which == -1:
             return self.Q_long
         else:
             return None
@@ -236,11 +247,11 @@ class VolcanoData:
         qperiod2 = bf.Qy_to_Qday(0.0228)
 
         # long-term rate
-        self.set_Q(qlong, 'long')
+        self.set_Q(qlong, -1)
         # period 1 rate
-        self.set_Q(qperiod1, '1')
+        self.set_Q(qperiod1, 1)
         # period 2 rate
-        self.set_Q(qperiod2, '2')
+        self.set_Q(qperiod2, 2)
 
 
 if __name__ == "__main__":

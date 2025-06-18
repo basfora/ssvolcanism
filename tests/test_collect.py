@@ -14,9 +14,9 @@ def parameters_piton_periodI():
     # r1, rend = 1, 74
     p = 1
 
-    qlong = 0.0024
+    qperiod = 0.0024
 
-    return name_file, p, qlong
+    return name_file, p, qperiod
 
 def periodI_first5():
     name_file, p, qlong = parameters_piton_periodI()
@@ -61,11 +61,11 @@ def test_get_data():
     assert cvol[4] == 54500000
     assert cvol[5] == 55600000
     #
-    assert edates[0] == datetime.datetime(1936, 8, 1, 0, 0)
-    assert edates[1] == datetime.datetime(1937, 8, 13, 0, 0)
-    assert edates[2] == datetime.datetime(1938, 1, 1, 0, 0)
-    assert edates[3] == datetime.datetime(1938, 12, 16, 0, 0)
-    assert edates[4] == datetime.datetime(1942, 10, 1, 0, 0)
+    assert edates[0] == datetime.date(1936, 8, 1)
+    assert edates[1] == datetime.date(1937, 8, 13)
+    assert edates[2] == datetime.date(1938, 1, 1)
+    assert edates[3] == datetime.date(1938, 12, 16)
+    assert edates[4] == datetime.date(1942, 10, 1)
 
 
 
@@ -146,9 +146,9 @@ def test_time_functions():
     assert eintervals[3] == 1385
 
     # --
-    bdates = [datetime.datetime(1992, 5, 30),
-                    datetime.datetime(1996, 11, 26),
-                    datetime.datetime(2003, 6, 1)]
+    bdates = [datetime.date(1992, 5, 30),
+                    datetime.date(1996, 11, 26),
+                    datetime.date(2003, 6, 1)]
 
     bintervals = bf.compute_intervals(bdates)
 
@@ -176,8 +176,8 @@ def test_time_functions():
     assert sum(bintervals) == btimeline[-1] == 4019
 
 
-def test_prediction_data():
-    """Test prediction data collection."""
+def test_prediction_input():
+    """Test data collection to prediction creation."""
     name_file, p, qlong = parameters_piton_periodI()
 
     # init data collection instance (VolcanoData)
@@ -188,15 +188,77 @@ def test_prediction_data():
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5
     # start prediction instance (PredictionData)
-    mypred = pred(edates, evol, cvol, idx=last_eruption)
+    pp = pred(edates, evol, cvol, id_last=last_eruption)
 
     # check initial values
-    assert mypred.in_evol == evol[:5]
-    assert mypred.in_cvol == cvol[:6]
-    assert mypred.n == len(edates[:5])
+    assert pp.in_evol == evol[:5]
+    assert pp.in_cvol == cvol[:6]
+    assert pp.n == len(edates[:5])
 
-    assert sum(mypred.dT_days) == mypred.time_total
-    assert sum(mypred.in_evol) == mypred.cvol_delta
+    # check OneEruption instance
+    assert pp.oe.id == last_eruption + 1 == 6 # prediction ID
+    # T1 - initial values saved correctly (eruption 5)
+    assert pp.oe.evol.t1 == pp.in_evol[-1] == 1100000  # eruption volume at T1 (last eruption)
+    assert pp.oe.cvol.t1 == pp.in_cvol[-1] == 55600000  # cumulative volume at T1 (last eruption)
+    assert pp.oe.dT.t1 == 2252 # time in days from 1936-08-01
+    assert pp.oe.date.t1 == pp.in_edates[-1] == datetime.date(1942, 10, 1)  # date of the last eruption (T1)
+
+    # T2 - target values (eruption 6 real data), idx = 5 in lists
+    assert pp.oe.date.real == edates[5] == datetime.date(1943, 2, 1)
+    assert pp.oe.evol.real == evol[5] == 500000  # eruption volume at T2
+    assert pp.oe.cvol.real == cvol[6] == 56100000  # cumulative volume at T2
+    assert pp.oe.dT.real == 123 # time in days from 1942-10-01 to 1943-02-01
+
+def test_historical_stats():
+    """Test stats computation for historical data in prediction."""
+    name_file, p, qlong = parameters_piton_periodI()
+
+    # init data collection instance (VolcanoData)
+    piton_data = vd(name=name_file, printing=False)
+    # get data from the file
+    edates, evol, cvol = piton_data.organize(p)
+
+    # last eruption ID (real data, prediction will be ID + 1)
+    last_eruption = 5
+    # start prediction instance (PredictionData)
+    pp = pred(edates, evol, cvol, id_last=last_eruption)
+
+    # checking values
+    mydates, myevol, mycvol = periodI_first5()
+    evol_mean, evol_std = np.mean(myevol), np.std(myevol, ddof=0)
+
+
+    # CVOL
+    assert pp.cvol_delta == bf.compute_delta_vol(mycvol[0], mycvol[-1]) == 55600000
+    assert pp.cvol_delta == pp.evol_sum == 55600000
+    assert sum(pp.in_evol) == pp.cvol_delta
+
+    # EVOL
+    thv = 1e-1
+    assert abs(pp.evol_mean - 11120000) <= thv
+    assert abs(pp.evol_mean - evol_mean) <= thv
+    assert abs(pp.evol_std - evol_std) <= thv
+    assert abs(pp.evol_std - 13790235.6760137) <= thv
+
+    # DAYS / TIME
+    assert sum(pp.dT_days) == pp.time_total == 2252
+    # intervals
+    assert len(pp.dT_days) == pp.n - 1 == 4
+    assert pp.dT_days[0] == 377
+    assert pp.dT_days[1] == 141
+    assert pp.dT_days[2] == 349
+    assert pp.dT_days[3] == 1385
+    # timeline
+    assert pp.timeline[0] == 0
+    assert pp.timeline[1] == 377
+    assert pp.timeline[2] == pp.dT_days[0] + pp.dT_days[1] == pp.timeline[1] + pp.dT_days[1]== 518
+
+    assert pp.timeline[3] == pp.dT_days[0] + pp.dT_days[1] + pp.dT_days[2] == 867
+    assert pp.timeline[3] == pp.timeline[2]  + pp.dT_days[2] == 867
+
+    assert pp.timeline[4] == pp.dT_days[0] + pp.dT_days[1] + pp.dT_days[2] + pp.dT_days[3] == 2252
+    assert pp.timeline[-1] == pp.timeline[3]  + pp.dT_days[3] == pp.time_total == 2252
+
 
 
 def test_dimension():
