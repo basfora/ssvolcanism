@@ -51,7 +51,7 @@ class Basicfun:
             return 0, 0
         else:
             error = (value - valuehat)
-            error_per = (error/ value) * 100
+            error_per = abs(error/ value) * 100
             return error, error_per
 
     # UT - ok

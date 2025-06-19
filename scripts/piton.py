@@ -16,19 +16,17 @@ if __name__ == '__main__':
     # IMPORT REAL DATA
     piton_data = vd(name=name_file, printing=False)
     # get relevant data from the file
-    edates, evol, cvol = piton_data.organize(period=1)
-    q_period = piton_data.Q1
+    edates, evol, cvol = piton_data.organize(period=0)  # period 0 for all data
 
     # save first eruption
     oe = OneEruption(eruption_id=1)
-    oe.date.real, oe.evol.real, oe.cvol.real = edates[0], evol[0], cvol[0]
+    oe.date.real, oe.evol.real, oe.cvol.real = edates[0], evol[0], cvol[1]
     eruptions = [oe]
 
     # LOOP OVER ERUPTIONS
     # last eruption ID (real data, prediction will be ID + 1)
     start_after_eruption = 1
-    stop_before_eruption = 73
-
+    stop_before_eruption = 119
 
     last_eruption = start_after_eruption
     while last_eruption < stop_before_eruption:
@@ -36,6 +34,11 @@ if __name__ == '__main__':
         # PREDICTION
         # ------------------------------------------------------
         pp = pred(edates, evol, cvol, id_last=last_eruption)
+        if last_eruption < 73:
+            q_period = piton_data.Q1
+        else:
+            q_period = piton_data.Q2
+
         pp.set_qperiod(q_period)
 
         # run prediction methods
@@ -46,11 +49,21 @@ if __name__ == '__main__':
         # iterate to next eruption
         last_eruption += 1
 
-
     # PLOT
     my_plots = mp(piton=True)
-    base_name = 'Piton_Period1_Cvol'
-    my_plots.plot_set02(eruptions, base_name)
+    # print for sanity check
+    mp.sanity_check_det(eruptions)
+    # plot 1: CVOL real vs expected
+    #base_name = 'Piton_Period0_Cvol'
+    #my_plots.plot_set02(eruptions, base_name)
+    # # plot 2: CVOL error
+    base_name = 'Piton_Period0_Cvol_Error'
+    my_plots.plot_set03(eruptions, base_name)
+
+    # TODO: color code the plots
+    # add std to evol?
+    # TODO: print error min, max, mean, std
+    # mean + std == 64% samples (double check that in my thesis)
 
 
 

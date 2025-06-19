@@ -122,7 +122,7 @@ class Vol:
     def __init__(self):
 
         # VOL(T1) data (known)
-        self.t1 = 0
+        self.t1 = None
 
         # real data (what really happened if avbailable)
         self.real = None
@@ -175,8 +175,8 @@ class EstimatedValue:
     def __init__(self):
 
         self.value = None
-        self.error = 0.0
-        self.error_per = 0.0
+        self.error = None
+        self.error_per = None
 
 class EDate:
     """Eruption date (transform days in dates to plot if needed)"""

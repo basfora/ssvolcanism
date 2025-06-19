@@ -5,6 +5,7 @@ import seaborn as sns
 import numpy as np
 import os
 import time
+import datetime
 
 from classes.basicfun import Basicfun as bf
 from classes.collectdata import VolcanoData
@@ -20,28 +21,38 @@ class MyPlots:
         self.volcano_subname: str
         self.period: str
 
-        # type data
-        self.words = ["Eruptions",
-                     "Volume",
-                     "Interval",
-                      "Cumulative Volume"]
-
         # PLOTSET 1
         self.width = 14
         self.height = 6
 
         self.yth = 0.05  # y-axis limit for volume in m3
+        self.short = 6
+
+        # type data
+        self.w_volume = "Volume"
+        self.w_interval = "Interval"
+        self.w_cvol = "Cumulative Volume"
+        self.w_eruptions = "Eruptions"
 
         self.label_mean = "Mean = "
+        self.label_mean_symbol = "$\mu$ = "
         self.label_median = "Median = "
-        self.short = 6
         self.unit = [f"10$^{self.short}$ m$^3$",'days']
 
         # titles
         self.title_evol = "Eruption Events"
         self.title_intervals = "Intervals between Eruptions"
-        self.title_cvol = "Cumulative Volume"
+        self.title_cvol = "Cumulative Volume: Expected vs Data"
         self.title_error_hist = "Error Distribution"
+        self.title_error = "Cumulative Volume Error"
+
+        # legends
+        self.leg_real = "Real Data"
+        self.leg_pred = "Predicted Data"
+        self.leg_exp = "Expected"
+        self.leg_Q1 = "Period I, Q = 0.0107 km$^3$/yr"
+        self.leg_Q2 = "Period II, Q = 0.0228 km$^3$/yr"
+        self.leg_error = "CVol Error"
 
         # histogram
         self.n_bins = 25
@@ -51,15 +62,22 @@ class MyPlots:
         self.label_vol = f"Volume ($m^3$)"
         self.label_freq = "Frequency"
         self.label_date = "End of Eruption (Date)"
-        self.label_interval =f"$\Delta~T$"
+        self.label_interval =f"$\Delta~T (days)$"
         self.label_number = "Eruption Number"
+
+
+        # COLORS, get from https://matplotlib.org/stable/gallery/color/named_colors.html
+        self.color_real = 'navy'
+        self.color_error = 'crimson' #'darkorange'
+        self.color_mean = 'forestgreen'
+        self.color_median = 'goldenrod'
+        self.color_std = 'dimgray'
+        self.color_hist = 'cornflowerblue'
 
         self.savepath = self.get_save_path()
 
         if piton:
             self.set_piton()
-
-        # TODO font type and size
 
     def set_piton(self):
         """Set volcano name and subname for Piton de la Fournaise."""
@@ -74,7 +92,6 @@ class MyPlots:
         fig.savefig(full_path, dpi=600, bbox_inches='tight')
         print(f"Figure saved: {full_path}")
 
-
     def plot_set01(self, vd: VolcanoData, plot_op=1, savename=None):
         """Plot eruption volumes (evol) or time intervals (dT) with histograms
         Now: Piton de la Fournaise"""
@@ -84,7 +101,7 @@ class MyPlots:
         self.period = bf.format_period(vd.list_date[0], vd.list_date[-1])
 
         # TITLE
-        suptitle = f"{self.volcano_name} {self.words[0]} \n{self.period}"
+        suptitle = f"{self.volcano_name} {self.w_eruptions} \n{self.period}"
         fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
@@ -112,7 +129,7 @@ class MyPlots:
             # label for time
             label_mean = f"{mean_value:.0f} {self.unit[1]}"
             label_median = f"{median_value:.0f} {self.unit[1]}"
-            labely = f"{self.label_interval} ({self.unit[1]})"
+            labely = f"{self.label_interval}"
             labelx = self.label_number
             # titles
             title1 = self.title_intervals
@@ -120,12 +137,12 @@ class MyPlots:
 
 
         # PLOT ERUPTIONS (EVOL)
-        ax[0].scatter(xvalues, yvalues, marker='x', color='b', label=f"{self.words[0]}")
+        ax[0].scatter(xvalues, yvalues, marker='x', color=self.color_real, label=f"{self.w_eruptions}")
         # mean
-        ax[0].axhline(mean_value, color='m', linestyle='--',
+        ax[0].axhline(mean_value, color=self.color_mean, linestyle='--',
                    label=f"{self.label_mean} {label_mean}")
         # median
-        ax[0].axhline(median_value, color='k', linestyle='--',
+        ax[0].axhline(median_value, color=self.color_median, linestyle='--',
                    label=f"{self.label_median} {label_median}")
 
         # plot title, labels and legend
@@ -158,54 +175,130 @@ class MyPlots:
         self.save_fig(fig, savename)
         #plt.show()
 
-
     def plot_set02(self, eruptions: list, savename=None):
         """Plot Cumulative Volume (CVOL) real and deterministic prediction, and error histogram"""
 
         self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
 
-        suptitle = f"{self.volcano_name} {self.words[3]} \n{self.period}"
-        fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
+        suptitle = f"{self.volcano_name} - {self.period}"
+        fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
-        # -------------------- PLOT 1 (LEFT)
-        xvalues = [e.date.real for e in eruptions]
-        yvalues_real = [e.cvol.real for e in eruptions]  # skip first eruption
-        yvalues_det = [e.cvol.det.value for e in eruptions if e.cvol.det.value is not None]
-        q = bf.Qday_to_Qy(eruptions[1].q_period)
 
-        leg1 = f"Real"
-        leg2 = f"Predicted, Q = {q:.4f} km3/yr"
+        # separate eruptions (class)
+        ep1 = eruptions[:73]  # period I
+        ep2 = eruptions[73:]  # period II
 
-        # real values
-        ax[0].scatter(xvalues, yvalues_real, marker='x', color='b', label=leg1)
-        # predicted values
-        ax[0].scatter(xvalues[1:], yvalues_det, marker='x', color='k', label=leg2)
+        # sanity check (date and q used)
+        assert len(ep1) == 73, "Period I should have 73 eruptions"
+        assert len(ep2) == 46, "Period II should have 46 eruptions"
+        assert ep1[0].date.real == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
+        assert ep1[-1].date.real == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
+        assert round(ep1[1].q_period, 4) == round(ep1[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0107), 4), "Q for period I should be 0.0107 km3/yr"
 
+        assert ep2[0].date.real == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
+        assert ep2[-1].date.real == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
+        assert round(ep2[0].q_period, 4) == round(ep2[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0228), 4),"Q for period II should be 0.0228 km3/yr"
+
+
+        # -------------------- DATA PREPARATION
+        # xvalues: dates of eruptions
+        xvalues = [e.date.real for e in eruptions]  # n
+        # yvalues: real cumulative volumes (CVOL)
+        yvalues_real = [e.cvol.real for e in eruptions]  # n
+
+        # expected values (deterministic prediction)
+        xvalues1 = [e.date.real for e in ep1[1:]]  # skip first eruption, n-1
+        yvalues1 = [e.cvol.det.value for e in ep1 if e.cvol.det.value is not None]  # n-1
+        xvalues2 = [e.date.real for e in ep2]  # skip first eruption, n-1
+        yvalues2 = [e.cvol.det.value for e in ep2 if e.cvol.det.value is not None]  # n-1
+
+
+        # ---------------- PLOT 1 (MAIN)
+        # Plot real values (n)
+        ax.scatter(xvalues, yvalues_real, marker='x', color='b', linewidth=3, label=self.leg_real)
+        # Plot predicted values - period I (eruptions # 2 - 73)
+        ax.scatter(xvalues1, yvalues1, marker='x', color='r', linewidth=1, label=self.leg_Q1)
+        # Plot predicted values - period II (eruptions # 74 - end)
+        ax.scatter(xvalues2, yvalues2, marker='x', color='m', linewidth=1, label=self.leg_Q2)
         # plot title, labels and legend
-        ax[0].set(title=self.title_cvol, xlabel=self.label_date, ylabel=self.label_vol)
-        ax[0].legend(frameon=False)
+        ax.set(title=self.title_cvol, xlabel=self.label_date, ylabel=self.label_vol)
+        ax.legend(frameon=False, loc='upper left')
+        ax.grid(True)
 
         # set limits for x and y axes
         ylim = max(yvalues_real) * self.yth  # threshold for y-axis
-        ax[0].set(ylim=(min(yvalues_real) - 2 * ylim, max(yvalues_real) + ylim))
+        ax.set(ylim=(min(yvalues_real) - 2 * ylim, max(yvalues_real) + ylim))
 
-        # ------------------------------------- PLOT 2 (RIGHT)
+        # show, save and close
+        plt.show()
+        if savename is None:
+            savename = 'cvol'
+        self.save_fig(fig, savename)
+
+    def plot_set03(self, eruptions: list, savename=None):
+        """Error between real and predicted CVOL, and error histogram"""
+
+        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+
+        suptitle = f"{self.volcano_name} {self.title_error} \n{self.period}"
+        fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
+        fig.suptitle(suptitle)
+
+        # ------------------------------------- PLOT 2: ERROR
+        xvalues = [e.date.real for e in eruptions if e.id > 1]  # n-1
+        yvalues = [e.cvol.det.error for e in eruptions if e.cvol.det.value is not None]  # n-1
+
+        # add stats: mean and std
+        error_mean, error_std = bf.compute_mean_std(yvalues)
+        e_mean_km3 = bf.m3_to_km3(error_mean)
+        e_std_km3 = bf.m3_to_km3(error_std)
+
+        # PLOT 1 (LEFT) - error pts and mean/std lines
+
+        # Plot error between real and predicted CVOL
+        ax[0].scatter(xvalues, yvalues, marker='.', color='r', linewidth=2, label=self.leg_error)
+        # extra stats
+        ax[0].axhline(error_mean, color='m', linestyle='--',  linewidth=2,
+                      label=f"{self.label_mean_symbol} {e_mean_km3:.4f} km$^3$")
+        ax[0].axhline(error_mean + error_std, color='dimgray', linestyle='--',
+                      label=f"$\pm \sigma$ = {e_std_km3:.4f} km$^3$")
+        ax[0].axhline(error_mean - error_std, color='dimgray', linestyle='--')
+
+        # plot title, labels and legend
+        ax[0].set(title=self.title_error, xlabel=self.label_date, ylabel=self.label_vol)
+
+        ax[0].legend(frameon=False, loc='upper left')
+        ax[0].grid(True)
+
+        # set limits for x and y axes
+        ylim = max(yvalues) * self.yth
+        ax[0].set(ylim=(min(yvalues) - 2 * ylim, max(yvalues) + ylim))
+
+        # ------------------------------------- PLOT 2 (RIGHT) - ERROR HISTOGRAM
         # Plot histogram with KDE
-        yvalues_error = [e.cvol.det.error for e in eruptions[1:] if e.cvol.det.error is not None]
-        sns.histplot(yvalues_error, kde=True, ax=ax[1], color='b', bins=self.n_bins)
+
+        sns.histplot(yvalues, kde=True, ax=ax[1], color='b', bins=20)
 
         # plot identifiers
         plt.title(self.title_error_hist)
+        # plot stats
+        plt.axvline(error_mean, color='m', linestyle='--', label=f"{self.label_mean_symbol} {e_mean_km3:.4f} km$^3$")
+        plt.axvline(error_mean + error_std, color='k', linestyle='--',
+                    label=f"$\pm \sigma$ = {e_std_km3:.4f} km$^3$")
+        plt.axvline(error_mean - error_std, color='k', linestyle='--')
+
         plt.xlabel(self.label_vol)
         plt.ylabel(self.label_freq)
         plt.legend(frameon=False)
 
+
+
         # show, save and close
+        plt.show()
         if savename is None:
             savename = 'cvol'
         self.save_fig(fig, savename)
-        plt.show()
 
         return
 
@@ -222,7 +315,44 @@ class MyPlots:
 
         return save_path
 
+    @staticmethod
+    def sanity_check_det(eruptions: list):
+        """Print results of deterministic prediction."""
+        print("Deterministic Prediction CVOL(T2) in km3:")
 
+        print('ID ; DATE ; CVOL REAL ; EXPECTED ; ERROR ; % ; Q (km3/day) ; DT (days) ; EVOL REAL ; EXPECTED')
+
+        for e in eruptions[1:]:
+
+            # parameters for deterministic method
+            dT = e.dT.real
+            e_previous = eruptions[e.id - 2]
+            assert e_previous.cvol.real == e.cvol.t1, "Cumulative volume at T1 does not match previous eruption's CVOL(T2)"
+
+            # check state equation and error
+            cvolT2 = e.q_period * dT + e.cvol.t1
+            assert round(cvolT2, 1) == round(e.cvol.det.value, 1), "Cvol(T2) does not match expected value"
+            # check error calculation
+            assert round(e.cvol.real - e.cvol.det.value, 1) == round(e.cvol.det.error, 1), "Error real vs expected CVOL(T2)"
+            assert round(e.cvol.det.error_per, 2) == round(100* abs(e.cvol.det.error)/e.cvol.real, 2), "Error percentage does not match expected value"
+            assert round(e.evol.det.value, 1) == round(e.cvol.det.value - e.cvol.t1, 1), "Evol(T2) does not match expected value"
+
+
+            # transform into km3 before printing
+            q = bf.Qday_to_Qy(e.q_period)
+            cvol_real, cvol_det = bf.m3_to_km3(e.cvol.real), bf.m3_to_km3(e.cvol.det.value)
+            error, error_per = bf.m3_to_km3(e.cvol.det.error), e.cvol.det.error_per
+            evol_real, evol_det = bf.m3_to_km3(e.evol.real), bf.m3_to_km3(e.evol.det.value)
+
+            print(f"{e.id}; {e.date.real};", end=" ")
+            print(f"{cvol_real:.6f}; {cvol_det:.6f};", end="")
+            print(f"{error:.6f}; {error_per:.2f}%;", end="")
+            print(f"{q:.4f}; {dT:.0f};", end="")
+            print(f"{evol_real:.6f}; {evol_det:.6f}; {e.evol.det.error_per:.2f}%")
+
+
+
+    # ---------------------- OBSOLETE
     @staticmethod
     def plot_eruptions(dates, volumes, cumulative_volumes):
         """Plot eruption volumes over time."""
@@ -418,5 +548,4 @@ class MyPlots:
             legend = ["Cumulative Volume", "Erupted Volume"]
 
         return title, xlabel, ylabel, legend
-
 
