@@ -62,30 +62,30 @@ class OneEruption:
         # compute evol
         evolT2 = bf.compute_delta_vol(self.cvol.t1, cvolT2)
         evol_error, evol_error_per = bf.compute_error(evolT2, self.evol.real)
-        # todo here: transform to date
+        # todo here: transform dT to date
 
         if method == 1:
             self.cvol.linear = cvolT2
             self.evol.linear = evolT2
         elif method == 2:  # deterministic
-            self.cvol.deterministic = cvolT2
-            self.cvol.deterministic_error = EError(cvol_error, cvol_error_per)
+            self.cvol.det.value = cvolT2
+            self.cvol.det.error, self.cvol.det.error_per = cvol_error, cvol_error_per
 
-            self.evol.deterministic = evolT2
-            self.evol.deterministic_error = EError(evol_error, evol_error_per)
+            self.evol.det.value = evolT2
+            self.evol.det.error, self.evol.det.error_per = evol_error, evol_error_per
 
-            self.dT.deterministic = dT
-            self.dT.deterministic_error = EError(0, 0)
+            self.dT.det.value = dT
+            self.dT.det.error, self.dT.det.error_per = 0, 0  # no error for dT in deterministic method
 
         elif method == 3:  # stochastic
-            self.cvol.estimated = cvolT2
-            self.cvol.estimated_error = EError(cvol_error, cvol_error_per)
+            self.cvol.stoc.value = cvolT2
+            self.cvol.stoc.error, self.cvol.stoc.error_per = cvol_error, cvol_error_per
 
-            self.evol.estimated = evolT2
-            self.evol.estimated_error = EError(evol_error, evol_error_per)
+            self.evol.stoc.value = evolT2
+            self.evol.stoc.error, self.evol.stoc.error_per = evol_error, evol_error_per
 
-            self.dT.estimated = dT
-            self.dT.estimated_error = EError(0, 0)
+            self.dT.stoc.value = dT
+            self.dT.stoc.error, self.dT.stoc.error_per = 0, 0
         else:
             raise ValueError("Method must be 1, 2, or 3.")
 
@@ -106,8 +106,8 @@ class OneEruption:
                 bf.print_one_eruption(self.id, evol, cvol, edate, dT_days)
 
         elif what == 2:
-            evol = self.evol.deterministic
-            cvol = self.cvol.deterministic
+            evol = self.evol.det.value
+            cvol = self.cvol.det.value
             bf.print_deterministic(evol, cvol)
         else:
             return
@@ -127,15 +127,12 @@ class Vol:
         # real data (what really happened if avbailable)
         self.real = None
 
-        self.linear = 0.0
-        self.linear_error: EError()
+        self.linear = EstimatedValue()
 
-        self.deterministic = 0.0
-        self.deterministic_error: EError()
+        self.det = EstimatedValue()
 
         # chosen estimate from simulation
-        self.estimated = 0.0
-        self.estimated_error: EError()
+        self.stoc = EstimatedValue()
         self.sim = Sim()
 
 
@@ -146,14 +143,11 @@ class TInterval:
         self.t1 = 0  # time of the first eruption in days
         self.real = None
 
-        self.linear = 0.0
-        self.linear_error = EError()
+        self.linear = EstimatedValue()
 
-        self.deterministic = 0.0
-        self.deterministic_error = EError()
+        self.det = EstimatedValue()
 
-        self.estimated = 0.0
-        self.estimated_error = EError()
+        self.stoc = EstimatedValue()
         self.sim = Sim()
 
 
@@ -176,16 +170,13 @@ class Sim:
         self.median = 0.0
 
 
-class EError:
-    """Eruption error"""
-    # TODO can be improved!
+class EstimatedValue:
 
-    def __init__(self, abs_error=0.0, per_error=0.0):
+    def __init__(self):
 
-        self.abs = abs_error
-
-        self.per = per_error
-
+        self.value = None
+        self.error = 0.0
+        self.error_per = 0.0
 
 class EDate:
     """Eruption date (transform days in dates to plot if needed)"""

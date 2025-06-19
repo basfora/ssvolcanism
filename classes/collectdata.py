@@ -52,7 +52,7 @@ class VolcanoData:
         # for computing stuff
         self.n = 0  # number of eruptions
         # rates
-        self.Q_long = None
+        self.Qlong = None
         self.Q1 = None  # rate for period 1
         self.Q2 = None  # rate for period 2
         self.Q3 = None  # rate for other period
@@ -210,7 +210,7 @@ class VolcanoData:
         :param which: 'long' for long-term,
                     '1' for period 1, '2' for period 2"""
         if which == -1:
-            self.Q_long = q
+            self.Qlong = q
         elif which == 1:
             self.Q1 = q
         elif which == 2:
@@ -232,7 +232,7 @@ class VolcanoData:
                 return None
 
         elif which == -1:
-            return self.Q_long
+            return self.Qlong
         else:
             return None
 
@@ -242,16 +242,10 @@ class VolcanoData:
         Q unit for computation: m3/day"""
 
         # Transform km3/yr ro m3/day
-        qlong = bf.Qy_to_Qday(0.0024)
-        qperiod1 = bf.Qy_to_Qday(0.0107)
-        qperiod2 = bf.Qy_to_Qday(0.0228)
+        self.Q1 = bf.Qy_to_Qday(0.0107)
+        self.Q2 = bf.Qy_to_Qday(0.0228)
+        self.Qlong = bf.Qy_to_Qday(0.0024)
 
-        # long-term rate
-        self.set_Q(qlong, -1)
-        # period 1 rate
-        self.set_Q(qperiod1, 1)
-        # period 2 rate
-        self.set_Q(qperiod2, 2)
 
 
 if __name__ == "__main__":

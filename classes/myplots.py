@@ -8,6 +8,7 @@ import time
 
 from classes.basicfun import Basicfun as bf
 from classes.collectdata import VolcanoData
+from classes.eruption import OneEruption
 
 
 class MyPlots:
@@ -22,7 +23,8 @@ class MyPlots:
         # type data
         self.words = ["Eruptions",
                      "Volume",
-                     "Interval"]
+                     "Interval",
+                      "Cumulative Volume"]
 
         # PLOTSET 1
         self.width = 14
@@ -39,9 +41,10 @@ class MyPlots:
         self.title_evol = "Eruption Events"
         self.title_intervals = "Intervals between Eruptions"
         self.title_cvol = "Cumulative Volume"
+        self.title_error_hist = "Error Distribution"
 
         # histogram
-        self.n_bins = 20
+        self.n_bins = 25
         self.title_hist = "Distribution"
 
         # fig settings
@@ -72,10 +75,8 @@ class MyPlots:
         print(f"Figure saved: {full_path}")
 
 
-
-
     def plot_set01(self, vd: VolcanoData, plot_op=1, savename=None):
-        """Plot eruption volumes (evol)
+        """Plot eruption volumes (evol) or time intervals (dT) with histograms
         Now: Piton de la Fournaise"""
 
         # compute stats for plotting
@@ -137,7 +138,7 @@ class MyPlots:
         # ------------------------------------- PLOT 2 (RIGHT)
 
         # Plot histogram with KDE
-        sns.histplot(yvalues, kde=True, ax=ax[1], color='b', bins=25)
+        sns.histplot(yvalues, kde=True, ax=ax[1], color='b', bins=self.n_bins)
         # extra stats
         ax[1].axvline(mean_value, color='m', linestyle='--',
                       label=f"{self.label_mean} {label_mean}")
@@ -157,6 +158,55 @@ class MyPlots:
         self.save_fig(fig, savename)
         #plt.show()
 
+
+    def plot_set02(self, eruptions: list, savename=None):
+        """Plot Cumulative Volume (CVOL) real and deterministic prediction, and error histogram"""
+
+        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+
+        suptitle = f"{self.volcano_name} {self.words[3]} \n{self.period}"
+        fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
+        fig.suptitle(suptitle)
+
+        # -------------------- PLOT 1 (LEFT)
+        xvalues = [e.date.real for e in eruptions[1:]]
+        yvalues_real = [e.cvol.real for e in eruptions[1:]]  # skip first eruption
+        yvalues_det = [e.cvol.det.value for e in eruptions if e.cvol.det.value is not None]
+        q = bf.Qday_to_Qy(eruptions[1].q_period)
+
+        leg1 = f"Real"
+        leg2 = f"Predicted, Q = {q:.4f} km3/yr"
+
+        # real values
+        ax[0].scatter(xvalues, yvalues_det, marker='x', color='k', label=leg1)
+        # predicted values
+        ax[0].scatter(xvalues, yvalues_real, marker='x', color='b', label=leg2)
+        # plot title, labels and legend
+        ax[0].set(title=self.title_cvol, xlabel=self.label_date, ylabel=self.label_vol)
+        ax[0].legend(frameon=False)
+
+        # set limits for x and y axes
+        ylim = max(yvalues_real) * self.yth  # threshold for y-axis
+        ax[0].set(ylim=(min(yvalues_real) - 2 * ylim, max(yvalues_real) + ylim))
+
+        # ------------------------------------- PLOT 2 (RIGHT)
+        # Plot histogram with KDE
+        yvalues_error = [e.cvol.det.error for e in eruptions[1:] if e.cvol.det.error is not None]
+        sns.histplot(yvalues_error, kde=True, ax=ax[1], color='b', bins=self.n_bins)
+
+        # plot identifiers
+        plt.title(self.title_error_hist)
+        plt.xlabel(self.label_vol)
+        plt.ylabel(self.label_freq)
+        plt.legend(frameon=False)
+
+        # show, save and close
+        if savename is None:
+            savename = 'cvol'
+        self.save_fig(fig, savename)
+        plt.show()
+
+        return
 
     @staticmethod
     def get_save_path():

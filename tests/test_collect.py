@@ -176,6 +176,30 @@ def test_time_functions():
     assert sum(bintervals) == btimeline[-1] == 4019
 
 
+def test_rate_functions():
+
+    # research values (original)
+    qlong = bf.Qy_to_Qday(0.0024)
+    qperiod1 = bf.Qy_to_Qday(0.0107)
+    qperiod2 = bf.Qy_to_Qday(0.0228)
+
+    assert qlong ==  0.0024 * 1e9 / 365.25  # m3/day
+    assert qperiod1 == 0.0107 * 1e9 / 365.25  == 29295.003422313483 # m3/day
+    assert qperiod2 == 0.0228 * 1e9 / 365.25  # m3/day
+
+    assert round(bf.Qday_to_Qy(qlong), 4) == 0.0024
+    assert round(bf.Qday_to_Qy(qperiod1), 4) == 0.0107
+    assert round(bf.Qday_to_Qy(qperiod2),4) == 0.0228
+
+    CV0, CVf = 0, 658060000
+    dT_days = 22502
+    q_hand = 29244.51159896898 # 29295.003422313483 (transformed to m3/day from 0.0107 km3/yr)
+
+    # computation of rate - OK (qhand matches Q research for period 1)
+    assert round(bf.compute_q(CV0, CVf, dT_days), 4) == round(q_hand, 4) == 29244.5116
+    assert round(bf.Qday_to_Qy(29244.5116), 4) == 0.0107
+
+
 def test_prediction_input():
     """Test data collection to prediction creation."""
     name_file, p, qlong = parameters_piton_periodI()
@@ -259,6 +283,61 @@ def test_historical_stats():
     assert pp.timeline[4] == pp.dT_days[0] + pp.dT_days[1] + pp.dT_days[2] + pp.dT_days[3] == 2252
     assert pp.timeline[-1] == pp.timeline[3]  + pp.dT_days[3] == pp.time_total == 2252
 
+
+def test_deterministic_prediction():
+    name_file, p, qlong = parameters_piton_periodI()
+
+    # init data collection instance (VolcanoData)
+    piton_data = vd(name=name_file, printing=False)
+    # get data from the file
+    edates, evol, cvol = piton_data.organize(p)
+
+    # - check Q period
+    qperiod = piton_data.Q1
+    qperiod1 = bf.Qy_to_Qday(0.0107)
+    # saved the right value
+    assert qperiod == qperiod1
+    # which is
+    assert round(qperiod, 4) == 29295.0034
+
+    qperiod_yr = bf.Qday_to_Qy(qperiod)
+
+    assert qperiod == bf.Qy_to_Qday(0.0107)
+    assert qperiod_yr == 0.0107
+
+    # last eruption ID (real data, prediction will be ID + 1)
+    last_eruption = 5
+    # start prediction instance (PredictionData)
+    pp = pred(edates, evol, cvol, id_last=last_eruption)
+    pp.set_qperiod(qperiod)
+
+
+
+    # RUN deterministic method
+    pp.deterministic_method()
+    # check results
+
+    assert pp.oe.id == last_eruption + 1 == 6  # prediction ID
+    assert pp.oe.date.real == edates[5] == datetime.date(1943, 2, 1)  # date of the last eruption (T2)
+
+    # by hand
+    CV1 = 55600000
+    dT = 123  # days
+    q = 29295.0034
+
+    CV2 = CV1 + q * dT  # cumulative volume at T2
+
+    assert abs(CV1 - pp.oe.cvol.t1) < 1
+    assert dT == pp.oe.dT.real == pp.oe.dT.real == 123
+    assert abs(pp.oe.q_period - q) < 0.1
+
+
+    # hand and state equation OK
+    assert round(CV2, 4) == 59203285.4182
+    assert round(CV2, 4) == round(bf.state_equation(CV1, q, dT), 4)
+    # hand and saved prediction
+    assert round(pp.oe.cvol.det.value, 4) == round(bf.state_equation(pp.oe.cvol.t1, pp.oe.q_period, pp.oe.dT.real), 4)
+    assert round(CV2) == round(pp.oe.cvol.det.value)
 
 
 def test_dimension():

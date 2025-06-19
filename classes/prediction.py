@@ -1,7 +1,7 @@
 """Data used for analysis and prediction
 One instance for each prediction pt"""
 from classes.basicfun import Basicfun as bf
-from classes.eruption import OneEruption, EError
+from classes.eruption import OneEruption
 import numpy as np
 
 
@@ -163,6 +163,8 @@ class PredictionData:
         self.deterministic_method()
         self.oe.print_instance(2)
 
+        return self.oe
+
 
     # ------------------------------------------------------------
     # METHOD 2: DETERMINISTIC
@@ -184,131 +186,5 @@ class PredictionData:
 
 
 
-    # METHOD 3: STOCHASTIC
-    def stochastic_method(self):
-
-        return
-
-
-    def set_qtheory(self, qtheory: float):
-        """Set the theoretical rate of eruptions (m3/day)"""
-        self.qperiod = qtheory
-
-    def run_prediction_methods2(self):
-
-        # stochastic forecast
-        self.one_step_ahead()
-        # choose estimate
-        self.choose_estimate()
-        self.compute_stats()
-        # error
-        self.forecast_error()
-
-        # deterministic forecast
-        self.deterministic()
-
-        # PRINT
-        bf.print_submark()
-        # print real
-        bf.print_one_eruption(self.next_id, self.real_evol_t2, self.real_cvol_t2,
-                              self.real_date_t2, self.real_dT)
-
-        # print results
-        bf.print_deterministic(self.evolT2_det, self.cvolT2_det)
-
-        bf.print_deterministic_error(self.error_evolT2_det, self.error_cvolT2_det,
-                                     self.error_evolT2_det_per, self.error_cvolT2_det_per)
-
-
-        # print results
-        bf.print_prediction(self.evolT2_hat, self.cvolT2_hat, self.dT_hat,
-                            (self.cvolT2_lower, self.cvolT2_upper))
-
-
-        # print error
-        bf.print_prediction_error(self.error_evolT2, self.error_cvolT2,
-                                  self.error_evol_per, self.error_cvol_per, self.error_dT2)
-
-        bf.print_mark()
-
-
-
-    # ESTIMATION: NON-PARAMETRIC UNCERTAINTY PROPAGATION
-    # (stochastic forecast)
-    def one_step_ahead(self):
-        """Predict NEXT eruption
-        What I need for estimation:
-        qhat, DT_list (days), T1 (timeline, day)
-        and cvol(t1) = vcol[-1]"""
-
-        # current cumulative volume at T1
-        CV1 = [self.cvol_t1] * self.N
-        dTdata = self.dT_days
-        N = self.N
-        qhat = self.qhat
-
-        # ------------------------------------ SIMULATION
-        # sampling time intervals
-        # TODO change this for normal skewed?
-        dTsim = np.random.choice(dTdata, N, replace=True)
-
-        # compute CVOL(T2) = CVOL(T1) + Qhat * dTsim (for each dT)
-        CV2 = CV1 + qhat * dTsim
-        # ------------------------------------
-
-        # save simulated data
-        self.sim_cvolT2 = CV2
-        self.sim_dT = dTsim
-
-    def compute_stats(self):
-        # STATS
-        # compute mean and std of cv2_sim
-        self.cvolT2_mean = np.mean(self.sim_cvolT2)
-        self.cvolT2_std = np.std(self.sim_cvolT2)
-        self.cvolT2_lower, self.cvolT2_upper = np.percentile(self.sim_cvolT2, [2.5, 97.5])
-
-        # compute mean and std of dTsim
-        self.dTsim_mean = np.mean(self.sim_dT)
-        self.dTsim_std = np.std(self.sim_dT)
-        self.dTsim_lower, self.dTsim_upper = np.percentile(self.sim_dT, [2.5, 97.5])
-
-    def choose_estimate(self, best='median'):
-        """Choose estimate, for now use mean or median of dTsim and cvolT2"""
-
-        if best == 'mean':
-            # choose mean
-            CV2hat = np.mean(self.sim_cvolT2)
-            dThat = np.mean(self.sim_dT)
-        elif best == 'median':
-            # choose median
-            CV2hat = np.median(self.sim_cvolT2)
-            dThat = np.median(self.sim_dT)
-        else:
-            # if no best is specified, use mean (for now)
-            CV2hat = np.mean(self.sim_cvolT2)
-            dThat = np.mean(self.sim_dT)
-
-        # save estimates
-        self.cvolT2_hat = CV2hat
-        self.dT_hat = dThat  # next eruption time interval
-        # next eruption volume
-        self.evolT2_hat = self.cvolT2_hat - self.cvol_t1
-
-    def forecast_error(self):
-        """Compute forecast error between predicted and real data"""
-
-        if self.real_dT is None or self.real_evol_t2 is None or self.real_cvol_t2 is None:
-            print("Real next eruption data not set. Please use add_real_next() to set it.")
-            return
-
-        # compute ERROR
-        self.error_dT2, _ = bf.compute_error(self.dT_hat, self.real_dT)
-        self.error_evolT2, self.error_evol_per = bf.compute_error(self.evolT2_hat, self.real_evol_t2)
-        self.error_cvolT2, self.error_cvol_per = bf.compute_error(self.cvolT2_hat, self.real_cvol_t2)
-
-
-
-    # TODO compare error between methods
-    # TO BE CALLED IN PLOTS: call this class IN PLOTS to plot stuff
 
 

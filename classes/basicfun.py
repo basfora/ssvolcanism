@@ -50,7 +50,7 @@ class Basicfun:
         if value == 0:
             return 0, 0
         else:
-            error = abs(value - valuehat)
+            error = (value - valuehat)
             error_per = (error/ value) * 100
             return error, error_per
 
@@ -150,12 +150,14 @@ class Basicfun:
     # ------------------------------------------------------
     # RATE FUNCTIONS
     # ------------------------------------------------------
+    # UT - ok
     @staticmethod
     def Qday_to_Qy(Qd: float) -> float:
         """Convert Q units from m3/day to km3/year"""
         Qyears = (Qd / 1e9) * 365.25
         return Qyears
 
+    # UT - ok
     @staticmethod
     def Qy_to_Qday(Qy: float) -> float:
         """Convert Q units from m3/day to km3/year"""
@@ -164,7 +166,7 @@ class Basicfun:
 
     @staticmethod
     def compute_q(cvol_t0: float, cvol_tf: float, dt_days: int) -> float:
-        """Compute the rate Q in m3/day or km3/year"""
+        """Compute the rate Q in m3/day"""
         delta_cvol = cvol_tf - cvol_t0
         if dt_days > 0:
             Q = delta_cvol / dt_days
