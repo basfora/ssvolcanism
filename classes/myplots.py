@@ -169,8 +169,8 @@ class MyPlots:
         fig.suptitle(suptitle)
 
         # -------------------- PLOT 1 (LEFT)
-        xvalues = [e.date.real for e in eruptions[1:]]
-        yvalues_real = [e.cvol.real for e in eruptions[1:]]  # skip first eruption
+        xvalues = [e.date.real for e in eruptions]
+        yvalues_real = [e.cvol.real for e in eruptions]  # skip first eruption
         yvalues_det = [e.cvol.det.value for e in eruptions if e.cvol.det.value is not None]
         q = bf.Qday_to_Qy(eruptions[1].q_period)
 
@@ -178,9 +178,10 @@ class MyPlots:
         leg2 = f"Predicted, Q = {q:.4f} km3/yr"
 
         # real values
-        ax[0].scatter(xvalues, yvalues_det, marker='x', color='k', label=leg1)
+        ax[0].scatter(xvalues, yvalues_real, marker='x', color='b', label=leg1)
         # predicted values
-        ax[0].scatter(xvalues, yvalues_real, marker='x', color='b', label=leg2)
+        ax[0].scatter(xvalues[1:], yvalues_det, marker='x', color='k', label=leg2)
+
         # plot title, labels and legend
         ax[0].set(title=self.title_cvol, xlabel=self.label_date, ylabel=self.label_vol)
         ax[0].legend(frameon=False)
