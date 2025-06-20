@@ -48,6 +48,7 @@ class MyPlots:
         self.title_error = "Error"
         self.title_exp = "Expected vs Real Data"
         self.title_linear = "Linear Extrapolation"
+        self.title_qline = 'Q-line Approximation'
 
         # legends
         self.leg_real = "Real Data"
@@ -287,6 +288,8 @@ class MyPlots:
                 yvalues = [e.cvol.det.error for e in eruptions if e.cvol.det.value is not None]  # n-1
             elif method == 'linear':
                 yvalues = [e.cvol.linear.error for e in eruptions if e.cvol.linear.value is not None]  # n-1
+            elif method == 'qline':
+                yvalues = [e.cvol.qline.error for e in eruptions if e.cvol.qline.value is not None]  # n-1
         elif option == 'evol':
             myvol = self.title_evol
             if method == 'det':
@@ -298,6 +301,9 @@ class MyPlots:
 
         if method == 'linear':
             myvol += f" {self.title_linear}"
+
+        if method == 'qline':
+            myvol += f" {self.title_qline}"
 
         self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
 
@@ -383,7 +389,7 @@ class MyPlots:
 
         return
 
-    def plot_linear(self, eruptions: list, option='cvol', savename=None, show_plot=True):
+    def plot_linear(self, eruptions: list, option='cvol', method='linear', savename=None, show_plot=True):
         """Plot Volume (CVOL or EVOL) real and deterministic prediction"""
 
         self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)

@@ -27,6 +27,7 @@ class OneEruption:
 
         # -------------- variables at T1 (initial variables/parameters)
         # parameters specific for each prediction method (Q)
+        self.q_line_xy = None
         self.q_linear = None
         self.q_period = None
         self.q_hat = None
@@ -64,7 +65,11 @@ class OneEruption:
         evol_error, evol_error_per = bf.compute_error(evolT2, self.evol.real)
         dateT2 = bf.transform_days_to_date(dT, self.date.t1)
 
-        if method == 1:
+        if method == 0:  # q line
+            # todo
+            self.cvol.real = cvolT2
+
+        elif method == 1:
             self.cvol.linear.value = cvolT2
             self.cvol.linear.error, self.cvol.linear.error_per = cvol_error, cvol_error_per
 
@@ -142,6 +147,8 @@ class Vol:
         # real data (what really happened if avbailable)
         self.real = None
 
+        self.qline = EstimatedValue()
+
         self.linear = EstimatedValue()
 
         self.det = EstimatedValue()
@@ -159,6 +166,8 @@ class TInterval:
         self.real = None
 
         self.linear = EstimatedValue()
+
+        self.qline = EstimatedValue()
 
         self.det = EstimatedValue()
 
@@ -204,6 +213,8 @@ class EDate:
         self.t1 = None
 
         self.real = None
+
+        self.qline = None
 
         self.linear = None
 

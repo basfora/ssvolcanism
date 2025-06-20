@@ -47,9 +47,13 @@ if __name__ == '__main__':
         next_eruption = pp.run_methods()
 
         # linear fit
-        y_pt_line = piton_data.get_line_pt(pp.oe.id)
+        y_pt_line = piton_data.get_line_pt(pp.oe.id, 1)
         pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=1)  # save linear extrapolation
-        pp.oe.q_linear = piton_data.get_a_b()
+        pp.oe.q_linear = piton_data.get_a_b(1)
+
+        y_pt_qline = piton_data.get_line_pt(pp.oe.id, 0)
+        pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=0)  # save q-linear extrapolation
+        pp.oe.q_line_xy = piton_data.get_a_b(0)
 
         # ------------------------ quick analysis
         eruptions.append(next_eruption)
@@ -89,7 +93,7 @@ if __name__ == '__main__':
         #show_plot = True
         # Plot 5: CVOL real vs expected (LINEAR)
         base_name = 'Piton_Period0_Cvol_Linear'
-        my_plots.plot_linear(eruptions, 'cvol',
+        my_plots.plot_linear(eruptions, 'cvol', 'linear',
                              base_name, show_plot)
 
         base_name = 'Piton_Period0_Cvol_LinearError'

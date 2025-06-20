@@ -4,28 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="color coded">
-      <change afterPath="$PROJECT_DIR$/scripts/piton_linear.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="plots plots">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/sketch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Error.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_PeriodAll_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/batch01/Piton_Period0_Cvol_Error.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_prediction.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,23 +58,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in test_collect.py.executor": "Debug",
-    "Python.collect-data.executor": "Run",
-    "Python.collectdata.executor": "Run",
-    "Python.historical_data.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.piton.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/basfora/02ProjectSources/PycharmProjects/volcano",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in test_collect.py.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.collect-data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.collectdata.executor&quot;: &quot;Run&quot;,
+    &quot;Python.historical_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/basfora/02ProjectSources/PycharmProjects/volcano&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/old" />
@@ -427,7 +411,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750384223245</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="plots plots">
+      <option name="closed" value="true" />
+      <created>1750454482581</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1750454482581</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -451,7 +443,8 @@
     <MESSAGE value="cvol plot period1" />
     <MESSAGE value="cvol plots - editting" />
     <MESSAGE value="color coded" />
-    <option name="LAST_COMMIT_MESSAGE" value="color coded" />
+    <MESSAGE value="plots plots" />
+    <option name="LAST_COMMIT_MESSAGE" value="plots plots" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -463,13 +456,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/classes/eruption.py</url>
-          <line>77</line>
+          <line>82</line>
           <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/classes/collectdata.py</url>
-          <line>210</line>
-          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

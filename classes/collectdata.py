@@ -196,7 +196,7 @@ class VolcanoData:
         self.median_dT = bf.compute_median(self.intervals)
 
 
-    def linear_extrapolation(self):
+    def linear_extrapolation(self, fixed=False):
         """Linear extrapolation of eruption volumes and cumulative volumes"""
 
         self.compute_for_plotting()
@@ -204,33 +204,70 @@ class VolcanoData:
         xvalues = self.timeline
         yvalues = self.list_cumvol[1:]
 
-        # force the first point to be the cumulative volume at T0
-        # x0 = xvalues[0]
-        # y0 = yvalues[0]
-        #
-        # xvalues_adj = [x - x0 for x in xvalues]  # adjust x values to start from 0
-        # yvalues_adj = [y - y0 for y in yvalues]  # adjust x values to start from 0
-        #
-        # a, _ = np.polyfit(xvalues_adj, yvalues_adj, 1)
-        # b = y0 - a * x0  # compute b to ensure the line passes through (x0, y0)
+        if fixed:
+            # force the first point to be the cumulative volume at T0
+            x0 = xvalues[0]
+            y0 = yvalues[0]
 
+            xvalues_adj = [x - x0 for x in xvalues]  # adjust x values to start from 0
+            yvalues_adj = [y - y0 for y in yvalues]  # adjust x values to start from 0
 
-        # linear squares fit (no forced initial point) -- uncomment
-        a, b = np.polyfit(xvalues, yvalues, 1)
+            a, _ = np.polyfit(xvalues_adj, yvalues_adj, 1)
+            b = y0 - a * x0  # compute b to ensure the line passes through (x0, y0)
+
+        else:
+            # no forced initial point, just fit the line
+            a, b = np.polyfit(xvalues, yvalues, 1)
+
+        # save the slope and intercept
         self.a, self.b = a, b
 
         # create points for the line based on fit and timeline
         self.line_points = [(x, a * x + b) for x in self.timeline]
 
-    def get_line_pt(self, eruption_id: int):
+
+    def q_line(self):
+        self.compute_for_plotting()
+
+        # use timeline to fit to line
+        xvalues = self.timeline
+        yvalues = self.list_cumvol[1:]
+
+        # TODO separate periods
+        q = 0.0
+        b = 0.0 # initial value?
+
+        # create points for the line based on fit and timeline
+        self.qline_points = [(x, q * x + b) for x in self.timeline]
+
+        return
+
+    def get_line_pt(self, eruption_id: int, method=1):
         """Get the point on the line for a given eruption ID"""
-        if not self.line_points:
-            self.linear_extrapolation()
 
-        return self.line_points[eruption_id - 1]
+        if method == 1:
+            if not self.line_points:
+                self.linear_extrapolation()
+            return self.line_points[eruption_id - 1]
 
-    def get_a_b(self):
-        return self.a, self.b
+        elif method == 0:
+            if not self.qline_points:
+                self.q_line()
+            return self.qline_points[eruption_id - 1]
+
+        else:
+            print(f"Unknown method {method}. Use 1 for linear extrapolation or 2 for q line.")
+            return None
+
+
+
+    def get_a_b(self, method=1):
+
+        if method == 1:
+            return self.a, self.b
+        elif method == 0:
+            return self.q_a, self.q_b
+
 
 
 
