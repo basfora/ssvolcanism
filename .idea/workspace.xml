@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="cvol plot period1">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="cvol plots - editting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_Cvol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_dT.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_PeriodAll_Evol.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
     </list>
@@ -72,7 +64,7 @@
     "Python tests.Python tests in test_collect.py.executor": "Debug",
     "Python.collect-data.executor": "Run",
     "Python.collectdata.executor": "Run",
-    "Python.historical_data.executor": "Debug",
+    "Python.historical_data.executor": "Run",
     "Python.main.executor": "Run",
     "Python.piton.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -89,7 +81,7 @@
       <recent name="$PROJECT_DIR$/classes" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.piton">
+  <component name="RunManager" selected="Python.historical_data">
     <configuration name="collectdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -195,8 +187,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.piton" />
         <item itemvalue="Python.historical_data" />
+        <item itemvalue="Python.piton" />
         <item itemvalue="Python tests.Python tests in test_collect.py" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.collectdata" />
@@ -395,7 +387,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750293302080</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="cvol plots - editting">
+      <option name="closed" value="true" />
+      <created>1750374104883</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1750374104883</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -417,7 +417,8 @@
     <MESSAGE value="what a mess" />
     <MESSAGE value="what a mess 2" />
     <MESSAGE value="cvol plot period1" />
-    <option name="LAST_COMMIT_MESSAGE" value="cvol plot period1" />
+    <MESSAGE value="cvol plots - editting" />
+    <option name="LAST_COMMIT_MESSAGE" value="cvol plots - editting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

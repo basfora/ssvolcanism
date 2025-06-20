@@ -54,14 +54,12 @@ if __name__ == '__main__':
     # print for sanity check
     mp.sanity_check_det(eruptions)
     # plot 1: CVOL real vs expected
-    #base_name = 'Piton_Period0_Cvol'
-    #my_plots.plot_set02(eruptions, base_name)
+    base_name = 'Piton_Period0_Cvol'
+    my_plots.plot_set02(eruptions, base_name)
     # # plot 2: CVOL error
     base_name = 'Piton_Period0_Cvol_Error'
     my_plots.plot_set03(eruptions, base_name)
 
-    # TODO: color code the plots
-    # add std to evol?
     # TODO: print error min, max, mean, std
     # mean + std == 64% samples (double check that in my thesis)
 

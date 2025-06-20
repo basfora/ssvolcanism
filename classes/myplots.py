@@ -69,10 +69,20 @@ class MyPlots:
         # COLORS, get from https://matplotlib.org/stable/gallery/color/named_colors.html
         self.color_real = 'navy'
         self.color_error = 'crimson' #'darkorange'
-        self.color_mean = 'forestgreen'
-        self.color_median = 'goldenrod'
+        self.color_mean = 'magenta' # 'darkgreen' # forestgreen'
+        self.color_median = 'darkgreen' #'goldenrod'
         self.color_std = 'dimgray'
         self.color_hist = 'cornflowerblue'
+        self.color_pred1 = 'brown' # red
+        self.color_pred2 = 'salmon'# 'rosybrown' # magenta
+
+        # linestyle/marker
+        self.line_mean = '-'
+        self.line_median = '-'
+        self.line_std = '--'
+        self.marker_real = 'x'
+        self.marker_det = 'x'
+        self.marker_error = '.'
 
         self.savepath = self.get_save_path()
 
@@ -112,6 +122,8 @@ class MyPlots:
             # mean and median for eruptions
             mean_value = vd.mean_evol
             median_value = vd.median_evol
+            std_value = vd.std_evol
+            label_std = f"Std Dev = {std_value/10**self.short:.2f} {self.unit[0]}"
             # label for volume
             label_mean = f"{mean_value/10**self.short:.2f} {self.unit[0]}"
             label_median = f"{median_value/10**self.short:.2f} {self.unit[0]}"
@@ -126,6 +138,8 @@ class MyPlots:
             # mean and median for intervals
             mean_value = vd.mean_dT
             median_value = vd.median_dT
+            std_value = vd.std_dT
+            label_std = f"{std_value:.0f} {self.unit[1]}"
             # label for time
             label_mean = f"{mean_value:.0f} {self.unit[1]}"
             label_median = f"{median_value:.0f} {self.unit[1]}"
@@ -137,13 +151,18 @@ class MyPlots:
 
 
         # PLOT ERUPTIONS (EVOL)
-        ax[0].scatter(xvalues, yvalues, marker='x', color=self.color_real, label=f"{self.w_eruptions}")
+        ax[0].scatter(xvalues, yvalues, marker=self.marker_real, color=self.color_real, label=f"{self.w_eruptions}")
         # mean
-        ax[0].axhline(mean_value, color=self.color_mean, linestyle='--',
+        ax[0].axhline(mean_value, color=self.color_mean, linestyle=self.line_mean,
                    label=f"{self.label_mean} {label_mean}")
         # median
-        ax[0].axhline(median_value, color=self.color_median, linestyle='--',
+        ax[0].axhline(median_value, color=self.color_median, linestyle=self.line_mean,
                    label=f"{self.label_median} {label_median}")
+
+        # std
+        # ax[0].axhline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,
+        #               label=f"$\pm \sigma$ = {label_std}")
+        # ax[0].axhline(mean_value - std_value, color=self.color_std, linestyle=self.line_std)
 
         # plot title, labels and legend
         ax[0].set(title=title1, xlabel=labelx, ylabel=labely)
@@ -155,12 +174,17 @@ class MyPlots:
         # ------------------------------------- PLOT 2 (RIGHT)
 
         # Plot histogram with KDE
-        sns.histplot(yvalues, kde=True, ax=ax[1], color='b', bins=self.n_bins)
+        sns.histplot(yvalues, kde=True, ax=ax[1], color=self.color_hist, bins=self.n_bins)
         # extra stats
-        ax[1].axvline(mean_value, color='m', linestyle='--',
+        ax[1].axvline(mean_value, color=self.color_mean, linestyle=self.line_mean,
                       label=f"{self.label_mean} {label_mean}")
-        ax[1].axvline(median_value, color='k', linestyle='--',
+        ax[1].axvline(median_value, color=self.color_median, linestyle=self.line_median,
                       label=f"{self.label_median} {label_median}")
+
+        # std
+        # ax[1].axvline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,
+        #               label=f"$\pm \sigma$ = {label_std}")
+        # ax[1].axvline(mean_value - std_value, color=self.color_std, linestyle=self.line_std)
 
         # plot identifiers
         plt.title(title2)
@@ -216,11 +240,11 @@ class MyPlots:
 
         # ---------------- PLOT 1 (MAIN)
         # Plot real values (n)
-        ax.scatter(xvalues, yvalues_real, marker='x', color='b', linewidth=3, label=self.leg_real)
+        ax.scatter(xvalues, yvalues_real, marker=self.marker_real, color=self.color_real, linewidth=3, label=self.leg_real)
         # Plot predicted values - period I (eruptions # 2 - 73)
-        ax.scatter(xvalues1, yvalues1, marker='x', color='r', linewidth=1, label=self.leg_Q1)
+        ax.scatter(xvalues1, yvalues1, marker=self.marker_det, color=self.color_pred1, linewidth=1, label=self.leg_Q1)
         # Plot predicted values - period II (eruptions # 74 - end)
-        ax.scatter(xvalues2, yvalues2, marker='x', color='m', linewidth=1, label=self.leg_Q2)
+        ax.scatter(xvalues2, yvalues2, marker=self.marker_det, color=self.color_pred2, linewidth=1, label=self.leg_Q2)
         # plot title, labels and legend
         ax.set(title=self.title_cvol, xlabel=self.label_date, ylabel=self.label_vol)
         ax.legend(frameon=False, loc='upper left')
@@ -251,19 +275,23 @@ class MyPlots:
 
         # add stats: mean and std
         error_mean, error_std = bf.compute_mean_std(yvalues)
+        error_median = bf.m3_to_km3(np.median(yvalues))
         e_mean_km3 = bf.m3_to_km3(error_mean)
         e_std_km3 = bf.m3_to_km3(error_std)
 
         # PLOT 1 (LEFT) - error pts and mean/std lines
 
         # Plot error between real and predicted CVOL
-        ax[0].scatter(xvalues, yvalues, marker='.', color='r', linewidth=2, label=self.leg_error)
+        ax[0].scatter(xvalues, yvalues, marker=self.marker_error, color=self.color_error, linewidth=2, label=self.leg_error)
         # extra stats
-        ax[0].axhline(error_mean, color='m', linestyle='--',  linewidth=2,
+        ax[0].axhline(error_mean, color=self.color_mean, linestyle=self.line_mean,  linewidth=2,
                       label=f"{self.label_mean_symbol} {e_mean_km3:.4f} km$^3$")
-        ax[0].axhline(error_mean + error_std, color='dimgray', linestyle='--',
+        ax[0].axhline(error_mean + error_std, color=self.color_std, linestyle=self.line_std,
                       label=f"$\pm \sigma$ = {e_std_km3:.4f} km$^3$")
-        ax[0].axhline(error_mean - error_std, color='dimgray', linestyle='--')
+        ax[0].axhline(error_mean - error_std, color=self.color_std, linestyle=self.line_std)
+        # median
+        #ax[0].axhline(error_median, color=self.color_median, linestyle=self.line_mean,
+        #              label=f"{self.label_median} km$^3$")
 
         # plot title, labels and legend
         ax[0].set(title=self.title_error, xlabel=self.label_date, ylabel=self.label_vol)
@@ -278,15 +306,15 @@ class MyPlots:
         # ------------------------------------- PLOT 2 (RIGHT) - ERROR HISTOGRAM
         # Plot histogram with KDE
 
-        sns.histplot(yvalues, kde=True, ax=ax[1], color='b', bins=20)
+        sns.histplot(yvalues, kde=True, ax=ax[1], color=self.color_hist, bins=20)
 
         # plot identifiers
         plt.title(self.title_error_hist)
         # plot stats
-        plt.axvline(error_mean, color='m', linestyle='--', label=f"{self.label_mean_symbol} {e_mean_km3:.4f} km$^3$")
-        plt.axvline(error_mean + error_std, color='k', linestyle='--',
+        plt.axvline(error_mean, color=self.color_mean, linestyle=self.line_mean, label=f"{self.label_mean_symbol} {e_mean_km3:.4f} km$^3$")
+        plt.axvline(error_mean + error_std, color=self.color_std, linestyle=self.line_std,
                     label=f"$\pm \sigma$ = {e_std_km3:.4f} km$^3$")
-        plt.axvline(error_mean - error_std, color='k', linestyle='--')
+        plt.axvline(error_mean - error_std, color=self.color_std, linestyle=self.line_std)
 
         plt.xlabel(self.label_vol)
         plt.ylabel(self.label_freq)

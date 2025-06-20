@@ -60,6 +60,7 @@ class VolcanoData:
         # --------------------------------
         # To Have for plotting (might delete later)
         self.mean_evol = None  # mean eruption volume
+        self.std_evol = None
         self.median_evol = None  # median eruption volume
         self.mode_evol = None
 
@@ -67,6 +68,7 @@ class VolcanoData:
         self.timeline = []  # timeline of eruptions
 
         self.mean_dT = None  # mean eruption interval
+        self.std_dT = None
         self.median_dT = None  # median eruption interval
         self.mode_dT = None
 
@@ -179,7 +181,7 @@ class VolcanoData:
         """Compute mean, median and mode for plotting"""
 
         # mean, median and mode for eruption volumes
-        self.mean_evol = bf.compute_mean_std(self.list_eruptvol)[0]
+        self.mean_evol, self.std_evol = bf.compute_mean_std(self.list_eruptvol)
         self.median_evol = bf.compute_median(self.list_eruptvol)
 
         # intervals between eruptions
@@ -187,7 +189,7 @@ class VolcanoData:
         self.timeline = bf.compute_timeline(self.intervals, 0)  # start from 1
 
         # mean, median and mode for eruption intervals
-        self.mean_dT = bf.compute_mean_std(self.intervals)[0]
+        self.mean_dT, self.std_dT = bf.compute_mean_std(self.intervals)
         self.median_dT = bf.compute_median(self.intervals)
 
 
