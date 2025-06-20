@@ -163,6 +163,10 @@ class PredictionData:
         self.deterministic_method()
         self.oe.print_instance(2)
 
+        # linear extrapolation (1)
+        # self.linear_extrapolation()
+        # self.oe.print_instance(1)
+
         return self.oe
 
 
@@ -185,6 +189,29 @@ class PredictionData:
         self.oe.save_result(cvolT2, dT, method=2)
 
 
+    # -------------------------------------------------------------
+    # METHOD 2: Linear extrapolation
+    def linear_extrapolation(self):
+        """Set the theoretical rate of eruptions (m3/day) for linear extrapolation method"""
+
+        # use timeline to fit to line
+        xvalues = self.timeline
+        yvalues = self.in_cvol[1:]
+
+        # linear squares fit
+        a, b = np.polyfit(xvalues, yvalues, 1)
+
+        # use it to predict the next cumulative volume
+        cvolT1, q, dT = self.oe.get_parameters(method=2)
+        x2 = self.day_t1 + dT  # next time in timeline
+
+        # extrapolate the next cumulative volume
+        cvolT2 = a * x2+ b
+
+        # save
+        self.oe.save_result(cvolT2, dT, method=1)
+        # save (test)
+        self.oe.q_linear = (a, b)
 
 
 

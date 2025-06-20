@@ -176,3 +176,4 @@ cython_debug/
 
 # My old files
 old/
+plots/old_plots/

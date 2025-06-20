@@ -9,6 +9,8 @@ from classes.myplots import MyPlots as mp
 
 if __name__ == '__main__':
 
+    plot_flag = True
+
     # ------------------------------------------------------
     # Excel file >> Piton de la Fournaise
     name_file = 'PitondelaFournaise_data'
@@ -44,23 +46,56 @@ if __name__ == '__main__':
         # run prediction methods
         next_eruption = pp.run_methods()
 
+        # linear fit
+        y_pt_line = piton_data.get_line_pt(pp.oe.id)
+        pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=1)  # save linear extrapolation
+        pp.oe.q_linear = piton_data.get_a_b()
+
         # ------------------------ quick analysis
         eruptions.append(next_eruption)
         # iterate to next eruption
         last_eruption += 1
 
+    # ========================================================
     # PLOT
-    my_plots = mp(piton=True)
-    # print for sanity check
-    mp.sanity_check_det(eruptions)
-    # plot 1: CVOL real vs expected
-    base_name = 'Piton_Period0_Cvol'
-    my_plots.plot_set02(eruptions, base_name)
-    # # plot 2: CVOL error
-    base_name = 'Piton_Period0_Cvol_Error'
-    my_plots.plot_set03(eruptions, base_name)
+    # ========================================================
+    if plot_flag:
+        my_plots = mp(piton=True)
+        # print for sanity check
+        mp.sanity_check_det(eruptions)
 
-    # TODO: print error min, max, mean, std
+        show_plot = False
+
+        # Plot 1: CVOL real vs expected (DET)
+        base_name = 'Piton_Period0_Cvol_Det'
+        my_plots.plot_real_vs_expected(eruptions, 'cvol',
+                                       base_name, show_plot)
+
+        # Plot 2: CVOL error
+        base_name = 'Piton_Period0_Cvol_DetError'
+        my_plots.plot_volume_error(eruptions, 'cvol', 'det',
+                                   base_name, show_plot)
+
+        # Plot 3: EVOL real vs expected
+        base_name = 'Piton_Period0_Evol_Det'
+        my_plots.plot_real_vs_expected(eruptions, 'evol',
+                                       base_name, show_plot)
+
+        # Plot 4: EVOL error
+        base_name = 'Piton_Period0_Evol_DetError'
+        my_plots.plot_volume_error(eruptions, 'evol', 'det',
+                                   base_name, show_plot)
+
+        #show_plot = True
+        # Plot 5: CVOL real vs expected (LINEAR)
+        base_name = 'Piton_Period0_Cvol_Linear'
+        my_plots.plot_linear(eruptions, 'cvol',
+                             base_name, show_plot)
+
+        base_name = 'Piton_Period0_Cvol_LinearError'
+        my_plots.plot_volume_error(eruptions, 'cvol', 'linear',
+                                   base_name, show_plot)
+
     # mean + std == 64% samples (double check that in my thesis)
 
 

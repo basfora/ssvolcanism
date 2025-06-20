@@ -39,8 +39,8 @@ class OneEruption:
         cvolT1 = self.cvol.t1
 
         if method == 1:
-            # todo
-            dT, q = None, None
+            q = self.q_period
+            dT = self.dT.real
         elif method == 2:   # deterministic
             # known (real) dT
             dT = self.dT.real
@@ -62,11 +62,21 @@ class OneEruption:
         # compute evol
         evolT2 = bf.compute_delta_vol(self.cvol.t1, cvolT2)
         evol_error, evol_error_per = bf.compute_error(evolT2, self.evol.real)
-        # todo here: transform dT to date
+        dateT2 = bf.transform_days_to_date(dT, self.date.t1)
 
         if method == 1:
-            self.cvol.linear = cvolT2
-            self.evol.linear = evolT2
+            self.cvol.linear.value = cvolT2
+            self.cvol.linear.error, self.cvol.linear.error_per = cvol_error, cvol_error_per
+
+            self.evol.linear.value = evolT2
+            self.evol.linear.error, self.evol.linear.error_per = evol_error, evol_error_per
+
+            self.dT.linear.value = dT
+            self.dT.linear.error, self.dT.linear.error_per = 0, 0
+
+            # save the date of the eruption
+            self.date.linear = dateT2
+
         elif method == 2:  # deterministic
             self.cvol.det.value = cvolT2
             self.cvol.det.error, self.cvol.det.error_per = cvol_error, cvol_error_per
@@ -76,6 +86,8 @@ class OneEruption:
 
             self.dT.det.value = dT
             self.dT.det.error, self.dT.det.error_per = 0, 0  # no error for dT in deterministic method
+            # save the date of the eruption
+            self.date.deterministic = dateT2
 
         elif method == 3:  # stochastic
             self.cvol.stoc.value = cvolT2
@@ -104,11 +116,14 @@ class OneEruption:
                 dT_days = self.dT.real
                 # todo move to here, it's all over the place now
                 bf.print_one_eruption(self.id, evol, cvol, edate, dT_days)
-
+        elif what  ==1:
+            evol = self.evol.linear.value
+            cvol = self.cvol.linear.value
+            bf.print_estimate(evol, cvol,'LINEAR EXTRAPOLATION')
         elif what == 2:
             evol = self.evol.det.value
             cvol = self.cvol.det.value
-            bf.print_deterministic(evol, cvol)
+            bf.print_estimate(evol, cvol, 'DETERMINISTIC METHOD')
         else:
             return
 

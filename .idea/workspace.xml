@@ -4,12 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="cvol plots - editting">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="color coded">
+      <change afterPath="$PROJECT_DIR$/scripts/piton_linear.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/sketch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Error.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_dT.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_Evol.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period1_dT.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_Evol.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period2_dT.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_PeriodAll_Evol.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/batch01/Piton_Period0_Cvol_Error.pdf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/piton_prediction.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +97,7 @@
       <recent name="$PROJECT_DIR$/classes" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.historical_data">
+  <component name="RunManager" selected="Python.piton">
     <configuration name="collectdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -187,8 +203,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.historical_data" />
         <item itemvalue="Python.piton" />
+        <item itemvalue="Python.historical_data" />
         <item itemvalue="Python tests.Python tests in test_collect.py" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.collectdata" />
@@ -395,7 +411,23 @@
       <option name="project" value="LOCAL" />
       <updated>1750374104883</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="color coded">
+      <option name="closed" value="true" />
+      <created>1750384181298</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1750384181298</updated>
+    </task>
+    <task id="LOCAL-00025" summary="color coded">
+      <option name="closed" value="true" />
+      <created>1750384223245</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1750384223245</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -418,7 +450,8 @@
     <MESSAGE value="what a mess 2" />
     <MESSAGE value="cvol plot period1" />
     <MESSAGE value="cvol plots - editting" />
-    <option name="LAST_COMMIT_MESSAGE" value="cvol plots - editting" />
+    <MESSAGE value="color coded" />
+    <option name="LAST_COMMIT_MESSAGE" value="color coded" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -427,6 +460,16 @@
           <url>file://$PROJECT_DIR$/old/sketch.py</url>
           <line>78</line>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/classes/eruption.py</url>
+          <line>77</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/classes/collectdata.py</url>
+          <line>210</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

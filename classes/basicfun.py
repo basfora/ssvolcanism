@@ -147,6 +147,13 @@ class Basicfun:
             timeline.append(previous_time + dt)
         return timeline
 
+    @staticmethod
+    def transform_days_to_date(days: int, date_t0: datetime.date) -> datetime.date:
+        """Transform days to date based on the initial date"""
+        if days < 0:
+            raise ValueError("Days cannot be negative")
+        return date_t0 + datetime.timedelta(days=days)
+
     # ------------------------------------------------------
     # RATE FUNCTIONS
     # ------------------------------------------------------
@@ -259,11 +266,11 @@ class Basicfun:
         print(f"95% CI: [{ci[0] / dec:.0f}, {ci[1] / dec:.0f}] ({dec} m3)")
 
     @staticmethod
-    def print_deterministic(evol, cvol):
+    def print_estimate(evol, cvol, first_line='DETERMINISTIC METHOD'):
         """Print deterministic prediction"""
         dec = Basicfun.dec()
 
-        print(f"..........DETERMINISTIC METHOD")
+        print(f"..........{first_line}")
         print(f"{Basicfun.pevol(2)} = {evol / dec:.2f} ({dec} m3)")
         print(f"{Basicfun.pcvol(2)} = {cvol / dec:.2f} ({dec} m3)")
 
