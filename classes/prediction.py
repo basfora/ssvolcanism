@@ -136,6 +136,7 @@ class PredictionData:
 
         # compute RATE Q
         self.qhat = bf.compute_q(self.cvol_t0, self.cvol_t1, self.time_total)
+        self.oe.q_hat = self.qhat  # save in OneEruption instance
 
     def print_real_dataset(self):
         """Print info about the period of real data to be used for prediction"""
@@ -188,9 +189,25 @@ class PredictionData:
         # save
         self.oe.save_result(cvolT2, dT, method=2)
 
+    def stochastic_method(self):
+        """Set the theoretical rate of eruptions (m3/day) for stochastic method"""
+
+        # get parameters for deterministic method
+        cvolT1, q, N = self.oe.get_parameters(method=2)
+
+        # set up simulation parameters - time interval
+        dTdata = self.dT_days  # use dT from historical data
+        dTsim = np.random.choice(dTdata, N, replace=True)
+
+        # compute CVOL(T2) = CVOL(T1) + Qhat * dTsim (for each dT)
+        CV2 = [bf.state_equation(cvolT1, self.qhat, dT) for dT in dTsim]
+
+
+        # save simulation results
+        self.oe.save_result(CV2, dTsim, method=3)
 
     # -------------------------------------------------------------
-    # METHOD 2: Linear extrapolation
+    # METHOD 2: Linear extrapolation -- does not work like this (moved to VolcanoData class)
     def linear_extrapolation(self):
         """Set the theoretical rate of eruptions (m3/day) for linear extrapolation method"""
 

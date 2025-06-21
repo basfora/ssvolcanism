@@ -1,6 +1,7 @@
 
 """Data class for a single eruption event."""
 from classes.basicfun import Basicfun as bf
+import numpy as np
 
 
 class OneEruption:
@@ -47,8 +48,8 @@ class OneEruption:
             dT = self.dT.real
             q = self.q_period
         elif method == 3:   # stochastic
-            # todo
-            dT, q = None, None
+            dT = self.cvol.sim.N
+            q = self.q_hat
         else:
             raise ValueError("Method must be 1, 2, or 3.")
 
@@ -56,6 +57,9 @@ class OneEruption:
 
     def save_result(self, cvolT2, dT, method=2):
         """Save the result of the prediction."""
+
+        # TODO - handle list vs single value for cvolT2 and dT (maybe inside bf is best)
+        #if method == 3:
 
         # error in cvol
         cvol_error, cvol_error_per = bf.compute_error(cvolT2, self.cvol.real)
@@ -94,15 +98,22 @@ class OneEruption:
             # save the date of the eruption
             self.date.deterministic = dateT2
 
-        elif method == 3:  # stochastic
-            self.cvol.stoc.value = cvolT2
-            self.cvol.stoc.error, self.cvol.stoc.error_per = cvol_error, cvol_error_per
+        elif method == 3:  # stochastic -- inputs are lists of values CVOL, dT
+            # save simulation results
 
-            self.evol.stoc.value = evolT2
-            self.evol.stoc.error, self.evol.stoc.error_per = evol_error, evol_error_per
+            # pt cloud
+            self.cvol.sim.pts = cvolT2
+            self.dT.sim.pts = dT
+            # statistics - mean, std dev, median, confidence interval
+            self.cvol.sim.mean, self.cvol.sim.std = bf.compute_mean_std(cvolT2)
+            self.cvol.sim.median = np.median(cvolT2)
+            self.cvol.sim.lower, self.cvol.sim.upper = np.percentile(cvolT2, [2.5, 97.5])
+            # save mean and std dev for dT
+            self.dT.sim.mean, self.dT.sim.std = bf.compute_mean_std(dT)
+            self.dT.sim.median = np.median(dT)
+            self.dT.sim.lower, self.dT.sim.upper = np.percentile(dT, [2.5, 97.5])
 
-            self.dT.stoc.value = dT
-            self.dT.stoc.error, self.dT.stoc.error_per = 0, 0
+
         else:
             raise ValueError("Method must be 1, 2, or 3.")
 
@@ -140,11 +151,9 @@ class Vol:
     """Eruption or cumulative volume"""
 
     def __init__(self):
-
+        # real data (what really happened if avbailable)
         # VOL(T1) data (known)
         self.t1 = None
-
-        # real data (what really happened if avbailable)
         self.real = None
 
         self.qline = EstimatedValue()
@@ -180,6 +189,7 @@ class Sim:
 
     def __init__(self):
 
+        # todo transform in list of EstimatedValue (to include value, error, error_per)
         self.pts = []  # list of points (date, volume, cumulative volume)
         self.N = 10000
 

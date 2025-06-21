@@ -51,9 +51,9 @@ if __name__ == '__main__':
         pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=1)  # save linear extrapolation
         pp.oe.q_linear = piton_data.get_a_b(1)
 
-        y_pt_qline = piton_data.get_line_pt(pp.oe.id, 0)
-        pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=0)  # save q-linear extrapolation
-        pp.oe.q_line_xy = piton_data.get_a_b(0)
+        # y_pt_qline = piton_data.get_line_pt(pp.oe.id, 0)
+        # pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=0)  # save q-linear extrapolation
+        # pp.oe.q_line_xy = piton_data.get_a_b(0)
 
         # ------------------------ quick analysis
         eruptions.append(next_eruption)
