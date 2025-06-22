@@ -226,7 +226,7 @@ class VolcanoData:
         self.line_points = [(x, a * x + b) for x in self.timeline]
 
 
-    def q_line(self):
+    def q_line(self, q):
         self.compute_for_plotting()
 
         # use timeline to fit to line
@@ -250,12 +250,12 @@ class VolcanoData:
 
         if method == 'linear':
             if not self.line_points:
-                self.linear_extrapolation(True)
+                self.linear_extrapolation()
             return self.line_points[eruption_id - 1]
 
         elif method == 'qline':
             if not self.qline_points:
-                self.q_line()
+                self.q_line(self.qperiod)
             return self.qline_points[eruption_id - 1]
 
         else:
