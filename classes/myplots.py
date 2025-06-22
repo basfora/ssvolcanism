@@ -316,9 +316,11 @@ class MyPlots:
 
         # add stats: mean and std
         error_mean, error_std = bf.compute_mean_std(yvalues)
-        error_median = bf.m3_to_km3(np.median(yvalues))
-        e_mean_km3 = bf.m3_to_km3(error_mean)
-        e_std_km3 = bf.m3_to_km3(error_std)
+
+        # km3
+        km3yvalues = bf.m3_to_km3(yvalues)
+        e_median_km3 = np.median(km3yvalues)
+        e_mean_km3, e_std_km3= bf.compute_mean_std(km3yvalues)
 
         # PLOT 1 (LEFT) - error pts and mean/std lines
 
@@ -364,20 +366,23 @@ class MyPlots:
         plt.legend(frameon=False)
 
         # printout error stats
+
         print(f"-----------")
         print(f"Error Statistics ({option} {method}):")
         #print(f'{myvol} ERROR STATS:')
-        print(f"Min: {bf.m3_to_km3(min(yvalues)):.9f} | Max: {bf.m3_to_km3(max(yvalues)):.4f} km3")
+        print(f"Min: {min(km3yvalues):.6f} | Max: {max(km3yvalues):.6f} km3")
         print(f"Mean: {e_mean_km3:.4f} +- {e_std_km3:.4f} km3")
-        print(f"Variance: {bf.m3_to_km3(np.var(yvalues)):.6f} km6")
-        print(f"Median: {error_median:.4f} km3")
-        print(f"Mean Squared Error (MSE): {bf.m3_to_km3(np.mean(np.square(yvalues))):.4f} km3")
+        e_var_km3 = np.var(km3yvalues)
+        print(f"Variance: {e_var_km3:.6f} km6")
+        print(f"Median: {e_median_km3:.4f} km3")
+        mse_km3 = np.mean(np.square(km3yvalues))
+        print(f"Mean Squared Error (MSE): {mse_km3:.6f} km3")
 
-        abs_error = [abs(e) for e in yvalues]
+        abs_error = [abs(e) for e in km3yvalues]
         print('Absolute Error Statistics:')
-        print(f"Min: {bf.m3_to_km3(min(abs_error)):.9f} | Max: {bf.m3_to_km3(max(abs_error)):.4f} km3")
-        print(f"Mean: {bf.m3_to_km3(np.mean(abs_error)):.4f} km3")
-        print(f"Error Sum: {bf.m3_to_km3(np.sum(abs_error)):.4f} km3")
+        print(f"Min: {min(abs_error):.4f} | Max: {max(abs_error):.4f} km3")
+        print(f"Mean: {np.mean(abs_error):.6f} km3")
+        print(f"Error Sum: {np.sum(abs_error):.6f} km3")
         # ----------------
 
         # show, save and close
