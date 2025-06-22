@@ -105,7 +105,7 @@ def test_basic_stats():
     assert abs(var_pop - 190170600000000) < thv
     assert abs(bf.std_from_var(var_pop) - stdev_pop) < thv
 
-    assert bf.get_limits(myevol) == (500000, 37350000)
+    assert bf.compute_limits(myevol) == (500000, 37350000)
     assert bf.get_total(myevol) == 55600000
 
     # volume functions
@@ -115,10 +115,17 @@ def test_basic_stats():
     assert bf.m3_to_km3(55600000) == 0.0556
     assert bf.m3_to_km3([500000, 55600000]) == [0.0005, 0.0556]
 
-    assert bf.compute_error(2, 1) == (1, 100.0)
-    assert bf.compute_error(-1, 1) == (2, 200.0)
-    assert bf.compute_error(0, 1) == (1, 100.0)
-    assert bf.compute_error(8, 10) == (2, 20.0)
+    assert bf.compute_error(1, 2) == (1, 100.0)
+    assert bf.compute_error(1, -1) == (-2, 200.0)
+    assert bf.compute_error(1, 0) == (-1, 100.0)
+    assert bf.compute_error(10, 8) == (-2, 20.0)
+
+    ans = bf.compute_error(1, [2, -1, 0])
+
+    assert isinstance(ans[0], list)
+    assert ans[0] == [1, -2, -1]
+    assert isinstance(ans[1], list)
+    assert ans[1] == [100, 200, 100]
 
 
 def test_time_functions():

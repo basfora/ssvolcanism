@@ -2,6 +2,7 @@
 """Data class for a single eruption event."""
 from classes.basicfun import Basicfun as bf
 import numpy as np
+import datetime
 
 
 class OneEruption:
@@ -40,7 +41,7 @@ class OneEruption:
         # same for all methods
         cvolT1 = self.cvol.t1
 
-        if method == 1:
+        if method == 1 or method == 4:
             q = self.q_period
             dT = self.dT.real
         elif method == 2:   # deterministic
@@ -55,25 +56,40 @@ class OneEruption:
 
         return cvolT1, q, dT
 
+    def save_raw(self, edate: datetime.date, cvol: int, evol: int):
+
+        self.date.real = edate
+        self.cvol.real = cvol
+        self.evol.real = evol
+
+        return
+
     def save_result(self, cvolT2, dT, method=2):
-        """Save the result of the prediction."""
+        """Save the result of the prediction
+        :param cvolT2: estimated cumulative vol (m3) at T2; float (methods 0-2), list (method 3)
+        :param dT: estimated time interval (days); int (method 0-2), list (method 3)
+        :param method: type of estimation:
+        - method 0: real data
+        - method 1: linear (change to qline)
+        - method 2: deterministic
+        - method 3: stochastic"""
 
-        # TODO - handle list vs single value for cvolT2 and dT (maybe inside bf is best)
-        #if method == 3:
-
-        # error in cvol
-        cvol_error, cvol_error_per = bf.compute_error(cvolT2, self.cvol.real)
+        # error in CVOL
+        cvol_error, cvol_error_per = bf.compute_error(self.cvol.real, cvolT2)
 
         # compute evol
         evolT2 = bf.compute_delta_vol(self.cvol.t1, cvolT2)
-        evol_error, evol_error_per = bf.compute_error(evolT2, self.evol.real)
+        evol_error, evol_error_per = bf.compute_error(self.evol.real, evolT2)
+
+        # get estimated date
         dateT2 = bf.transform_days_to_date(dT, self.date.t1)
 
-        if method == 0:  # q line
-            # todo
+        if method == 0:  # real data
             self.cvol.real = cvolT2
+            self.evol.real = evolT2
+            self.dT.real = dT
 
-        elif method == 1:
+        elif method == 1:   # linear
             self.cvol.linear.value = cvolT2
             self.cvol.linear.error, self.cvol.linear.error_per = cvol_error, cvol_error_per
 
@@ -104,6 +120,7 @@ class OneEruption:
             # pt cloud
             self.cvol.sim.pts = cvolT2
             self.dT.sim.pts = dT
+
             # statistics - mean, std dev, median, confidence interval
             self.cvol.sim.mean, self.cvol.sim.std = bf.compute_mean_std(cvolT2)
             self.cvol.sim.median = np.median(cvolT2)
@@ -112,9 +129,20 @@ class OneEruption:
             self.dT.sim.mean, self.dT.sim.std = bf.compute_mean_std(dT)
             self.dT.sim.median = np.median(dT)
             self.dT.sim.lower, self.dT.sim.upper = np.percentile(dT, [2.5, 97.5])
+        elif method == 4: # qline
+            self.cvol.qline.value = cvolT2
+            self.cvol.qline.error, self.cvol.qline.error_per = cvol_error, cvol_error_per
 
+            self.evol.qline.value = evolT2
+            self.evol.qline.error, self.evol.qline.error_per = evol_error, evol_error_per
 
+            self.dT.qline.value = dT
+            self.dT.qline.error, self.dT.qline.error_per = 0, 0
+
+            # save the date of the eruption
+            self.date.linear = dateT2
         else:
+
             raise ValueError("Method must be 1, 2, or 3.")
 
         return

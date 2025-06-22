@@ -14,7 +14,6 @@ class Basicfun:
     # -----------------------------------------------------
     # BASIC STATS
     # -----------------------------------------------------
-
     # UT - ok
     @staticmethod
     def compute_mean_std(values: list) -> tuple:
@@ -27,32 +26,8 @@ class Basicfun:
         if not isinstance(values, np.ndarray):
             values = np.array(values)
         mean_value = np.mean(values)
-        # TODO check np.std with excel!!
         std_value = np.std(values, ddof=0)
         return mean_value, std_value
-
-
-    @staticmethod
-    def compute_median(values: list) -> float:
-        """Compute median of a list of values"""
-        if not values:
-            return 0
-        if not isinstance(values, np.ndarray):
-            values = np.array(values)
-        median = np.median(values)
-        return median
-
-
-    # UT - ok
-    @staticmethod
-    def compute_error(valuehat: float, value: float) -> (float, float):
-        """Compute error percentage"""
-        if value == 0:
-            return 0, 0
-        else:
-            error = (value - valuehat)
-            error_per = abs(error/ value) * 100
-            return error, error_per
 
     # UT - ok
     @staticmethod
@@ -68,9 +43,21 @@ class Basicfun:
     def var_from_std(std: float) -> float:
         return std * std
 
+
+    @staticmethod
+    def compute_median(values: list) -> float:
+        """Compute median of a list of values"""
+        if not values:
+            return 0
+        if not isinstance(values, np.ndarray):
+            values = np.array(values)
+        median = np.median(values)
+        return median
+
+
     # UT - ok
     @staticmethod
-    def get_limits(values: list) -> tuple:
+    def compute_limits(values: list) -> tuple:
         v_max = max(values)
         v_min = min(values)
         return v_min, v_max
@@ -80,21 +67,76 @@ class Basicfun:
     def get_total(values: list) -> float:
         return sum(values)
 
+    # ERROR FUNCTIONS
+
+    # UT - ok
+    @staticmethod
+    def compute_error(truevalue: float, hatvalue: float or list) -> (float or list, float or list):
+        """Compute error percentage:
+        error (residual) = hat - true
+        error %: |residual/true| * 100"""
+        if truevalue == 0:
+            return (hatvalue - truevalue), 0
+        else:
+            if not isinstance(hatvalue, np.ndarray):
+                hatvalue = np.array(hatvalue)
+            error = (hatvalue - truevalue)
+            error_per = 100 * abs(error/truevalue)
+            # convert to list if needed
+            if np.size(error) == 1:
+                return float(error), float(error_per)
+            else:
+                return error.tolist(), error_per.tolist()
+
+    @staticmethod
+    def compute_rss(errorvalues: list):
+        """Residual Sum of Squares (RSS):
+        summation of the square of difference between predicted and actual target variable"""
+
+        rss = sum([e**2 for e in errorvalues])
+        return rss
+
+    @staticmethod
+    def compute_mse(errorvalues: list):
+        """Mean Squared Error (MSE) — MSE is the Mean of RSS
+        """
+        rss = Basicfun.compute_rss(errorvalues)
+        n = len(errorvalues)
+
+        mse = rss / n
+
+        return mse
+
+    @staticmethod
+    def compute_rmse(errorvalues: list):
+        """Root Mean Squared Error (RMSE) — RMSE is the square root of MSE."""
+
+        mse = Basicfun.compute_mse(errorvalues)
+
+        rmse = np.sqrt(mse)
+
+        return round(rmse, 6)
+
+
     # VOLUME FUNCTIONS
     # UT - ok
     @staticmethod
-    def compute_delta_vol(cvol1: int or float, cvol2: int or float) -> int:
+    def compute_delta_vol(cvol1: float, cvol2: float or list) -> float or list:
         """Compute Eruption Volume based on Cumulative Volume before/after eruption"""
-        return cvol2 - cvol1
+        if np.size(cvol2) > 1:
+            dvol = [cv2 - cvol1 for cv2 in cvol2]
+        else:
+            dvol = cvol2 - cvol1
+
+        return dvol
 
     # UT - ok
     @staticmethod
     def m3_to_km3(m3: float or list) -> float or list:
         """Convert m3 to km3"""
-        if isinstance(m3, list):
-            m3 = np.array(m3)
-            m3 = m3 / 1e9
-            km3 = list(m3)
+        if np.size(m3) > 1:
+            km3 = np.array(m3) / 1e9
+            km3 = km3.tolist()
         else:
             km3 = m3 / 1e9
         return km3
@@ -148,11 +190,16 @@ class Basicfun:
         return timeline
 
     @staticmethod
-    def transform_days_to_date(days: int, date_t0: datetime.date) -> datetime.date:
+    def transform_days_to_date(days: int or list, date_t0: datetime.date) -> datetime.date:
         """Transform days to date based on the initial date"""
         if days < 0:
             raise ValueError("Days cannot be negative")
-        return date_t0 + datetime.timedelta(days=days)
+
+        if np.size(days) > 1:
+            mydate = [date_t0 + datetime.timedelta(d) for d in days]
+        else:
+            mydate = date_t0 + datetime.timedelta(days)
+        return mydate
 
     # ------------------------------------------------------
     # RATE FUNCTIONS

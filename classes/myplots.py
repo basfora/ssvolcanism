@@ -46,7 +46,7 @@ class MyPlots:
         self.title_evol = "Eruption Volume"
         self.title_error_hist = "Error Distribution"
         self.title_error = "Error"
-        self.title_exp = "Expected vs Real Data"
+        self.title_exp = "Real vs Expected Data"
         self.title_linear = "Linear Extrapolation"
         self.title_qline = 'Q-line Approximation'
 
@@ -217,19 +217,7 @@ class MyPlots:
         # separate eruptions (class)
         ep1 = eruptions[:73]  # period I
         ep2 = eruptions[73:]  # period II
-
-        # sanity check (date and q used)
-        assert len(ep1) == 73, "Period I should have 73 eruptions"
-        assert len(ep2) == 46, "Period II should have 46 eruptions"
-        assert ep1[0].date.real == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
-        assert ep1[-1].date.real == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
-        assert round(ep1[1].q_period, 4) == round(ep1[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0107),
-                                                                                4), "Q for period I should be 0.0107 km3/yr"
-
-        assert ep2[0].date.real == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
-        assert ep2[-1].date.real == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
-        assert round(ep2[0].q_period, 4) == round(ep2[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0228),
-                                                                                4), "Q for period II should be 0.0228 km3/yr"
+        self.sanity_piton_periods(ep1, ep2)
 
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
@@ -282,20 +270,15 @@ class MyPlots:
     def plot_volume_error(self, eruptions: list, option='cvol', method='det', savename=None, show_plot=True):
         """Plot ERROR between real and predicted VOL, and error histogram"""
 
+        # get data pts (option) and title (method)
         if option == 'cvol':
             myvol = self.title_cvol
-            if method == 'det':
-                yvalues = [e.cvol.det.error for e in eruptions if e.cvol.det.value is not None]  # n-1
-            elif method == 'linear':
-                yvalues = [e.cvol.linear.error for e in eruptions if e.cvol.linear.value is not None]  # n-1
-            elif method == 'qline':
-                yvalues = [e.cvol.qline.error for e in eruptions if e.cvol.qline.value is not None]  # n-1
+            yvalues = [getattr(e.cvol, method).error for e in eruptions if getattr(e.cvol, method).value is not None]
+
         elif option == 'evol':
             myvol = self.title_evol
-            if method == 'det':
-                yvalues = [e.evol.det.error for e in eruptions if e.evol.det.value is not None]
-            elif method == 'linear':
-                yvalues = [e.evol.linear.error for e in eruptions if e.evol.linear.value is not None]
+            yvalues = [getattr(e.evol, method).error for e in eruptions if getattr(e.evol, method).value is not None]
+
         else:
             exit()
 
@@ -317,10 +300,16 @@ class MyPlots:
         # add stats: mean and std
         error_mean, error_std = bf.compute_mean_std(yvalues)
 
-        # km3
-        km3yvalues = bf.m3_to_km3(yvalues)
-        e_median_km3 = np.median(km3yvalues)
-        e_mean_km3, e_std_km3= bf.compute_mean_std(km3yvalues)
+        # km3 for printing
+        yvalues_km3 = bf.m3_to_km3(yvalues)
+        # some error stats
+        e_mean_km3, e_std_km3= bf.compute_mean_std(yvalues_km3)
+        e_median_km3 = bf.compute_median(yvalues_km3)
+        e_var_km3 = bf.var_from_std(e_std_km3)
+        e_min_km3, e_max_km3 = bf.compute_limits(yvalues_km3)
+        e_mse_km3 = bf.compute_mse(yvalues_km3)
+        e_rmse_km3 = bf.compute_rmse(yvalues_km3)
+
 
         # PLOT 1 (LEFT) - error pts and mean/std lines
 
@@ -365,24 +354,25 @@ class MyPlots:
         plt.ylabel(self.label_freq)
         plt.legend(frameon=False)
 
-        # printout error stats
+        # PRINTOUT error stats
 
         print(f"-----------")
         print(f"Error Statistics ({option} {method}):")
-        #print(f'{myvol} ERROR STATS:')
-        print(f"Min: {min(km3yvalues):.6f} | Max: {max(km3yvalues):.6f} km3")
-        print(f"Mean: {e_mean_km3:.4f} +- {e_std_km3:.4f} km3")
-        e_var_km3 = np.var(km3yvalues)
-        print(f"Variance: {e_var_km3:.6f} km6")
+        print(f"Min: {e_min_km3:.6f} | Max: {e_max_km3:.6f} km3")
         print(f"Median: {e_median_km3:.4f} km3")
-        mse_km3 = np.mean(np.square(km3yvalues))
-        print(f"Mean Squared Error (MSE): {mse_km3:.6f} km3")
+        print(f"Mean: {e_mean_km3:.4f} +- {e_std_km3:.4f} km3")
+        print(f"Variance: {e_var_km3:.6f} km6")
+        print(f"MSE: {e_mse_km3:.9f} km6")
+        print(f"RMSE: {e_rmse_km3:.6f} km3")
 
-        abs_error = [abs(e) for e in km3yvalues]
+        abs_error = [abs(e) for e in yvalues_km3]
+        abs_e_min, abs_e_max = bf.compute_limits(abs_error)
+        abs_e_mean, _ = bf.compute_mean_std(abs_error)
+        abs_e_sum = np.sum(abs_error)
         print('Absolute Error Statistics:')
-        print(f"Min: {min(abs_error):.4f} | Max: {max(abs_error):.4f} km3")
-        print(f"Mean: {np.mean(abs_error):.6f} km3")
-        print(f"Error Sum: {np.sum(abs_error):.6f} km3")
+        print(f"Min: {abs_e_min:.4f} | Max: {abs_e_max:.4f} km3")
+        print(f"Mean: {abs_e_mean:.6f} km3")
+        print(f"Error Sum: {abs_e_sum:.6f} km3")
         # ----------------
 
         # show, save and close
@@ -480,6 +470,23 @@ class MyPlots:
         return save_path
 
     @staticmethod
+    def sanity_piton_periods(ep1: list, ep2: list):
+
+        # sanity check (date and q used)
+        assert len(ep1) == 73, "Period I should have 73 eruptions"
+        assert len(ep2) == 46, "Period II should have 46 eruptions"
+        assert ep1[0].date.real == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
+        assert ep1[-1].date.real == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
+        assert round(ep1[1].q_period, 4) == round(ep1[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0107),
+                                                                                4), "Q for period I should be 0.0107 km3/yr"
+
+        assert ep2[0].date.real == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
+        assert ep2[-1].date.real == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
+        assert round(ep2[0].q_period, 4) == round(ep2[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0228),
+                                                                                4), "Q for period II should be 0.0228 km3/yr"
+
+
+    @staticmethod
     def sanity_check_det(eruptions: list):
         """Print results of deterministic prediction."""
         print("Deterministic Prediction CVOL(T2) in km3:")
@@ -497,8 +504,9 @@ class MyPlots:
             cvolT2 = e.q_period * dT + e.cvol.t1
             assert round(cvolT2, 1) == round(e.cvol.det.value, 1), "Cvol(T2) does not match expected value"
             # check error calculation
-            assert round(e.cvol.real - e.cvol.det.value, 1) == round(e.cvol.det.error, 1), "Error real vs expected CVOL(T2)"
-            assert round(e.cvol.det.error_per, 2) == round(100* abs(e.cvol.det.error)/e.cvol.real, 2), "Error percentage does not match expected value"
+            eaux = round(e.cvol.det.value - e.cvol.real, 1)
+            assert eaux == round(e.cvol.det.error, 1), f"Error CVOL(T2) real {eaux} vs expected {e.cvol.det.error}"
+            assert round(e.cvol.det.error_per, 2) == round(100* abs(e.cvol.det.error/e.cvol.real), 2), "Error percentage does not match expected value"
             assert round(e.evol.det.value, 1) == round(e.cvol.det.value - e.cvol.t1, 1), "Evol(T2) does not match expected value"
 
 

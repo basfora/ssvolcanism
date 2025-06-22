@@ -189,6 +189,13 @@ class PredictionData:
         # save
         self.oe.save_result(cvolT2, dT, method=2)
 
+    # METHOD 4: QLINE
+    def qline_method(self):
+        # get parameters for qline method
+        cvolT1, q, dT = self.oe.get_parameters(4)
+
+
+
     def stochastic_method(self):
         """Set the theoretical rate of eruptions (m3/day) for stochastic method"""
 

@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="started qline method">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="mse unit fixed">
+      <change beforePath="$PROJECT_DIR$/.idea/Volcano.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Volcano.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/sketch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Det.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_DetError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_LinearError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_LinearError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear_fixedy0.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear_fixedy0.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Evol_Det.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Evol_DetError.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_collect.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,23 +71,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests in test_collect.py.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.collect-data.executor&quot;: &quot;Run&quot;,
-    &quot;Python.collectdata.executor&quot;: &quot;Run&quot;,
-    &quot;Python.historical_data.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.piton.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/basfora/02ProjectSources/PycharmProjects/volcano&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests in test_collect.py.executor": "Debug",
+    "Python.collect-data.executor": "Run",
+    "Python.collectdata.executor": "Run",
+    "Python.historical_data.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.piton.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "/home/basfora/02ProjectSources/PycharmProjects/volcano",
+    "settings.editor.selected.configurable": "preferences.keymap"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/old" />
@@ -197,7 +211,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-53e2683a6804-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26094.141" />
+        <option value="bundled-python-sdk-dfff61a61320-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.25410.159" />
       </set>
     </attachedChunks>
   </component>
@@ -426,7 +440,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750456702778</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="mse unit fixed">
+      <option name="closed" value="true" />
+      <created>1750564137312</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1750564137312</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -452,7 +474,8 @@
     <MESSAGE value="color coded" />
     <MESSAGE value="plots plots" />
     <MESSAGE value="started qline method" />
-    <option name="LAST_COMMIT_MESSAGE" value="started qline method" />
+    <MESSAGE value="mse unit fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="mse unit fixed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

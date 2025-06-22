@@ -297,9 +297,9 @@ def print_rate_stats(self):
             return
 
         # compute ERROR
-        self.error_dT2, _ = bf.compute_error(self.dT_hat, self.real_dT)
-        self.error_evolT2, self.error_evol_per = bf.compute_error(self.evolT2_hat, self.real_evol_t2)
-        self.error_cvolT2, self.error_cvol_per = bf.compute_error(self.cvolT2_hat, self.real_cvol_t2)
+        self.error_dT2, _ = bf.compute_error(self.real_dT, self.dT_hat)
+        self.error_evolT2, self.error_evol_per = bf.compute_error(self.real_evol_t2, self.evolT2_hat)
+        self.error_cvolT2, self.error_cvol_per = bf.compute_error(self.real_cvol_t2, self.cvolT2_hat)
 
 
 

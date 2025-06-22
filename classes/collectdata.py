@@ -233,6 +233,9 @@ class VolcanoData:
         xvalues = self.timeline
         yvalues = self.list_cumvol[1:]
 
+        # get parameters for qline method
+        cvolT1, q, dT = self.oe.get_parameters(method=1)
+
         # TODO separate periods
         q = 0.0
         b = 0.0 # initial value?
@@ -242,15 +245,15 @@ class VolcanoData:
 
         return
 
-    def get_line_pt(self, eruption_id: int, method=1):
+    def get_line_pt(self, eruption_id: int, method='qline'):
         """Get the point on the line for a given eruption ID"""
 
-        if method == 1:
+        if method == 'linear':
             if not self.line_points:
-                self.linear_extrapolation()
+                self.linear_extrapolation(True)
             return self.line_points[eruption_id - 1]
 
-        elif method == 0:
+        elif method == 'qline':
             if not self.qline_points:
                 self.q_line()
             return self.qline_points[eruption_id - 1]
@@ -262,11 +265,13 @@ class VolcanoData:
 
 
     def get_a_b(self, method=1):
-
         if method == 1:
             return self.a, self.b
         elif method == 0:
             return self.q_a, self.q_b
+        else:
+            return None, None
+
 
 
 
