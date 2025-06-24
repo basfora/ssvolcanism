@@ -316,7 +316,7 @@ def test_deterministic_prediction():
     last_eruption = 5
     # start prediction instance (PredictionData)
     pp = pred(edates, evol, cvol, id_last=last_eruption)
-    pp.set_qperiod(qperiod)
+    pp.set_period_info(qperiod)
 
 
 
@@ -336,14 +336,14 @@ def test_deterministic_prediction():
 
     assert abs(CV1 - pp.oe.cvol.t1) < 1
     assert dT == pp.oe.dT.real == pp.oe.dT.real == 123
-    assert abs(pp.oe.q_period - q) < 0.1
+    assert abs(pp.oe.qperiod - q) < 0.1
 
 
     # hand and state equation OK
     assert round(CV2, 4) == 59203285.4182
     assert round(CV2, 4) == round(bf.state_equation(CV1, q, dT), 4)
     # hand and saved prediction
-    assert round(pp.oe.cvol.det.value, 4) == round(bf.state_equation(pp.oe.cvol.t1, pp.oe.q_period, pp.oe.dT.real), 4)
+    assert round(pp.oe.cvol.det.value, 4) == round(bf.state_equation(pp.oe.cvol.t1, pp.oe.qperiod, pp.oe.dT.real), 4)
     assert round(CV2) == round(pp.oe.cvol.det.value)
 
 

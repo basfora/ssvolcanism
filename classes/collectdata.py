@@ -80,6 +80,7 @@ class VolcanoData:
         # INIT FUNCTIONS
         # --------------------------------
         self.set_name(name)
+        self.import_data()
         # ---------------------------------
 
     def set_name(self, name=None):
@@ -117,9 +118,12 @@ class VolcanoData:
         # get paths and extensions
         self.collect_from()
         # Read the Excel file
-        df = pd.read_excel(self.path_to_file, date_format='%d/%m/%Y')
+        self.df_volcano = pd.read_excel(self.path_to_file, date_format='%d/%m/%Y')
 
-        return df
+        if 'Piton' in self.name:
+            self.piton_rates()
+
+        return self.df_volcano
 
     # UT - OK
     def organize(self, period=1):
@@ -135,7 +139,6 @@ class VolcanoData:
 
         # set rows to use according to the period
         if 'Piton' in self.name:
-            self.piton_rates()
             # Define period (I, II or both)
             if period == 1:
                 self.period = 1
@@ -160,9 +163,6 @@ class VolcanoData:
 
         # columns to use: B and E
         cDate, cErupted, cCV = 1, 3, 4
-        # ----------------------------------
-        # import dall ata from the file
-        self.df_volcano = self.import_data()
         # -----------------------------------
         # separate relevant data from the file, as DataFrames
         self.series_date = self.df_volcano.iloc[r1:rend, cDate]
@@ -225,7 +225,7 @@ class VolcanoData:
         # create points for the line based on fit and timeline
         self.line_points = [(x, a * x + b) for x in self.timeline]
 
-
+    # todo delete
     def q_line(self, q):
         self.compute_for_plotting()
 
@@ -274,8 +274,6 @@ class VolcanoData:
 
 
 
-
-
     def output_rel_data(self, idx_0=None, idx_f=None):
         """Output relevant data for analysis as lists"""
         if idx_0 is None:
@@ -289,37 +287,6 @@ class VolcanoData:
 
         return rel_dates, rel_eruptvol, rel_cumvol
 
-    def set_Q(self, q: float, which: int):
-        """Set the rate of eruptions
-        :param q: rate of eruptions in km3/yr
-        :param which: 'long' for long-term,
-                    '1' for period 1, '2' for period 2"""
-        if which == -1:
-            self.Qlong = q
-        elif which == 1:
-            self.Q1 = q
-        elif which == 2:
-            self.Q2 = q
-        else:
-            print(f"Unknown rate type: {which}. Use 'long', '1', or '2'.")
-
-    def output_Q(self, which=None):
-        """Output the rate of eruptions"""
-
-        if which is None:
-            if self.period == 1:
-                return self.Q1
-            elif self.period == 2:
-                return self.Q2
-            elif self.period == 0:
-                return 'will computer later (todo)'
-            else:
-                return None
-
-        elif which == -1:
-            return self.Qlong
-        else:
-            return None
 
     def piton_rates(self):
         """Set the rates of eruptions for PitondelaFournaise

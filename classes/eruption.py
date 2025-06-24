@@ -29,10 +29,9 @@ class OneEruption:
 
         # -------------- variables at T1 (initial variables/parameters)
         # parameters specific for each prediction method (Q)
-        self.q_line_xy = None
-        self.q_linear = None
-        self.q_period = None
-        self.q_hat = None
+        self.qperiod = None
+        # stochastic
+        self.qhat = None
         # add more parameters if needed
 
     def get_parameters(self, method=2):
@@ -41,16 +40,22 @@ class OneEruption:
         # same for all methods
         cvolT1 = self.cvol.t1
 
-        if method == 1 or method == 4:
-            q = self.q_period
+        if method == 1 or method == 4: # linear (regression)
+            q = self.qperiod
             dT = self.dT.real
         elif method == 2:   # deterministic
             # known (real) dT
             dT = self.dT.real
-            q = self.q_period
+            q = self.qperiod
         elif method == 3:   # stochastic
             dT = self.cvol.sim.N
-            q = self.q_hat
+            q = self.qhat
+        elif method == 4:   # qline
+            q = self.qperiod
+            # from beginning of period
+            dT = self.dT.t1
+            cvolT1 = self.cvol.t0
+
         else:
             raise ValueError("Method must be 1, 2, or 3.")
 
@@ -140,6 +145,7 @@ class OneEruption:
             self.dT.qline.error, self.dT.qline.error_per = 0, 0
 
             # save the date of the eruption
+            dateT2 = bf.transform_days_to_date(dT, self.date.t0)
             self.date.linear = dateT2
         else:
 
@@ -168,6 +174,10 @@ class OneEruption:
             evol = self.evol.det.value
             cvol = self.cvol.det.value
             bf.print_estimate(evol, cvol, 'DETERMINISTIC METHOD')
+        elif what == 4:
+            evol = self.evol.det.value
+            cvol = self.cvol.det.value
+            bf.print_estimate(evol, cvol, 'QLINE METHOD')
         else:
             return
 
@@ -181,6 +191,7 @@ class Vol:
     def __init__(self):
         # real data (what really happened if avbailable)
         # VOL(T1) data (known)
+        self.t0 = None
         self.t1 = None
         self.real = None
 
@@ -199,6 +210,8 @@ class TInterval:
     """Time interval between eruptions (in days) """
 
     def __init__(self):
+
+        self.t0 = 0
         self.t1 = 0  # time of the first eruption in days
         self.real = None
 
@@ -247,6 +260,7 @@ class EDate:
 
         # todo maybe better way is to save edate and tinterval in one class, have a transform method to convert days to date
 
+        self.t0 = None
         # T1 data (known)
         self.t1 = None
 

@@ -4,21 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="mse unit fixed">
-      <change beforePath="$PROJECT_DIR$/.idea/Volcano.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Volcano.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="error ok">
+      <change afterPath="$PROJECT_DIR$/scripts/piton_qline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/sketch.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Det.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_DetError.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_LinearError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_LinearError.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear_fixedy0.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear_fixedy0.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Evol_Det.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Evol_DetError.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
@@ -80,6 +76,8 @@
     "Python.historical_data.executor": "Run",
     "Python.main.executor": "Run",
     "Python.piton.executor": "Run",
+    "Python.piton_qline.executor": "Run",
+    "Python.prediction.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -95,28 +93,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.piton">
-    <configuration name="collectdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Volcano" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/classes/collectdata.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="historical_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -131,28 +107,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/historical_data.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Volcano" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/old/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -183,6 +137,50 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="piton_qline" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Volcano" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/piton_qline.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="prediction" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Volcano" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/classes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/classes/prediction.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Python tests in test_collect.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -201,10 +199,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.piton" />
+        <item itemvalue="Python.piton_qline" />
+        <item itemvalue="Python.prediction" />
         <item itemvalue="Python.historical_data" />
         <item itemvalue="Python tests.Python tests in test_collect.py" />
-        <item itemvalue="Python.main" />
-        <item itemvalue="Python.collectdata" />
       </list>
     </recent_temporary>
   </component>
@@ -448,7 +446,23 @@
       <option name="project" value="LOCAL" />
       <updated>1750564137312</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="error ok">
+      <option name="closed" value="true" />
+      <created>1750624307913</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1750624307913</updated>
+    </task>
+    <task id="LOCAL-00030" summary="error ok">
+      <option name="closed" value="true" />
+      <created>1750624469734</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1750624469734</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -475,7 +489,8 @@
     <MESSAGE value="plots plots" />
     <MESSAGE value="started qline method" />
     <MESSAGE value="mse unit fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="mse unit fixed" />
+    <MESSAGE value="error ok" />
+    <option name="LAST_COMMIT_MESSAGE" value="error ok" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

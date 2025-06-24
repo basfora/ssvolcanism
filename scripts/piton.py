@@ -42,7 +42,7 @@ if __name__ == '__main__':
             q_period = piton_data.Q1
         else:
             q_period = piton_data.Q2
-        pp.set_qperiod(q_period)
+        pp. set_period_info(q_period)
 
         # run prediction methods
         next_eruption = pp.run_methods()
@@ -101,7 +101,6 @@ if __name__ == '__main__':
                                    base_name, show_plot)
 
     # mean + std == 64% samples (double check that in my thesis)
-
 
 
 
