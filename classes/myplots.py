@@ -208,7 +208,7 @@ class MyPlots:
     def plot_real_vs_expected(self, eruptions: list, option='cvol', savename=None, show_plot=True):
         """Plot Volume (CVOL or EVOL) real and deterministic prediction"""
 
-        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
 
         suptitle = f"{self.volcano_name} - {self.period}"
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
@@ -221,22 +221,22 @@ class MyPlots:
 
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
-        xvalues = [e.date.real for e in eruptions]  # n
-        xvalues1 = [e.date.real for e in ep1[1:]]  # Period I, skip first eruption, n-1
-        xvalues2 = [e.date.real for e in ep2]  # Period II
+        xvalues = [e.date.t2 for e in eruptions]  # n
+        xvalues1 = [e.date.t2 for e in ep1[1:]]  # Period I, skip first eruption, n-1
+        xvalues2 = [e.date.t2 for e in ep2[1:]]  # Period II
 
 
         if option == 'cvol':
             myvol     = self.title_cvol
             # yvalues: real cumulative volumes (CVOL)
-            yvalues_real = [e.cvol.real for e in eruptions]  # n
+            yvalues_real = [e.cvol.t2 for e in eruptions]  # n
             # expected values (deterministic prediction)
             yvalues1 = [e.cvol.det.value for e in ep1 if e.cvol.det.value is not None]
             yvalues2 = [e.cvol.det.value for e in ep2 if e.cvol.det.value is not None]
         elif option == 'evol':
             myvol     = self.title_evol
             # yvalues: real eruption volumes (EVOL)
-            yvalues_real = [e.evol.real for e in eruptions]  # n
+            yvalues_real = [e.evol.t2 for e in eruptions]  # n
             # expected values (deterministic prediction)
             yvalues1 = [e.evol.det.value for e in ep1 if e.evol.det.value is not None]
             yvalues2 = [e.evol.det.value for e in ep2 if e.evol.det.value is not None]
@@ -288,14 +288,14 @@ class MyPlots:
         if method == 'qline':
             myvol += f" {self.title_qline}"
 
-        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
 
         suptitle = f"{self.volcano_name} {myvol} \n{self.period}"
         fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
         # ------------------------------------- PLOT 02: ERROR
-        xvalues = [e.date.real for e in eruptions if e.id > 1]  # n-1
+        xvalues = [e.date.t2 for e in eruptions if getattr(e.cvol, method).value is not None]  # n-1
 
         # add stats: mean and std
         error_mean, error_std = bf.compute_mean_std(yvalues)
@@ -387,7 +387,7 @@ class MyPlots:
     def plot_linear(self, eruptions: list, option='cvol', method='linear', savename=None, show_plot=True):
         """Plot Volume (CVOL or EVOL) real and deterministic prediction"""
 
-        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
 
         suptitle = f"{self.volcano_name} - {self.period}"
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
@@ -396,34 +396,23 @@ class MyPlots:
         # separate eruptions (class)
         ep1 = eruptions[:73]  # period I
         ep2 = eruptions[73:]  # period II
-
-        # sanity check (date and q used)
-        assert len(ep1) == 73, "Period I should have 73 eruptions"
-        assert len(ep2) == 46, "Period II should have 46 eruptions"
-        assert ep1[0].date.real == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
-        assert ep1[-1].date.real == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
-        assert round(ep1[1].qperiod, 4) == round(ep1[-1].qperiod, 4) == round(bf.Qy_to_Qday(0.0107),
-                                                                                4), "Q for period I should be 0.0107 km3/yr"
-
-        assert ep2[0].date.real == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
-        assert ep2[-1].date.real == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
-        assert round(ep2[0].qperiod, 4) == round(ep2[-1].qperiod, 4) == round(bf.Qy_to_Qday(0.0228),
-                                                                                4), "Q for period II should be 0.0228 km3/yr"
+        self.sanity_piton_periods(ep1, ep2)
 
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
-        xvalues = [e.date.real for e in eruptions]  # n
-        xvalues1 = [e.date.real for e in ep1]  # Period I, skip first eruption, n-1
-        xvalues2 = [e.date.real for e in ep2]  # Period II
+        xvalues = [e.date.t2 for e in eruptions]  # n
+        xvalues1 = [e.date.t2 for e in ep1]  # Period I, skip first eruption, n-1
+        xvalues2 = [e.date.t2 for e in ep2]  # Period II
 
         if option == 'cvol':
             myvol = f"{self.title_cvol} {self.title_linear}"
             # yvalues: real cumulative volumes (CVOL)
-            yvalues_real = [e.cvol.real for e in eruptions]  # n
+            yvalues_real = [e.cvol.t2 for e in eruptions]  # n
             # expected values (linear prediction)
             e1 = eruptions[0]  # first eruption, add so it can appear on plot
-            yvalues1 = [e1.cvol.real] + [e.cvol.linear.value for e in ep1 if e.cvol.linear.value is not None]
-            yvalues2 = [e.cvol.linear.value for e in ep2 if e.cvol.linear.value is not None]
+            e2 = ep2[0]  # last eruption of period I
+            yvalues1 = [e1.cvol.t2] + [e.cvol.qline.value for e in ep1 if e.cvol.qline.value is not None]
+            yvalues2 = [e2.cvol.t2] + [e.cvol.qline.value for e in ep2 if e.cvol.qline.value is not None]
         else:
             exit("Option must be 'cvol'")
 
@@ -479,12 +468,12 @@ class MyPlots:
 
     def linear_plots(self, eruptions: list, show_plot: bool):
         # Plot 5: CVOL real vs expected (LINEAR)
-        base_name = 'Piton_Period0_Cvol_Linear'
+        base_name = 'Piton_Period0_Cvol_QLine'
         self.plot_linear(eruptions, 'cvol', 'linear',
                              base_name, show_plot)
 
-        base_name = 'Piton_Period0_Cvol_LinearError'
-        self.plot_volume_error(eruptions, 'cvol', 'linear',
+        base_name = 'Piton_Period0_Cvol_QLineError'
+        self.plot_volume_error(eruptions, 'cvol', 'qline',
                                    base_name, show_plot)
 
 
@@ -505,15 +494,15 @@ class MyPlots:
     def sanity_piton_periods(ep1: list, ep2: list):
 
         # sanity check (date and q used)
-        assert len(ep1) == 73, "Period I should have 73 eruptions"
-        assert len(ep2) == 46, "Period II should have 46 eruptions"
-        assert ep1[0].date.real == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
-        assert ep1[-1].date.real == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
+        assert len(ep1) == 73, f"Period I should have 73 eruptions, it has {len(ep1)}"
+        assert len(ep2) == 46, f"Period II should have 46 eruptions, it has {len(ep2)}"
+        assert ep1[0].date.t2 == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
+        assert ep1[-1].date.t2 == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
         assert round(ep1[1].qperiod, 4) == round(ep1[-1].qperiod, 4) == round(bf.Qy_to_Qday(0.0107),
                                                                               4), "Q for period I should be 0.0107 km3/yr"
 
-        assert ep2[0].date.real == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
-        assert ep2[-1].date.real == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
+        assert ep2[0].date.t2 == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
+        assert ep2[-1].date.t2 == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
         assert round(ep2[0].qperiod, 4) == round(ep2[-1].qperiod, 4) == round(bf.Qy_to_Qday(0.0228),
                                                                               4), "Q for period II should be 0.0228 km3/yr"
 
@@ -525,30 +514,33 @@ class MyPlots:
 
         print('ID ; DATE ; CVOL REAL ; EXPECTED ; ERROR ; % ; Q (km3/day) ; DT (days) ; EVOL REAL ; EXPECTED')
 
-        for e in eruptions[1:]:
+        for e in eruptions:
+
+            if e.id == 1 or e.id == 74:
+                continue  # skip first eruption and first of period II
 
             # parameters for deterministic method
-            dT = e.dT.real
+            dT = e.dT.t2
             e_previous = eruptions[e.id - 2]
-            assert e_previous.cvol.real == e.cvol.t1, f"Cumulative volume at T1 does not match previous eruption's CVOL(T2) - {e.id}"
+            assert e_previous.cvol.t2 == e.cvol.t1, f"Cumulative volume at T1 does not match previous eruption's CVOL(T2) - {e.id}: {e_previous.cvol.t2, e.cvol.t1}"
 
             # check state equation and error
             cvolT2 = e.qperiod * dT + e.cvol.t1
             assert round(cvolT2, 1) == round(e.cvol.det.value, 1), "Cvol(T2) does not match expected value"
             # check error calculation
-            eaux = round(e.cvol.det.value - e.cvol.real, 1)
+            eaux = round(e.cvol.det.value - e.cvol.t2, 1)
             assert eaux == round(e.cvol.det.error, 1), f"Error CVOL(T2) real {eaux} vs expected {e.cvol.det.error}"
-            assert round(e.cvol.det.error_per, 2) == round(100* abs(e.cvol.det.error/e.cvol.real), 2), "Error percentage does not match expected value"
+            assert round(e.cvol.det.error_per, 2) == round(100 * abs(e.cvol.det.error / e.cvol.t2), 2), "Error percentage does not match expected value"
             assert round(e.evol.det.value, 1) == round(e.cvol.det.value - e.cvol.t1, 1), "Evol(T2) does not match expected value"
 
 
             # transform into km3 before printing
             q = bf.Qday_to_Qy(e.qperiod)
-            cvol_real, cvol_det = bf.m3_to_km3(e.cvol.real), bf.m3_to_km3(e.cvol.det.value)
+            cvol_real, cvol_det = bf.m3_to_km3(e.cvol.t2), bf.m3_to_km3(e.cvol.det.value)
             error, error_per = bf.m3_to_km3(e.cvol.det.error), e.cvol.det.error_per
-            evol_real, evol_det = bf.m3_to_km3(e.evol.real), bf.m3_to_km3(e.evol.det.value)
+            evol_real, evol_det = bf.m3_to_km3(e.evol.t2), bf.m3_to_km3(e.evol.det.value)
 
-            print(f"{e.id}; {e.date.real};", end=" ")
+            print(f"{e.id}; {e.date.t2};", end=" ")
             print(f"{cvol_real:.6f}; {cvol_det:.6f};", end="")
             print(f"{error:.6f}; {error_per:.2f}%;", end="")
             print(f"{q:.4f}; {dT:.0f};", end="")

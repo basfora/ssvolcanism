@@ -61,7 +61,7 @@ class PredictionData:
         self.comp_historical_stats()
         self.print_real_dataset()
 
-    def save_input_data(self, edates: list, evol: list, cvol: list,q=None, id_last=None):
+    def save_input_data(self, edates: list, evol: list, cvol: list, q=None, id_last=None):
         """Just save input data directly and crate prediction instance
         :param edates: list of TimeSeries [int](n)
         :param evol: list of eruption volumes (m3), [int](n)
@@ -73,11 +73,9 @@ class PredictionData:
             id_last = len(evol) # number of eruptions (n) = last eruption id
 
         # save input data up to last eruption
-        clip_here = id_last
-        # actually save input data
-        self.in_edates = edates[:clip_here]
-        self.in_evol = evol[:clip_here]
-        self.in_cvol = cvol[:clip_here + 1]  # adjust for fake 0 init
+        self.in_edates = edates
+        self.in_evol = evol
+        self.in_cvol = cvol  # adjust for fake 0 init
         # number of data points for prediction
         self.n = len(self.in_evol)
 
@@ -93,8 +91,25 @@ class PredictionData:
         self.cvol_t1 = self.in_cvol[-1]
 
         # ---------------------- CREATE ERUPTION INSTANCE
+
         # next eruption id
         self.next_id = id_last + 1  # next eruption ID (python starts at 0)
+
+        self.create_eruption_instance(q)
+
+        # save REAL T2 data if available
+
+        bf.print_mark()
+        print(f"Prediction instance created, id = {self.next_id}")
+
+    def save_real_next(self, edate, evol, cvol):
+        self.oe.date.t2 = edate
+        self.oe.evol.t2 = evol
+        self.oe.cvol.t2 = cvol # cumulative volume at next eruption
+        # interval
+        self.oe.dT.t2 = bf.compute_days(self.date_t1, self.oe.date.t2)
+
+    def create_eruption_instance(self, q):
 
         self.oe = OneEruption(self.next_id)  # create an instance to save prediction data
 
@@ -110,16 +125,6 @@ class PredictionData:
         self.oe.cvol.t0 = self.cvol_t0
         self.oe.qperiod = q
 
-        # save REAL T2 data if available
-        if clip_here < len(evol):
-            self.oe.date.real = edates[id_last]
-            self.oe.evol.real = evol[id_last]
-            self.oe.cvol.real = cvol[id_last + 1]  # cumulative volume at next eruption
-            # interval
-            self.oe.dT.real = bf.compute_days(self.date_t1, self.oe.date.real)
-
-        bf.print_mark()
-        print("Historical data saved, prediction instance created.")
 
     def comp_historical_stats(self):
 
@@ -210,7 +215,6 @@ class PredictionData:
 
         # save
         self.oe.save_result(cvolT2, dT)
-
 
 
     def stochastic_method(self):

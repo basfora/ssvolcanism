@@ -319,7 +319,7 @@ for er in error_evol:
     def plot_set02(self, eruptions: list, savename=None):
         """Plot Cumulative Volume (CVOL) real and deterministic prediction"""
 
-        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
 
         suptitle = f"{self.volcano_name} - {self.period}"
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
@@ -332,26 +332,26 @@ for er in error_evol:
         # sanity check (date and q used)
         assert len(ep1) == 73, "Period I should have 73 eruptions"
         assert len(ep2) == 46, "Period II should have 46 eruptions"
-        assert ep1[0].date.real == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
-        assert ep1[-1].date.real == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
+        assert ep1[0].date.t2 == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
+        assert ep1[-1].date.t2 == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
         assert round(ep1[1].q_period, 4) == round(ep1[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0107),
                                                                                 4), "Q for period I should be 0.0107 km3/yr"
 
-        assert ep2[0].date.real == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
-        assert ep2[-1].date.real == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
+        assert ep2[0].date.t2 == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
+        assert ep2[-1].date.t2 == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
         assert round(ep2[0].q_period, 4) == round(ep2[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0228),
                                                                                 4), "Q for period II should be 0.0228 km3/yr"
 
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
-        xvalues = [e.date.real for e in eruptions]  # n
+        xvalues = [e.date.t2 for e in eruptions]  # n
         # yvalues: real cumulative volumes (CVOL)
-        yvalues_real = [e.cvol.real for e in eruptions]  # n
+        yvalues_real = [e.cvol.t2 for e in eruptions]  # n
 
         # expected values (deterministic prediction)
-        xvalues1 = [e.date.real for e in ep1[1:]]  # skip first eruption, n-1
+        xvalues1 = [e.date.t2 for e in ep1[1:]]  # skip first eruption, n-1
         yvalues1 = [e.cvol.det.value for e in ep1 if e.cvol.det.value is not None]  # n-1
-        xvalues2 = [e.date.real for e in ep2]  # skip first eruption, n-1
+        xvalues2 = [e.date.t2 for e in ep2]  # skip first eruption, n-1
         yvalues2 = [e.cvol.det.value for e in ep2 if e.cvol.det.value is not None]  # n-1
 
         # ---------------- PLOT 1 (MAIN)
@@ -381,14 +381,14 @@ for er in error_evol:
     def plot_set03(self, eruptions: list, savename=None):
         """Error between real and predicted CVOL, and error histogram"""
 
-        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
 
         suptitle = f"{self.volcano_name} {self.title_cvol} \n{self.period}"
         fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
         # ------------------------------------- PLOT 2: ERROR
-        xvalues = [e.date.real for e in eruptions if e.id > 1]  # n-1
+        xvalues = [e.date.t2 for e in eruptions if e.id > 1]  # n-1
         yvalues = [e.cvol.det.error for e in eruptions if e.cvol.det.value is not None]  # n-1
 
         # add stats: mean and std
@@ -458,7 +458,7 @@ for er in error_evol:
     def plot_set04(self, eruptions: list, savename=None):
         """Plot Eruption Volume (EVOL) real and deterministic prediction"""
 
-        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
 
         suptitle = f"{self.volcano_name} - {self.period}"
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
@@ -471,26 +471,26 @@ for er in error_evol:
         # sanity check (date and q used)
         assert len(ep1) == 73, "Period I should have 73 eruptions"
         assert len(ep2) == 46, "Period II should have 46 eruptions"
-        assert ep1[0].date.real == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
-        assert ep1[-1].date.real == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
+        assert ep1[0].date.t2 == datetime.date(1936, 8, 1), "First date of period I should be 1936-1-8"
+        assert ep1[-1].date.t2 == datetime.date(1998, 3, 11), "Last date of period I should be 1998-03-11"
         assert round(ep1[1].q_period, 4) == round(ep1[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0107),
                                                                                 4), "Q for period I should be 0.0107 km3/yr"
 
-        assert ep2[0].date.real == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
-        assert ep2[-1].date.real == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
+        assert ep2[0].date.t2 == datetime.date(1999, 7, 19), "First date of period II should be 1999-07-19"
+        assert ep2[-1].date.t2 == datetime.date(2018, 7, 13), "First date of period II should be 2018-07-13"
         assert round(ep2[0].q_period, 4) == round(ep2[-1].q_period, 4) == round(bf.Qy_to_Qday(0.0228),
                                                                                 4), "Q for period II should be 0.0228 km3/yr"
 
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
-        xvalues = [e.date.real for e in eruptions]  # n
+        xvalues = [e.date.t2 for e in eruptions]  # n
         # yvalues: real cumulative volumes (CVOL)
-        yvalues_real = [e.evol.real for e in eruptions]  # n
+        yvalues_real = [e.evol.t2 for e in eruptions]  # n
 
         # expected values (deterministic prediction)
-        xvalues1 = [e.date.real for e in ep1[1:]]  # skip first eruption, n-1
+        xvalues1 = [e.date.t2 for e in ep1[1:]]  # skip first eruption, n-1
         yvalues1 = [e.evol.det.value for e in ep1 if e.evol.det.value is not None]  # n-1
-        xvalues2 = [e.date.real for e in ep2]  # skip first eruption, n-1
+        xvalues2 = [e.date.t2 for e in ep2]  # skip first eruption, n-1
         yvalues2 = [e.evol.det.value for e in ep2 if e.evol.det.value is not None]  # n-1
 
         # ---------------- PLOT 1 (MAIN)
@@ -520,14 +520,14 @@ for er in error_evol:
     def plot_set05(self, eruptions: list, savename=None):
         """Plot cumulative volume (CVOL) real and stochastic prediction, and error histogram"""
 
-        self.period = bf.format_period(eruptions[0].date.real, eruptions[-1].date.real)
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
 
         suptitle = f"{self.volcano_name} {self.title_cvol} \n{self.period}"
         fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
         # ------------------------------------- PLOT 2: ERROR
-        xvalues = [e.date.real for e in eruptions if e.id > 1]  # n-1
+        xvalues = [e.date.t2 for e in eruptions if e.id > 1]  # n-1
         yvalues = [e.evol.det.error for e in eruptions if e.evol.det.value is not None]  # n-1
 
         # add stats: mean and std

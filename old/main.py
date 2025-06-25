@@ -23,7 +23,7 @@ if __name__ == '__main__':
         # set the period of measurements
         idxf = i
         # export data for analysis as lists
-        dates, eruptvol, cumvol = piton_data.output_rel_data(idx0, idxf)
+        dates, eruptvol, cumvol = piton_data.output_real_data(idx0, idxf)
         # simple stats for each eruption
         piton = ct(printing=True)
         # set data for analysis

@@ -235,10 +235,10 @@ def test_prediction_input():
     assert pp.oe.date.t1 == pp.in_edates[-1] == datetime.date(1942, 10, 1)  # date of the last eruption (T1)
 
     # T2 - target values (eruption 6 real data), idx = 5 in lists
-    assert pp.oe.date.real == edates[5] == datetime.date(1943, 2, 1)
-    assert pp.oe.evol.real == evol[5] == 500000  # eruption volume at T2
-    assert pp.oe.cvol.real == cvol[6] == 56100000  # cumulative volume at T2
-    assert pp.oe.dT.real == 123 # time in days from 1942-10-01 to 1943-02-01
+    assert pp.oe.date.t2 == edates[5] == datetime.date(1943, 2, 1)
+    assert pp.oe.evol.t2 == evol[5] == 500000  # eruption volume at T2
+    assert pp.oe.cvol.t2 == cvol[6] == 56100000  # cumulative volume at T2
+    assert pp.oe.dT.t2 == 123 # time in days from 1942-10-01 to 1943-02-01
 
 def test_historical_stats():
     """Test stats computation for historical data in prediction."""
@@ -325,7 +325,7 @@ def test_deterministic_prediction():
     # check results
 
     assert pp.oe.id == last_eruption + 1 == 6  # prediction ID
-    assert pp.oe.date.real == edates[5] == datetime.date(1943, 2, 1)  # date of the last eruption (T2)
+    assert pp.oe.date.t2 == edates[5] == datetime.date(1943, 2, 1)  # date of the last eruption (T2)
 
     # by hand
     CV1 = 55600000
@@ -335,7 +335,7 @@ def test_deterministic_prediction():
     CV2 = CV1 + q * dT  # cumulative volume at T2
 
     assert abs(CV1 - pp.oe.cvol.t1) < 1
-    assert dT == pp.oe.dT.real == pp.oe.dT.real == 123
+    assert dT == pp.oe.dT.t2 == pp.oe.dT.t2 == 123
     assert abs(pp.oe.qperiod - q) < 0.1
 
 
@@ -343,7 +343,7 @@ def test_deterministic_prediction():
     assert round(CV2, 4) == 59203285.4182
     assert round(CV2, 4) == round(bf.state_equation(CV1, q, dT), 4)
     # hand and saved prediction
-    assert round(pp.oe.cvol.det.value, 4) == round(bf.state_equation(pp.oe.cvol.t1, pp.oe.qperiod, pp.oe.dT.real), 4)
+    assert round(pp.oe.cvol.det.value, 4) == round(bf.state_equation(pp.oe.cvol.t1, pp.oe.qperiod, pp.oe.dT.t2), 4)
     assert round(CV2) == round(pp.oe.cvol.det.value)
 
 

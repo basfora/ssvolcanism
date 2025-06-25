@@ -48,12 +48,12 @@ if __name__ == '__main__':
         next_eruption = pp.run_methods()
 
         # linear fit
-        y_pt_line = piton_data.get_line_pt(pp.oe.id, 'linear')
-        pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=1)  # save linear extrapolation
-        pp.oe.q_linear = piton_data.get_a_b(1)
+        y_pt_line = piton_data.get_line_pt(pp.oe.id - start_after_eruption, 'linear')
+        pp.oe.save_result(y_pt_line[1], pp.oe.dT.t2, method=1)  # save linear extrapolation
+        pp.oe.q_linear = piton_data.get_a_b()
 
         # y_pt_qline = piton_data.get_line_pt(pp.oe.id, 'qline')
-        # pp.oe.save_result(y_pt_line[1], pp.oe.dT.real, method=0)  # save q-linear extrapolation
+        # pp.oe.save_result(y_pt_line[1], pp.oe.dT.t2, method=0)  # save q-linear extrapolation
         # pp.oe.q_line_xy = piton_data.get_a_b(0)
 
         # save and iterate to next eruption

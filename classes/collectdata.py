@@ -149,7 +149,7 @@ class VolcanoData:
                 self.period = 2
                 r1, rend = 74, 120
                 self.date0 = datetime.date(1999, 7, 19)
-                cvolT0 = 659360000
+                cvolT0 = 658060000
             else:
                 self.period = 0
                 r1, rend = 1, 120
@@ -196,7 +196,7 @@ class VolcanoData:
         self.median_dT = bf.compute_median(self.intervals)
 
 
-    def linear_extrapolation(self, fixed=False):
+    def linear_extrapolation(self, opt=1):
         """Linear extrapolation of eruption volumes and cumulative volumes"""
 
         self.compute_for_plotting()
@@ -204,7 +204,12 @@ class VolcanoData:
         xvalues = self.timeline
         yvalues = self.list_cumvol[1:]
 
-        if fixed:
+
+        if opt == 1:
+            # no forced initial point, just fit the line
+            a, b = np.polyfit(xvalues, yvalues, 1)
+
+        elif opt == 2:
             # force the first point to be the cumulative volume at T0
             x0 = xvalues[0]
             y0 = yvalues[0]
@@ -214,10 +219,11 @@ class VolcanoData:
 
             a, _ = np.polyfit(xvalues_adj, yvalues_adj, 1)
             b = y0 - a * x0  # compute b to ensure the line passes through (x0, y0)
-
         else:
-            # no forced initial point, just fit the line
-            a, b = np.polyfit(xvalues, yvalues, 1)
+            x1, y1 = xvalues[0], yvalues[0]
+            x2, y2 = xvalues[-1], yvalues[-1]
+            a = (y2 - y1) / (x2 - x1)  # slope
+            b = y1 - a * x1  # intercept
 
         # save the slope and intercept
         self.a, self.b = a, b
@@ -225,38 +231,19 @@ class VolcanoData:
         # create points for the line based on fit and timeline
         self.line_points = [(x, a * x + b) for x in self.timeline]
 
-    # todo delete
-    def q_line(self, q):
-        self.compute_for_plotting()
-
-        # use timeline to fit to line
-        xvalues = self.timeline
-        yvalues = self.list_cumvol[1:]
-
-        # get parameters for qline method
-        cvolT1, q, dT = self.oe.get_parameters(method=1)
-
-        # TODO separate periods
-        q = 0.0
-        b = 0.0 # initial value?
-
-        # create points for the line based on fit and timeline
-        self.qline_points = [(x, q * x + b) for x in self.timeline]
-
-        return
-
-    def get_line_pt(self, eruption_id: int, method='qline'):
+    def get_line_pt(self, eruption_idx: int, method='qline'):
         """Get the point on the line for a given eruption ID"""
 
         if method == 'linear':
             if not self.line_points:
-                self.linear_extrapolation()
-            return self.line_points[eruption_id - 1]
+                self.linear_extrapolation(1)
+            return self.line_points[eruption_idx]
 
         elif method == 'qline':
-            if not self.qline_points:
-                self.q_line(self.qperiod)
-            return self.qline_points[eruption_id - 1]
+            if not self.line_points:
+                self.linear_extrapolation(3)
+            return self.line_points[eruption_idx]
+
 
         else:
             print(f"Unknown method {method}. Use 1 for linear extrapolation or 2 for q line.")
@@ -264,17 +251,12 @@ class VolcanoData:
 
 
 
-    def get_a_b(self, method=1):
-        if method == 1:
-            return self.a, self.b
-        elif method == 0:
-            return self.q_a, self.q_b
-        else:
-            return None, None
+    def get_a_b(self):
+        return self.a, self.b
 
 
 
-    def output_rel_data(self, idx_0=None, idx_f=None):
+    def output_real_data(self, idx_0=None, idx_f=None):
         """Output relevant data for analysis as lists"""
         if idx_0 is None:
             idx_0 = 0
@@ -282,8 +264,15 @@ class VolcanoData:
             idx_f = self.n - 1
 
         rel_dates = self.list_date[idx_0:idx_f]
-        rel_cumvol = self.list_cumvol[idx_0:idx_f]
+        rel_cumvol = self.list_cumvol[idx_0:idx_f + 1]
         rel_eruptvol = self.list_eruptvol[idx_0:idx_f]
+
+        return rel_dates, rel_eruptvol, rel_cumvol
+
+    def output_next(self, idx_next):
+        rel_dates = self.list_date[idx_next]
+        rel_cumvol = self.list_cumvol[idx_next + 1]
+        rel_eruptvol = self.list_eruptvol[idx_next]
 
         return rel_dates, rel_eruptvol, rel_cumvol
 
@@ -297,6 +286,20 @@ class VolcanoData:
         self.Q1 = bf.Qy_to_Qday(0.0107)
         self.Q2 = bf.Qy_to_Qday(0.0228)
         self.Qlong = bf.Qy_to_Qday(0.0024)
+
+
+# todo implement later
+class HistoricalData:
+
+    def __init__(self, edates, evol, cvol):
+
+
+        self.edates = edates
+        self.evol = evol
+        self.cvol = cvol
+
+        self.n = len(self.evol)
+
 
 
 

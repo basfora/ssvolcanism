@@ -33,6 +33,7 @@ class OneEruption:
         # stochastic
         self.qhat = None
         # add more parameters if needed
+        self.a, self.b = None, None  # for qline
 
     def get_parameters(self, method=2):
         """Get parameters for the prediction methods."""
@@ -42,10 +43,10 @@ class OneEruption:
 
         if method == 1 or method == 4: # linear (regression)
             q = self.qperiod
-            dT = self.dT.real
+            dT = self.dT.t2
         elif method == 2:   # deterministic
             # known (real) dT
-            dT = self.dT.real
+            dT = self.dT.t2
             q = self.qperiod
         elif method == 3:   # stochastic
             dT = self.cvol.sim.N
@@ -61,11 +62,11 @@ class OneEruption:
 
         return cvolT1, q, dT
 
-    def save_raw(self, edate: datetime.date, cvol: int, evol: int):
+    def save_raw(self, edate: datetime.date, evol: int, cvol: int):
 
-        self.date.real = edate
-        self.cvol.real = cvol
-        self.evol.real = evol
+        self.date.t2 = edate
+        self.cvol.t2 = cvol
+        self.evol.t2 = evol
 
         return
 
@@ -80,19 +81,19 @@ class OneEruption:
         - method 3: stochastic"""
 
         # error in CVOL
-        cvol_error, cvol_error_per = bf.compute_error(self.cvol.real, cvolT2)
+        cvol_error, cvol_error_per = bf.compute_error(self.cvol.t2, cvolT2)
 
         # compute evol
         evolT2 = bf.compute_delta_vol(self.cvol.t1, cvolT2)
-        evol_error, evol_error_per = bf.compute_error(self.evol.real, evolT2)
+        evol_error, evol_error_per = bf.compute_error(self.evol.t2, evolT2)
 
         # get estimated date
         dateT2 = bf.transform_days_to_date(dT, self.date.t1)
 
         if method == 0:  # real data
-            self.cvol.real = cvolT2
-            self.evol.real = evolT2
-            self.dT.real = dT
+            self.cvol.t2 = cvolT2
+            self.evol.t2 = evolT2
+            self.dT.t2 = dT
 
         elif method == 1:   # linear
             self.cvol.linear.value = cvolT2
@@ -156,14 +157,14 @@ class OneEruption:
     def print_instance(self, what=0):
 
         if what == 0: # real data
-            if self.evol.real is None:
+            if self.evol.t2 is None:
                 print('No real data available.')
             else:
                 first_line = 'REAL ERUPTION'
-                evol = self.evol.real
-                cvol = self.cvol.real
-                edate = self.date.real
-                dT_days = self.dT.real
+                evol = self.evol.t2
+                cvol = self.cvol.t2
+                edate = self.date.t2
+                dT_days = self.dT.t2
                 # todo move to here, it's all over the place now
                 bf.print_one_eruption(self.id, evol, cvol, edate, dT_days)
         elif what  ==1:
@@ -189,19 +190,18 @@ class Vol:
     """Eruption or cumulative volume"""
 
     def __init__(self):
-        # real data (what really happened if avbailable)
-        # VOL(T1) data (known)
+        # real data (what really happened if available)
         self.t0 = None
         self.t1 = None
-        self.real = None
+        self.t2 = None
+        # ------------ estimations
 
+        # method I
         self.qline = EstimatedValue()
-
         self.linear = EstimatedValue()
-
+        # method II
         self.det = EstimatedValue()
-
-        # chosen estimate from simulation
+        # method III
         self.stoc = EstimatedValue()
         self.sim = Sim()
 
@@ -210,17 +210,18 @@ class TInterval:
     """Time interval between eruptions (in days) """
 
     def __init__(self):
+        # real data (what really happened if available)
+        self.t0 = None
+        self.t1 = None
+        self.t2 = None
+        # ------------ estimations
 
-        self.t0 = 0
-        self.t1 = 0  # time of the first eruption in days
-        self.real = None
-
-        self.linear = EstimatedValue()
-
+        # method I
         self.qline = EstimatedValue()
-
+        self.linear = EstimatedValue()
+        # method II
         self.det = EstimatedValue()
-
+        # method III
         self.stoc = EstimatedValue()
         self.sim = Sim()
 
@@ -260,17 +261,17 @@ class EDate:
 
         # todo maybe better way is to save edate and tinterval in one class, have a transform method to convert days to date
 
+        # real data (what really happened if available)
         self.t0 = None
-        # T1 data (known)
         self.t1 = None
+        self.t2 = None
+        # ------------ estimations
 
-        self.real = None
-
-        self.qline = None
-
-        self.linear = None
-
-        self.deterministic = None
-
-        self.estimated = None
+        # method I
+        self.qline = EstimatedValue()
+        self.linear = EstimatedValue()
+        # method II
+        self.det = EstimatedValue()
+        # method III
+        self.stoc = EstimatedValue()
         self.sim = Sim()
