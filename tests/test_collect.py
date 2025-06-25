@@ -214,10 +214,12 @@ def test_prediction_input():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(p)
+    edateall, evolall, cvolall = piton_data.organize(p)
 
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5
+    edates, evol, cvol = piton_data.output_real_data(0, last_eruption)
+
     # start prediction instance (PredictionData)
     pp = pred(edates, evol, cvol, id_last=last_eruption)
 
@@ -234,10 +236,13 @@ def test_prediction_input():
     assert pp.oe.dT.t1 == 2252 # time in days from 1936-08-01
     assert pp.oe.date.t1 == pp.in_edates[-1] == datetime.date(1942, 10, 1)  # date of the last eruption (T1)
 
+    enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
+    pp.save_real_next(enext, evolnext, cvolnext)
+
     # T2 - target values (eruption 6 real data), idx = 5 in lists
-    assert pp.oe.date.t2 == edates[5] == datetime.date(1943, 2, 1)
-    assert pp.oe.evol.t2 == evol[5] == 500000  # eruption volume at T2
-    assert pp.oe.cvol.t2 == cvol[6] == 56100000  # cumulative volume at T2
+    assert pp.oe.date.t2 == edateall[5] == datetime.date(1943, 2, 1)
+    assert pp.oe.evol.t2 == evolall[5] == 500000  # eruption volume at T2
+    assert pp.oe.cvol.t2 == cvolall[6] == 56100000  # cumulative volume at T2
     assert pp.oe.dT.t2 == 123 # time in days from 1942-10-01 to 1943-02-01
 
 def test_historical_stats():
@@ -247,12 +252,19 @@ def test_historical_stats():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(p)
+    edatesall, evolall, cvolall = piton_data.organize(p)
 
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5
+    # get relevant data from the file
+    edates, evol, cvol = piton_data.output_real_data(0, last_eruption)
+
     # start prediction instance (PredictionData)
-    pp = pred(edates, evol, cvol, id_last=last_eruption)
+    pp = pred(edates, evol, cvol, last_eruption)
+    pp.set_period_info(piton_data.Q2)
+
+    enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
+    pp.save_real_next(enext, evolnext, cvolnext)
 
     # checking values
     mydates, myevol, mycvol = periodI_first5()
@@ -297,7 +309,7 @@ def test_deterministic_prediction():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(p)
+    edatesall, evolall, cvolall = piton_data.organize(p)
 
     # - check Q period
     qperiod = piton_data.Q1
@@ -314,18 +326,23 @@ def test_deterministic_prediction():
 
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5
+
+    # get relevant data from the file
+    edates, evol, cvol = piton_data.output_real_data(0, last_eruption)
+
     # start prediction instance (PredictionData)
     pp = pred(edates, evol, cvol, id_last=last_eruption)
     pp.set_period_info(qperiod)
 
-
+    enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
+    pp.save_real_next(enext, evolnext, cvolnext)
 
     # RUN deterministic method
     pp.deterministic_method()
     # check results
 
     assert pp.oe.id == last_eruption + 1 == 6  # prediction ID
-    assert pp.oe.date.t2 == edates[5] == datetime.date(1943, 2, 1)  # date of the last eruption (T2)
+    assert pp.oe.date.t2 == edatesall[5] == datetime.date(1943, 2, 1)  # date of the last eruption (T2)
 
     # by hand
     CV1 = 55600000

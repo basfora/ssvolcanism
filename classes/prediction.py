@@ -33,10 +33,7 @@ class PredictionData:
         self.cvol_t1 = 0.0
 
         # eruption instance to save real and prediction data for target eruption
-        self.oe = None  # id of next eruption
-
-        # First things first, save input data
-        self.save_input_data(edates, evol, cvol, q, id_last)
+        self.oe = None  # instance for next eruption
 
         # -----------------------------------------------------
         # COMPUTED (BASIC STATS) - to be used in analysis
@@ -53,11 +50,13 @@ class PredictionData:
         self.time_total = 0.0
         self.timeline = []
         # RATE (m3/day)
-        self.qhat = 0.0
+        self.qhat = None
         self.qperiod = None
 
         # -----------------------------------------------------
         # INIT FUNCTIONS
+        # First things first, save input data
+        self.save_input_data(edates, evol, cvol, q, id_last)
         self.comp_historical_stats()
         self.print_real_dataset()
 
@@ -97,8 +96,6 @@ class PredictionData:
 
         self.create_eruption_instance(q)
 
-        # save REAL T2 data if available
-
         bf.print_mark()
         print(f"Prediction instance created, id = {self.next_id}")
 
@@ -124,7 +121,6 @@ class PredictionData:
         self.oe.date.t0 = self.date_t0
         self.oe.cvol.t0 = self.cvol_t0
         self.oe.qperiod = q
-
 
     def comp_historical_stats(self):
 
@@ -175,6 +171,10 @@ class PredictionData:
         self.deterministic_method()
         self.oe.print_instance(2)
 
+        # stochastic method (3)
+        self.stochastic_method()
+        self.oe.print_instance(3)
+
         # qline method "4"
         # self.qline_method()
         # self.oe.print_instance(4)
@@ -216,47 +216,26 @@ class PredictionData:
         # save
         self.oe.save_result(cvolT2, dT)
 
-
+    # METHOD 3: STOCHASTIC FORECAST
     def stochastic_method(self):
         """Set the theoretical rate of eruptions (m3/day) for stochastic method"""
 
         # get parameters for deterministic method
-        cvolT1, q, N = self.oe.get_parameters(method=2)
+        cvolT1, q, N = self.oe.get_parameters(method=3)
 
         # set up simulation parameters - time interval
         dTdata = self.dT_days  # use dT from historical data
+        if len(dTdata) == 0:
+            dTdata = np.random.randint(2, 1200, 50)  # if no data, use random dT
         dTsim = np.random.choice(dTdata, N, replace=True)
 
         # compute CVOL(T2) = CVOL(T1) + Qhat * dTsim (for each dT)
-        CV2 = [bf.state_equation(cvolT1, self.qhat, dT) for dT in dTsim]
-
+        CVsim = [bf.state_equation(cvolT1, self.qhat, dT) for dT in dTsim]
 
         # save simulation results
-        self.oe.save_result(CV2, dTsim, method=3)
+        self.oe.save_result(CVsim, dTsim, method=3)
 
-    # -------------------------------------------------------------
-    # METHOD 2: Linear extrapolation -- does not work like this (moved to VolcanoData class)
-    def linear_extrapolation(self):
-        """Set the theoretical rate of eruptions (m3/day) for linear extrapolation method"""
 
-        # use timeline to fit to line
-        xvalues = self.timeline
-        yvalues = self.in_cvol[1:]
-
-        # linear squares fit
-        a, b = np.polyfit(xvalues, yvalues, 1)
-
-        # use it to predict the next cumulative volume
-        cvolT1, q, dT = self.oe.get_parameters(method=2)
-        x2 = self.day_t1 + dT  # next time in timeline
-
-        # extrapolate the next cumulative volume
-        cvolT2 = a * x2+ b
-
-        # save
-        self.oe.save_result(cvolT2, dT, method=1)
-        # save (test)
-        self.oe.q_linear = (a, b)
 
 
 

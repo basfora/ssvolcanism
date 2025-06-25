@@ -4,25 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="error ok">
-      <change beforePath="$PROJECT_DIR$/.idea/Volcano.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Volcano.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="qline plots but it's a mess">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/sketch.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Det.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_DetError.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_LinearError.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Linear_fixedy0.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_QLine.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_QLine.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_QLineError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_QLineError.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Evol_Det.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Piton_Period0_Evol_DetError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_qline.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton_qline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_collect.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,7 +79,7 @@
     "Python.main.executor": "Run",
     "Python.piton.executor": "Run",
     "Python.piton_linear.executor": "Run",
-    "Python.piton_qline.executor": "Debug",
+    "Python.piton_qline.executor": "Run",
     "Python.prediction.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -99,7 +95,7 @@
       <recent name="$PROJECT_DIR$/classes" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.piton_qline">
+  <component name="RunManager" selected="Python.piton">
     <configuration name="historical_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -212,18 +208,18 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.piton_qline" />
         <item itemvalue="Python.piton" />
+        <item itemvalue="Python.historical_data" />
+        <item itemvalue="Python.piton_qline" />
         <item itemvalue="Python.piton_linear" />
         <item itemvalue="Python.prediction" />
-        <item itemvalue="Python.historical_data" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-dfff61a61320-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.25410.159" />
+        <option value="bundled-python-sdk-53e2683a6804-9cdd278e9d02-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26094.141" />
       </set>
     </attachedChunks>
   </component>
@@ -476,7 +472,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750624469734</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="qline plots but it's a mess">
+      <option name="closed" value="true" />
+      <created>1750810020467</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1750810020467</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -504,7 +508,8 @@
     <MESSAGE value="started qline method" />
     <MESSAGE value="mse unit fixed" />
     <MESSAGE value="error ok" />
-    <option name="LAST_COMMIT_MESSAGE" value="error ok" />
+    <MESSAGE value="qline plots but it's a mess" />
+    <option name="LAST_COMMIT_MESSAGE" value="qline plots but it's a mess" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -516,8 +521,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/classes/myplots.py</url>
-          <line>303</line>
-          <option name="timeStamp" value="39" />
+          <line>270</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

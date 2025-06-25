@@ -21,10 +21,10 @@ class Basicfun:
         Uses population standard deviation (ddof=0)
         To change that, use ddof=1 for sample standard deviation"""
 
-        if not values:
-            return 0, 0
         if not isinstance(values, np.ndarray):
             values = np.array(values)
+            if np.size(values) == 0:
+                return 0, 0
         mean_value = np.mean(values)
         std_value = np.std(values, ddof=0)
         return mean_value, std_value
@@ -192,11 +192,11 @@ class Basicfun:
     @staticmethod
     def transform_days_to_date(days: int or list, date_t0: datetime.date) -> datetime.date:
         """Transform days to date based on the initial date"""
-        if days < 0:
-            raise ValueError("Days cannot be negative")
+        # if days < 0:
+        #     raise ValueError("Days cannot be negative")
 
         if np.size(days) > 1:
-            mydate = [date_t0 + datetime.timedelta(d) for d in days]
+            mydate = [date_t0 + datetime.timedelta(int(d)) for d in days]
         else:
             mydate = date_t0 + datetime.timedelta(days)
         return mydate
@@ -225,7 +225,7 @@ class Basicfun:
         if dt_days > 0:
             Q = delta_cvol / dt_days
         else:
-            Q = 0
+            Q = delta_cvol
         return Q
 
     @staticmethod

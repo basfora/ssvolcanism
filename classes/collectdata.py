@@ -289,7 +289,7 @@ class VolcanoData:
 
 
 # todo implement later
-class HistoricalData:
+class MyPeriod:
 
     def __init__(self, edates, evol, cvol):
 
@@ -299,6 +299,8 @@ class HistoricalData:
         self.cvol = cvol
 
         self.n = len(self.evol)
+
+        self.q = None
 
 
 

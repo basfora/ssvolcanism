@@ -24,6 +24,10 @@ class MyPlots:
         # PLOTSET 1
         self.width = 14
         self.height = 6
+        # font sizes
+        self.title_fontsize = 14
+        self.leg_fontsize = 9
+        self.label_fontsize = 12
 
         self.yth = 0.05  # y-axis limit for volume in m3
         self.short = 6
@@ -108,9 +112,11 @@ class MyPlots:
         fig.savefig(full_path, dpi=600, bbox_inches='tight')
         print(f"Figure saved: {full_path}")
 
-    def plot_set01(self, vd: VolcanoData, plot_op=1, savename=None):
+    def plot_set01(self, vd: VolcanoData, plot_op=1, savename=None, plot_show=False):
         """Plot eruption volumes (evol) or time intervals (dT) with histograms
         Now: Piton de la Fournaise"""
+
+        # todo add MAX and MIN to stats
 
         # compute stats for plotting
         vd.compute_for_plotting()
@@ -133,6 +139,8 @@ class MyPlots:
             # label for volume
             label_mean = f"{mean_value/10**self.short:.2f} {self.unit[0]}"
             label_median = f"{median_value/10**self.short:.2f} {self.unit[0]}"
+            label_max = f"Min/Max = {min(yvalues)/10**self.short:.2f}/{max(yvalues)/10**self.short:.2f} {self.unit[0]}"
+            # label_min = f"Min = {min(yvalues)/10**self.short:.2f} {self.unit[0]}"
             labely = self.label_vol
             labelx = self.label_date
             # titles
@@ -149,6 +157,8 @@ class MyPlots:
             # label for time
             label_mean = f"{mean_value:.0f} {self.unit[1]}"
             label_median = f"{median_value:.0f} {self.unit[1]}"
+            label_max = f"Max = {min(yvalues):.0f}/{max(yvalues):.0f} {self.unit[1]}"
+            # label_min = f"Min = {min(yvalues):.0f} {self.unit[1]}"
             labely = f"{self.label_interval}"
             labelx = self.label_number
             # titles
@@ -165,6 +175,14 @@ class MyPlots:
         ax[0].axhline(median_value, color=self.color_median, linestyle=self.line_mean,
                    label=f"{self.label_median} {label_median}")
 
+        # extra stats (MAX and MIN)
+        ymin, ymax = bf.compute_limits(yvalues)
+        idx_min, idx_max = yvalues.index(ymin), yvalues.index(ymax)
+        xmin, xmax = xvalues[idx_min], xvalues[idx_max]
+        ax[0].scatter(xmin, ymin, marker='o', facecolors='none', edgecolors='red', s=100)
+        ax[0].scatter(xmax, ymax, marker='o', facecolors='none', edgecolors='red', s=100, label=label_max)
+
+
         # std
         # ax[0].axhline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,
         #               label=f"$\pm \sigma$ = {label_std}")
@@ -172,7 +190,7 @@ class MyPlots:
 
         # plot title, labels and legend
         ax[0].set(title=title1, xlabel=labelx, ylabel=labely)
-        ax[0].legend(frameon=False)
+        ax[0].legend(frameon=False, fontsize=self.leg_fontsize, loc='upper left')
 
         # set limits for x and y axes
         ylim = max(yvalues) * self.yth  # threshold for y-axis
@@ -196,14 +214,15 @@ class MyPlots:
         plt.title(title2)
         plt.xlabel(labely)
         plt.ylabel(self.label_freq)
-        plt.legend(frameon=False)
+        plt.legend(frameon=False, fontsize=self.leg_fontsize)
 
 
         # show, save and close
         if savename is None:
             savename = 'evol'
         self.save_fig(fig, savename)
-        #plt.show()
+        if plot_show:
+            plt.show()
 
     def plot_real_vs_expected(self, eruptions: list, option='cvol', savename=None, show_plot=True):
         """Plot Volume (CVOL or EVOL) real and deterministic prediction"""
@@ -222,8 +241,8 @@ class MyPlots:
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
         xvalues = [e.date.t2 for e in eruptions]  # n
-        xvalues1 = [e.date.t2 for e in ep1[1:]]  # Period I, skip first eruption, n-1
-        xvalues2 = [e.date.t2 for e in ep2[1:]]  # Period II
+        xvalues1 = [e.date.t2 for e in ep1 if e.cvol.det.value is not None]  # Period I, skip first eruption, n-1
+        xvalues2 = [e.date.t2 for e in ep2 if e.cvol.det.value is not None]  # Period II
 
 
         if option == 'cvol':
@@ -330,7 +349,7 @@ class MyPlots:
         # plot title, labels and legend
         ax[0].set(title=f"{myvol}: {self.title_error}", xlabel=self.label_date, ylabel=self.label_vol)
 
-        ax[0].legend(frameon=False, loc='upper left')
+        ax[0].legend(frameon=False, loc='lower left')
         ax[0].grid(True)
 
         # set limits for x and y axes
@@ -512,7 +531,7 @@ class MyPlots:
         """Print results of deterministic prediction."""
         print("Deterministic Prediction CVOL(T2) in km3:")
 
-        print('ID ; DATE ; CVOL REAL ; EXPECTED ; ERROR ; % ; Q (km3/day) ; DT (days) ; EVOL REAL ; EXPECTED')
+        print('ID ; DATE ; DT (days) ; CVOL REAL ; EXPECTED ; ERROR ; % ; Q (km3/yr) ; ')
 
         for e in eruptions:
 
@@ -540,10 +559,57 @@ class MyPlots:
             error, error_per = bf.m3_to_km3(e.cvol.det.error), e.cvol.det.error_per
             evol_real, evol_det = bf.m3_to_km3(e.evol.t2), bf.m3_to_km3(e.evol.det.value)
 
-            print(f"{e.id}; {e.date.t2};", end=" ")
+            print(f"{e.id}; {e.date.t2}; {dT:.0f} ; ", end=" ")
             print(f"{cvol_real:.6f}; {cvol_det:.6f};", end="")
             print(f"{error:.6f}; {error_per:.2f}%;", end="")
-            print(f"{q:.4f}; {dT:.0f};", end="")
-            print(f"{evol_real:.6f}; {evol_det:.6f}; {e.evol.det.error_per:.2f}%")
+            print(f"{q:.4f} ;", end="\n")
+            #print(f"{evol_real:.6f}; {evol_det:.6f}; {e.evol.det.error_per:.2f}%")
+
+    @staticmethod
+    def sanity_check_stoc(eruptions: list):
+        """Print results of deterministic prediction."""
+        print("Stochastic Forecast CVOL(T2) in km3:")
+
+        print('ID ; DATE ; DT REAL (days) ; DT MEAN ; DT MEDIAN ; CVOL REAL (km3) ; CVOL SIM MEAN ; ERROR ; % ; QHAT (km3/yr) ; CVOL REAL (km3); CVOL SIM MEDIAN ; ERROR ; % ')
+
+        for e in eruptions:
+
+            if e.id == 1 or e.id == 74:
+                continue  # skip first eruption and first of period II
+
+            # parameters for deterministic method
+            dT = e.dT.t2
+            e_previous = eruptions[e.id - 2]
+            assert e_previous.cvol.t2 == e.cvol.t1, f"Cumulative volume at T1 does not match previous eruption's CVOL(T2) - {e.id}: {e_previous.cvol.t2, e.cvol.t1}"
+
+            # check state equation and error
+            # cvolT2 = e.qperiod * dT + e.cvol.t1
+            # assert round(cvolT2, 1) == round(e.cvol.det.value, 1), "Cvol(T2) does not match expected value"
+            # # check error calculation
+            # eaux = round(e.cvol.det.value - e.cvol.t2, 1)
+            # assert eaux == round(e.cvol.det.error, 1), f"Error CVOL(T2) real {eaux} vs expected {e.cvol.det.error}"
+            # assert round(e.cvol.det.error_per, 2) == round(100 * abs(e.cvol.det.error / e.cvol.t2), 2), "Error percentage does not match expected value"
+            # assert round(e.evol.det.value, 1) == round(e.cvol.det.value - e.cvol.t1, 1), "Evol(T2) does not match expected value"
+            #
+
+            # transform into km3 before printing
+            q = bf.Qday_to_Qy(e.qhat)
+            cvol_real, cvol_sim_mean, cvol_sim_median = bf.m3_to_km3(e.cvol.t2), bf.m3_to_km3(e.cvol.sim.mean.value), bf.m3_to_km3(e.cvol.sim.median.value)
+            error_from_mean, error_per_from_mean = bf.m3_to_km3(e.cvol.sim.mean.error), e.cvol.sim.mean.error_per
+            error_from_median, error_per_from_median = bf.m3_to_km3(e.cvol.sim.median.error), e.cvol.sim.median.error_per
+
+            dT_mean, dT_median = e.dT.sim.mean.value, e.dT.sim.median.value
+
+            print(f"{e.id}; {e.date.t2};", end=" ")
+            # time intervals
+            print(f"{dT:.0f}; {dT_mean}; {dT_median} ;", end=" ")
+            # real vs mean
+            print(f"{cvol_real:.6f}; {cvol_sim_mean:.6f};", end="")
+            print(f"{error_from_mean:.6f}; {error_per_from_mean:.2f}%;", end="")
+            print(f"{q:.4f}; ", end="")
+            # median
+            print(f"{cvol_real:.6f}; {cvol_sim_median:.6f};", end="")
+            print(f"{error_from_median:.6f}; {error_per_from_median:.2f}%;", end="\n")
+
 
     # ---------------------- OBSOLETE

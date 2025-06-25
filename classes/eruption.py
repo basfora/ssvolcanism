@@ -123,18 +123,50 @@ class OneEruption:
         elif method == 3:  # stochastic -- inputs are lists of values CVOL, dT
             # save simulation results
 
-            # pt cloud
-            self.cvol.sim.pts = cvolT2
-            self.dT.sim.pts = dT
+            for i in range(len(cvolT2)):
+                # CVOL
+                self.cvol.sim.pts[i].value = cvolT2[i]
+                self.cvol.sim.pts[i].error = cvol_error[i]
+                self.cvol.sim.pts[i].error_per = cvol_error_per[i]
+                # EVOL
+                self.evol.sim.pts[i].value = evolT2[i]
+                self.evol.sim.pts[i].error = evol_error[i]
+                self.evol.sim.pts[i].error_per = evol_error_per[i]
+                # DT
+                dt = dT[i]
+                dt_er, dt_er_per = bf.compute_error(self.dT.t2, dt)
+                self.dT.sim.pts[i].value = dT[i]
+                self.dT.sim.pts[i].error = dt_er
+                self.dT.sim.pts[i].error_per = dt_er_per
 
             # statistics - mean, std dev, median, confidence interval
-            self.cvol.sim.mean, self.cvol.sim.std = bf.compute_mean_std(cvolT2)
-            self.cvol.sim.median = np.median(cvolT2)
+            self.cvol.sim.mean.value, self.cvol.sim.std = bf.compute_mean_std(cvolT2)
+            self.cvol.sim.mean.error, self.cvol.sim.mean.error_per = bf.compute_error(self.cvol.t2,
+                                                                                       self.cvol.sim.mean.value)
+            self.cvol.sim.median.value = np.median(cvolT2)
+            self.cvol.sim.median.error, self.cvol.sim.median.error_per = bf.compute_error(self.cvol.t2,
+                                                                                        self.cvol.sim.median.value)
+
             self.cvol.sim.lower, self.cvol.sim.upper = np.percentile(cvolT2, [2.5, 97.5])
+            # evol
+            self.evol.sim.mean.value, self.evol.sim.std = bf.compute_mean_std(evolT2)
+            self.evol.sim.mean.error, self.evol.sim.mean.error_per = bf.compute_error(self.evol.t2, self.evol.sim.mean.value)
+
+            self.evol.sim.median.value = np.median(evolT2)
+            self.evol.sim.median.error, self.evol.sim.median.error_per = bf.compute_error(self.evol.t2,
+                                                                                      self.evol.sim.median.value)
+            self.evol.sim.lower, self.evol.sim.upper = np.percentile(evolT2, [2.5, 97.5])
             # save mean and std dev for dT
-            self.dT.sim.mean, self.dT.sim.std = bf.compute_mean_std(dT)
-            self.dT.sim.median = np.median(dT)
+            self.dT.sim.mean.value, self.dT.sim.std = bf.compute_mean_std(dT)
+            self.dT.sim.mean.error, self.dT.sim.mean.error_per = bf.compute_error(self.dT.t2, self.dT.sim.mean.value)
+            # save median and confidence interval for dT
+            self.dT.sim.median.value = np.median(dT)
+            self.dT.sim.median.error, self.dT.sim.median.error_per = bf.compute_error(self.dT.t2,
+                                                                                      self.dT.sim.median.value)
+
             self.dT.sim.lower, self.dT.sim.upper = np.percentile(dT, [2.5, 97.5])
+
+
         elif method == 4: # qline
             self.cvol.qline.value = cvolT2
             self.cvol.qline.error, self.cvol.qline.error_per = cvol_error, cvol_error_per
@@ -175,6 +207,15 @@ class OneEruption:
             evol = self.evol.det.value
             cvol = self.cvol.det.value
             bf.print_estimate(evol, cvol, 'DETERMINISTIC METHOD')
+        elif what == 3:
+            evol = self.evol.sim.mean.value
+            cvol = self.cvol.sim.mean.value
+            bf.print_estimate(evol, cvol, 'STOCHASTIC METHOD - MEAN')
+
+            evol = self.evol.sim.mean.value
+            cvol = self.cvol.sim.mean.value
+            bf.print_estimate(evol, cvol, 'STOCHASTIC METHOD - MEDIAN')
+
         elif what == 4:
             evol = self.evol.det.value
             cvol = self.cvol.det.value
@@ -232,18 +273,17 @@ class Sim:
     def __init__(self):
 
         # todo transform in list of EstimatedValue (to include value, error, error_per)
-        self.pts = []  # list of points (date, volume, cumulative volume)
         self.N = 10000
+        self.pts = [EstimatedValue()] * self.N  # list of points (date, volume, cumulative volume)
 
-
-        self.mean = 0.0
+        self.mean = EstimatedValue()
         self.std = 0.0
 
         self.lower = 0.0
         self.upper = 0.0
 
         self.mode = 0.0
-        self.median = 0.0
+        self.median = EstimatedValue()
 
 
 class EstimatedValue:

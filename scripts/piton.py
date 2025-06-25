@@ -23,6 +23,7 @@ if __name__ == '__main__':
     # save first eruption
     oe = OneEruption(eruption_id=1)
     oe.save_raw(edates[0], evol[0], cvol[1])
+    oe.qperiod = piton_data.Q1
     eruptions = [oe]
 
     # LOOP OVER ERUPTIONS
@@ -31,34 +32,32 @@ if __name__ == '__main__':
     stop_before_eruption = 119
 
     last_eruption = start_after_eruption
+    last_id = 1
     while last_eruption < stop_before_eruption:
         # ------------------------------------------------------
         # PREDICTION
         # ------------------------------------------------------
-        pp = pred(edates, evol, cvol, id_last=last_eruption)
+        edates, evol, cvol = piton_data.output_real_data(0, last_eruption)
+        pp = pred(edates, evol, cvol, last_id)
 
         # set q period
-        if last_eruption < 73:
+        if last_id < 73:
             q_period = piton_data.Q1
         else:
             q_period = piton_data.Q2
         pp. set_period_info(q_period)
 
+        enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
+        pp.save_real_next(enext, evolnext, cvolnext)
+
         # run prediction methods
         next_eruption = pp.run_methods()
 
-        # linear fit
-        y_pt_line = piton_data.get_line_pt(pp.oe.id - start_after_eruption, 'linear')
-        pp.oe.save_result(y_pt_line[1], pp.oe.dT.t2, method=1)  # save linear extrapolation
-        pp.oe.q_linear = piton_data.get_a_b()
-
-        # y_pt_qline = piton_data.get_line_pt(pp.oe.id, 'qline')
-        # pp.oe.save_result(y_pt_line[1], pp.oe.dT.t2, method=0)  # save q-linear extrapolation
-        # pp.oe.q_line_xy = piton_data.get_a_b(0)
 
         # save and iterate to next eruption
         eruptions.append(next_eruption)
         last_eruption += 1
+        last_id += 1
 
     # ========================================================
     # PLOT
@@ -66,41 +65,15 @@ if __name__ == '__main__':
     if plot_flag:
         my_plots = mp(piton=True)
         # print for sanity check
-        mp.sanity_check_det(eruptions)
+        my_plots.sanity_check_det(eruptions)
+        my_plots.sanity_check_stoc(eruptions)
 
         show_plot = False
 
-        # Plot 1: CVOL real vs expected (DET)
-        base_name = 'Piton_Period0_Cvol_Det'
-        my_plots.plot_real_vs_expected(eruptions, 'cvol',
-                                       base_name, show_plot)
+        # DETERMINISTIC PLOTS
+        #my_plots.det_plots(eruptions, show_plot)
 
-        # Plot 2: CVOL error
-        base_name = 'Piton_Period0_Cvol_DetError'
-        my_plots.plot_volume_error(eruptions, 'cvol', 'det',
-                                   base_name, show_plot)
 
-        # Plot 3: EVOL real vs expected
-        base_name = 'Piton_Period0_Evol_Det'
-        my_plots.plot_real_vs_expected(eruptions, 'evol',
-                                       base_name, show_plot)
-
-        # Plot 4: EVOL error
-        base_name = 'Piton_Period0_Evol_DetError'
-        my_plots.plot_volume_error(eruptions, 'evol', 'det',
-                                   base_name, show_plot)
-
-        #show_plot = True
-        # Plot 5: CVOL real vs expected (LINEAR)
-        base_name = 'Piton_Period0_Cvol_Linear'
-        my_plots.plot_linear(eruptions, 'cvol', 'linear',
-                             base_name, show_plot)
-
-        base_name = 'Piton_Period0_Cvol_LinearError'
-        my_plots.plot_volume_error(eruptions, 'cvol', 'linear',
-                                   base_name, show_plot)
-
-    # mean + std == 64% samples (double check that in my thesis)
 
 
 
