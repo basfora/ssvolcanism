@@ -1,11 +1,15 @@
 """Plots all in one place."""
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import to_hex
 import seaborn as sns
 import numpy as np
 import os
 import time
 import datetime
+
+from matplotlib.pyplot import scatter
+from scipy.odr import odr_error
 
 from classes.basicfun import Basicfun as bf
 from classes.collectdata import VolcanoData
@@ -25,9 +29,9 @@ class MyPlots:
         self.width = 14
         self.height = 6
         # font sizes
-        self.title_fontsize = 14
-        self.leg_fontsize = 9
-        self.label_fontsize = 12
+        self.title_fontsize = 16
+        self.leg_fontsize = 10
+        self.label_fontsize = 14
 
         self.yth = 0.05  # y-axis limit for volume in m3
         self.short = 6
@@ -53,6 +57,7 @@ class MyPlots:
         self.title_exp = "Real vs Expected Data"
         self.title_linear = "Linear Extrapolation"
         self.title_qline = 'Q-line Approximation'
+        self.title_stochastic = "Stochastic Forecast"
 
         # legends
         self.leg_real = "Real Data"
@@ -61,6 +66,9 @@ class MyPlots:
         self.leg_Q1 = "Period I, Q = 0.0107 km$^3$/yr"
         self.leg_Q2 = "Period II, Q = 0.0228 km$^3$/yr"
         self.leg_error = "Error"
+        self.leg_ptcloud = "Simulated Points"
+        self.leg_qhat = "$\hat{Q}$"
+        self.leg_prior = 'Prior Eruptions'
 
         # histogram
         self.n_bins = 20
@@ -72,6 +80,7 @@ class MyPlots:
         self.label_date = "End of Eruption (Date)"
         self.label_interval =f"$\Delta~T (days)$"
         self.label_number = "Eruption Number"
+        self.label_q = "km$^3$/yr"
 
 
         # COLORS, get from https://matplotlib.org/stable/gallery/color/named_colors.html
@@ -83,16 +92,32 @@ class MyPlots:
         self.color_hist = 'cornflowerblue'
         self.color_pred1 = 'brown' # red
         self.color_pred2 = 'salmon'# 'rosybrown' # magenta
+        self.color_ptcloud = 'darkgray'  # 'darkslategray'
 
-        # linestyle/marker
+        # linestyle
         self.line_mean = '-'
         self.line_median = '-'
         self.line_std = '--'
         self.line_linear = '-'
+        self.line_real = '-'
+
+        # marker
         self.marker_real = 'x'
         self.marker_det = 'x'
         self.marker_error = '.'
         self.marker_linear = '.'
+        self.marker_ptcloud = '.'
+        self.marker_mean = '.'
+        self.marker_median = '.'
+
+        # linewidth
+        self.width_thick = 3
+        self.width_med = 2
+        self.width_thin = 1
+        self.width_thinner = 0.5
+
+        self.width_real = self.width_thick
+        self.width_ptcloud = 0.5
 
         self.savepath = self.get_save_path()
 
@@ -494,6 +519,128 @@ class MyPlots:
         base_name = 'Piton_Period0_Cvol_QLineError'
         self.plot_volume_error(eruptions, 'cvol', 'qline',
                                    base_name, show_plot)
+
+    def stoc_plots(self, eruptions: list, eruptions_to_plot: list, show_plot: bool = True):
+        """Plot stochastic forecast for all eruptions."""
+        # Plot 6: Stochastic Forecast
+
+        for eid in eruptions_to_plot:
+            base_name = f'Piton_Stochastic_{eid}'
+            self.plot_stochastic(eruptions, eid, base_name, show_plot)
+
+        return
+
+    def plot_stochastic(self, eruptions, eruption_id: int, savename=None, show_plot: bool = True):
+        """Plot stochastic forecast for one eruption."""
+        # Plot 6: Stochastic Forecast
+
+
+        suptitle = f"{self.volcano_name} - Eruption #{eruption_id}"
+        fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
+        fig.suptitle(suptitle)
+
+        # eruption being estimated, get by the id
+        oe = eruptions[eruption_id - 1]  # eruptions are 1-indexed, so id-1
+
+        # priors = []
+        # # prior eruptions
+        # for e in eruptions:
+        #     # stop when reaching the eruption being estimated
+        #     if e.id == oe.id:
+        #         break
+        #     # save prior eruptions
+        #     priors.append(e)
+
+        # PREP DATA
+        # - real data
+        xvalues_real = [e.date.t2 for e in eruptions if e.id < oe.id]
+        yvalues_real = [e.cvol.t2 for e in eruptions if e.id < oe.id]
+        # - stochastic forecast - point cloud
+        xvalues_stoc = [oe.date.sim.pts[i].value for i in range(oe.cvol.sim.N)]
+        yvalues_stoc = [oe.cvol.sim.pts[i].value for i in range(oe.cvol.sim.N)]
+
+        # plot stats
+        my_mean, my_median = oe.cvol.sim.mean.value, oe.cvol.sim.median.value
+        my_std = oe.cvol.sim.std
+
+        date_mean = bf.transform_days_to_date(oe.dT.sim.mean.value, oe.date.t2)
+        date_median = bf.transform_days_to_date(oe.dT.sim.median.value, oe.date.t2)
+
+        # prior eruptions (real data)
+        ax[0].scatter(xvalues_real, yvalues_real, marker=self.marker_real, color=self.color_real,
+                      linewidth=self.width_med, label=self.leg_prior)
+
+        # - stochastic forecast - point cloud
+        ax[0].scatter(xvalues_stoc, yvalues_stoc, marker=self.marker_ptcloud, color=self.color_ptcloud, linewidth=self.width_ptcloud, label=self.leg_ptcloud)
+
+        # plot mean and median lines
+        ax[0].axhline(my_mean, color=self.color_mean, linestyle=self.line_mean,  linewidth=self.width_thinner)#, label=f"$\mu$")
+        ax[0].axhline(my_median, color=self.color_median, linestyle=self.line_median,  linewidth=self.width_thinner)#, label=f"median")
+
+        ax[0].axvline(date_mean, color=self.color_mean, linestyle=self.line_mean, linewidth=self.width_thinner)
+        ax[0].axvline(date_median, color=self.color_median, linestyle=self.line_median, linewidth=self.width_thinner)
+
+        #ax[0].scatter(date_mean, my_mean, marker=self.marker_mean, color=self.color_mean, linewidth=self.width_thinner)#, label=f"{self.label_mean_symbol}")
+        #ax[0].scatter(date_median, my_median, marker=self.marker_median, color=self.color_median, linewidth=self.width_thinner)#, label=f"{self.label_median}")
+
+
+        # real eruption data
+        ax[0].scatter(oe.date.t2, oe.cvol.t2, marker='*', color='orangered', linewidth=self.width_med,
+                      label=self.leg_real)
+
+        # plot title, labels and legend
+        mytitle = f"{self.title_cvol}"
+        ax[0].set(title=mytitle, xlabel=self.label_date, ylabel=self.label_vol)
+        ax[0].legend(frameon=False, loc='center left')
+        ax[0].grid(True)
+
+        # set limits for x and y axes
+        # ylim = max(yvalues_real) * self.yth  # threshold for y-axis
+       # ax[0].set(ylim=(min(yvalues_real + yvalues_stoc) - 2 * ylim, max(yvalues_real + yvalues_stoc) + ylim))
+
+
+        # PLOT 2 (RIGHT) - HISTOGRAM
+        sns.histplot(yvalues_stoc, kde=True, ax=ax[1], color=self.color_hist, bins=self.n_bins)
+
+
+
+        mean_km3, median_km3 = bf.m3_to_km3(my_mean), bf.m3_to_km3(my_median)
+        std_km3 = bf.m3_to_km3(my_std)
+
+        plt.axvline(my_mean, color=self.color_mean, linestyle=self.line_mean,
+                    label=f"{self.label_mean_symbol} {mean_km3:.4f} km$^3$")
+        plt.axvline(my_mean + my_std, color=self.color_std, linestyle=self.line_std,
+                    label=f"$\pm \sigma$ = {std_km3:.4f} km$^3$")
+        plt.axvline(my_mean - my_std, color=self.color_std, linestyle=self.line_std)
+
+        plt.axvline(my_median, color=self.color_median, linestyle=self.line_median,
+                    label=f"{self.label_median} {median_km3:.4f} km$^3$")
+
+        real_km3 = bf.m3_to_km3(oe.cvol.t2)
+        plt.axvline(oe.cvol.t2, color=self.color_real, linestyle=self.line_real,
+                    label=f"Real {real_km3:.4f} km$^3$")
+
+
+        plt.title(self.title_hist)
+        plt.xlabel(self.label_vol)
+        plt.ylabel(self.label_freq)
+        plt.legend(frameon=False)
+
+        # show, save and close
+        if show_plot:
+            plt.show()
+        if savename is None:
+            savename = f'Piton_Sthocastic_{oe.id}'
+        self.save_fig(fig, savename)
+
+
+
+
+
+
+
+
+        return
 
 
     @staticmethod

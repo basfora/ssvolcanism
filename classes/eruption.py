@@ -138,6 +138,8 @@ class OneEruption:
                 self.dT.sim.pts[i].value = dT[i]
                 self.dT.sim.pts[i].error = dt_er
                 self.dT.sim.pts[i].error_per = dt_er_per
+                # date of the eruption
+                self.date.sim.pts[i].value = dateT2[i]
 
             # statistics - mean, std dev, median, confidence interval
             self.cvol.sim.mean.value, self.cvol.sim.std = bf.compute_mean_std(cvolT2)
@@ -165,7 +167,6 @@ class OneEruption:
                                                                                       self.dT.sim.median.value)
 
             self.dT.sim.lower, self.dT.sim.upper = np.percentile(dT, [2.5, 97.5])
-
 
         elif method == 4: # qline
             self.cvol.qline.value = cvolT2
@@ -274,7 +275,7 @@ class Sim:
 
         # todo transform in list of EstimatedValue (to include value, error, error_per)
         self.N = 10000
-        self.pts = [EstimatedValue()] * self.N  # list of points (date, volume, cumulative volume)
+        self.pts = [EstimatedValue() for i in range(self.N)]  # list of points (date, volume, cumulative volume)
 
         self.mean = EstimatedValue()
         self.std = 0.0

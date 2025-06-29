@@ -71,7 +71,13 @@ if __name__ == '__main__':
         show_plot = False
 
         # DETERMINISTIC PLOTS
-        #my_plots.det_plots(eruptions, show_plot)
+        # my_plots.det_plots(eruptions, show_plot)
+
+        # STOCHASTIC PLOTS
+        ids_to_plot = [i for i in range(2, 120)]
+        #ids_to_plot = [11]
+        my_plots.stoc_plots(eruptions, ids_to_plot, show_plot)
+
 
 
 
