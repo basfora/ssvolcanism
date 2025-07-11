@@ -4,17 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="stochastic data">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="stochastic plots">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_Det.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_DetError.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_QLine.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Cvol_QLineError.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_Det.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/Piton_Period0_Evol_DetError.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,26 +57,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in test_collect.py.executor": "Debug",
-    "Python.collect-data.executor": "Run",
-    "Python.collectdata.executor": "Run",
-    "Python.historical_data.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.piton.executor": "Run",
-    "Python.piton_linear.executor": "Run",
-    "Python.piton_qline.executor": "Run",
-    "Python.prediction.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/basfora/02ProjectSources/PycharmProjects/milp_sim/risk/classes/risk_plot.py",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in test_collect.py.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.collect-data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.collectdata.executor&quot;: &quot;Run&quot;,
+    &quot;Python.historical_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton_linear.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton_qline.executor&quot;: &quot;Run&quot;,
+    &quot;Python.prediction.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/basfora/02ProjectSources/PycharmProjects/milp_sim/risk/classes/risk_plot.py&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/old" />
@@ -483,11 +476,18 @@
       <option name="project" value="LOCAL" />
       <updated>1750875918894</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="stochastic plots">
+      <option name="closed" value="true" />
+      <created>1751230661354</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1751230661354</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="venv" />
     <MESSAGE value="histograms" />
     <MESSAGE value="non parametric, uncertainty propagation draft" />
     <MESSAGE value="started myprediction" />
@@ -512,7 +512,8 @@
     <MESSAGE value="error ok" />
     <MESSAGE value="qline plots but it's a mess" />
     <MESSAGE value="stochastic data" />
-    <option name="LAST_COMMIT_MESSAGE" value="stochastic data" />
+    <MESSAGE value="stochastic plots" />
+    <option name="LAST_COMMIT_MESSAGE" value="stochastic plots" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

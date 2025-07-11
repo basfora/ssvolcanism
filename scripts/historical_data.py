@@ -8,6 +8,7 @@ if __name__ == '__main__':
     # Excel file >> Piton de la Fournaise PITON period 1: 1 to 74 | period 2: 74 to 120
     name_file = 'PitondelaFournaise_data'
 
+
     mp = MyPlots()
     # IMPORT REAL DATA
     piton = vd(name=name_file, printing=False)
