@@ -23,13 +23,12 @@ class VolcanoData:
         self.plot_dir = 'plots'
 
         #---------------------------------
-        # volcanoes
+        # source file is formatted
         #---------------------------------
-        self.volcano_name = [
-            'Piton de la Fournaise',
-            'Hawaii',
-            'Iceland',
-            'Western Galapagos']
+        # TODO add here new info to expand to all volcanoes
+
+
+
 
         # --------------------------------
         # PATHS
@@ -44,6 +43,12 @@ class VolcanoData:
         self.period = None # 0 for all data, 1 for period 1, 2 for period 2
         self.r1, self.rend = 0, 0 # row to start and end collection of data
         self.date0 = None # start of period
+
+        self.volcano_name = [
+            'Piton de la Fournaise',
+            'Hawaii',
+            'Iceland',
+            'Western Galapagos']
 
         # --------------------------------
         # DATA HANDLING
@@ -140,6 +145,7 @@ class VolcanoData:
         # Read the Excel file
         self.df_volcano = pd.read_excel(self.path_to_file, date_format='%d/%m/%Y')
 
+        # todo remove this when all volcanoes are implemented
         if 'Piton' in self.name:
             self.piton_rates()
 
@@ -309,69 +315,12 @@ class VolcanoData:
         self.Qlong = bf.Qy_to_Qday(0.0024)
 
 
-# todo implement later
-class MyPeriod:
+class OfficialPeriod:
+    """Class to handle periods of interest for the volcano data"""
 
-    def __init__(self, edates: list, evol, cvol):
-
-        self.name = None
-
-        self.edates = edates
-        self.evol = evol
-        self.cvol = cvol
-
-        self.period_number = None
-
-        # cvol at T0
-        self.cvol_t0 = None
-        # cvol at Tf
-        self.cvol_tf = None
-
-        # date
-        self.date0 = None
-        self.datef = None
-
-        # eruptions
-        self.e1 = None
-        self.ef = None
-
-        # rate (km3/yr)
-        self.Q = None
-        self.Qm = None
-
-
-    def set_name(self, name):
-
-        """Set the name of the period"""
-        if 'piton' in name.lower():
-            self.name = 'Piton de la Fournaise'
-        elif 'hawaii' in name.lower():
-            self.name = 'Hawaii'
-        elif 'iceland' in name.lower():
-            self.name = 'Iceland'
-        elif 'galapagos' in name.lower():
-            self.name = 'Western Galapagos'
-        else:
-            exit(f"Unknown volcano name: {name}. Please check the name and try again.")
-
-
-    def set_period_number(self, period_number):
-        """Set the period number"""
-        if period_number in [1, 2]:
-            self.period_number = period_number
-        else:
-            exit(f"Invalid period number: {period_number}. Use 1 or 2.")
-
-
-    def set_dates(self, date0, datef):
-        """Set the start and end dates of the period"""
-        if isinstance(date0, datetime.date) and isinstance(datef, datetime.date):
-            self.date0 = date0
-            self.datef = datef
-        else:
-            exit("Invalid date format. Use datetime.date objects.")
-
-
+    def __init__(self):
+        """Initialize the period with eruption dates, volumes and cumulative volumes"""
+        # todo: start, end dates, eruptions and volume, and q
 
 
 

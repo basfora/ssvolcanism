@@ -240,9 +240,6 @@ class OneEruption:
             return
 
 
-
-from datetime import date
-
 class Vol:
     """Eruption or cumulative volume"""
 

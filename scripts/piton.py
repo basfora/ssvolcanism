@@ -45,7 +45,7 @@ if __name__ == '__main__':
             q_period = piton_data.Q1
         else:
             q_period = piton_data.Q2
-        pp. set_period_info(q_period)
+        pp.set_period_info(q_period)
 
         enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
         pp.save_real_next(enext, evolnext, cvolnext)
