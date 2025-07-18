@@ -42,9 +42,12 @@ class MyPlots:
         self.w_cvol = "Cumulative Volume"
         self.w_eruptions = "Eruptions"
 
-        self.label_mean = "Mean = "
+        self.label_break = ', '
+        self.label_mean = "Mean" + self.label_break
         self.label_mean_symbol = "$\mu$ = "
-        self.label_median = "Median = "
+        self.label_median = "Median" + self.label_break
+        self.label_mode = "Mode" + self.label_break
+        self.label_real = "Real" + self.label_break
         self.unit = [f"10$^{self.short}$ m$^3$",'days']
 
         # titles
@@ -66,9 +69,9 @@ class MyPlots:
         self.leg_Q1 = "Period I, Q = 0.0107 km$^3$/yr"
         self.leg_Q2 = "Period II, Q = 0.0228 km$^3$/yr"
         self.leg_error = "Error"
-        self.leg_ptcloud = "Simulated Points"
+        self.leg_ptcloud = "Simulated"
         self.leg_qhat = "$\hat{Q}$"
-        self.leg_prior = 'Prior Eruptions'
+        self.leg_prior = 'Prior Data'
 
         # histogram
         self.n_bins = 20
@@ -87,8 +90,9 @@ class MyPlots:
         self.color_real = 'navy'
         self.color_error = 'crimson' #'darkorange'
         self.color_mean = 'magenta' # 'darkgreen' # forestgreen'
-        self.color_median = 'darkgreen' #'goldenrod'
         self.color_std = 'dimgray'
+        self.color_median = 'darkgreen' #'goldenrod'
+        self.color_mode = 'darkorange'  # 'darkgoldenrod'
         self.color_hist = 'cornflowerblue'
         self.color_pred1 = 'brown' # red
         self.color_pred2 = 'salmon'# 'rosybrown' # magenta
@@ -97,6 +101,7 @@ class MyPlots:
         # linestyle
         self.line_mean = '-'
         self.line_median = '-'
+        self.line_mode = '-'
         self.line_std = '--'
         self.line_linear = '-'
         self.line_real = '-'
@@ -542,15 +547,6 @@ class MyPlots:
         # eruption being estimated, get by the id
         oe = eruptions[eruption_id - 1]  # eruptions are 1-indexed, so id-1
 
-        # priors = []
-        # # prior eruptions
-        # for e in eruptions:
-        #     # stop when reaching the eruption being estimated
-        #     if e.id == oe.id:
-        #         break
-        #     # save prior eruptions
-        #     priors.append(e)
-
         # PREP DATA
         # - real data
         xvalues_real = [e.date.t2 for e in eruptions if e.id < oe.id]
@@ -562,27 +558,29 @@ class MyPlots:
         # plot stats
         my_mean, my_median = oe.cvol.sim.mean.value, oe.cvol.sim.median.value
         my_std = oe.cvol.sim.std
+        my_mode = oe.cvol.sim.mode.value
+
 
         date_mean = bf.transform_days_to_date(oe.dT.sim.mean.value, oe.date.t2)
         date_median = bf.transform_days_to_date(oe.dT.sim.median.value, oe.date.t2)
+        date_mode = bf.transform_days_to_date(oe.dT.sim.mode.value, oe.date.t2)
 
-        # prior eruptions (real data)
+        # prior eruptions (real, prior data)
         ax[0].scatter(xvalues_real, yvalues_real, marker=self.marker_real, color=self.color_real,
                       linewidth=self.width_med, label=self.leg_prior)
 
-        # - stochastic forecast - point cloud
-        ax[0].scatter(xvalues_stoc, yvalues_stoc, marker=self.marker_ptcloud, color=self.color_ptcloud, linewidth=self.width_ptcloud, label=self.leg_ptcloud)
+        # - stochastic forecast - point cloud (simulated data)
+        leg_s = f'{self.leg_ptcloud} (N = {oe.cvol.sim.N})'
+        ax[0].scatter(xvalues_stoc, yvalues_stoc, marker=self.marker_ptcloud, color=self.color_ptcloud, linewidth=self.width_ptcloud, label=leg_s)
 
         # plot mean and median lines
         ax[0].axhline(my_mean, color=self.color_mean, linestyle=self.line_mean,  linewidth=self.width_thinner)#, label=f"$\mu$")
         ax[0].axhline(my_median, color=self.color_median, linestyle=self.line_median,  linewidth=self.width_thinner)#, label=f"median")
+        ax[0].axhline(my_mode, color=self.color_mode, linestyle=self.line_mode, linewidth=self.width_thinner)
 
         ax[0].axvline(date_mean, color=self.color_mean, linestyle=self.line_mean, linewidth=self.width_thinner)
         ax[0].axvline(date_median, color=self.color_median, linestyle=self.line_median, linewidth=self.width_thinner)
-
-        #ax[0].scatter(date_mean, my_mean, marker=self.marker_mean, color=self.color_mean, linewidth=self.width_thinner)#, label=f"{self.label_mean_symbol}")
-        #ax[0].scatter(date_median, my_median, marker=self.marker_median, color=self.color_median, linewidth=self.width_thinner)#, label=f"{self.label_median}")
-
+        ax[0].axvline(date_mode, color=self.color_mode, linestyle=self.line_mode, linewidth=self.width_thinner)
 
         # real eruption data
         ax[0].scatter(oe.date.t2, oe.cvol.t2, marker='*', color='orangered', linewidth=self.width_med,
@@ -594,31 +592,31 @@ class MyPlots:
         ax[0].legend(frameon=False, loc='center left')
         ax[0].grid(True)
 
-        # set limits for x and y axes
-        # ylim = max(yvalues_real) * self.yth  # threshold for y-axis
-       # ax[0].set(ylim=(min(yvalues_real + yvalues_stoc) - 2 * ylim, max(yvalues_real + yvalues_stoc) + ylim))
-
-
         # PLOT 2 (RIGHT) - HISTOGRAM
         sns.histplot(yvalues_stoc, kde=True, ax=ax[1], color=self.color_hist, bins=self.n_bins)
 
-
-
-        mean_km3, median_km3 = bf.m3_to_km3(my_mean), bf.m3_to_km3(my_median)
+        # STATS
+        mean_km3, median_km3, mode_km3 = bf.m3_to_km3(my_mean), bf.m3_to_km3(my_median), bf.m3_to_km3(my_mode)
         std_km3 = bf.m3_to_km3(my_std)
 
-        plt.axvline(my_mean, color=self.color_mean, linestyle=self.line_mean,
-                    label=f"{self.label_mean_symbol} {mean_km3:.4f} km$^3$")
-        plt.axvline(my_mean + my_std, color=self.color_std, linestyle=self.line_std,
+        plt.axvline(my_mean + my_std, color=self.color_std, linestyle=self.line_std, linewidth=self.width_thinner,
                     label=f"$\pm \sigma$ = {std_km3:.4f} km$^3$")
-        plt.axvline(my_mean - my_std, color=self.color_std, linestyle=self.line_std)
+
+        plt.axvline(my_mean - my_std, color=self.color_std, linestyle=self.line_std, linewidth=self.width_thinner)
+
+        plt.axvline(my_mean, color=self.color_mean, linestyle=self.line_mean,
+                    label=f"{self.label_mean} {mean_km3:.4f} km$^3$")
 
         plt.axvline(my_median, color=self.color_median, linestyle=self.line_median,
                     label=f"{self.label_median} {median_km3:.4f} km$^3$")
 
+        plt.axvline(my_mode, color=self.color_mode, linestyle=self.line_mode,
+                    label=f"{self.label_mode} {mode_km3:.4f} km$^3$")
+
+        # REAL data
         real_km3 = bf.m3_to_km3(oe.cvol.t2)
         plt.axvline(oe.cvol.t2, color=self.color_real, linestyle=self.line_real,
-                    label=f"Real {real_km3:.4f} km$^3$")
+                    label=f"{self.label_real} {real_km3:.4f} km$^3$")
 
 
         plt.title(self.title_hist)
@@ -717,7 +715,10 @@ class MyPlots:
         """Print results of deterministic prediction."""
         print("Stochastic Forecast CVOL(T2) in km3:")
 
-        print('ID ; DATE ; DT REAL (days) ; DT MEAN ; DT MEDIAN ; CVOL REAL (km3) ; CVOL SIM MEAN ; ERROR ; % ; QHAT (km3/yr) ; CVOL REAL (km3); CVOL SIM MEDIAN ; ERROR ; % ')
+        print('ID ; DATE ; DT REAL (days) ; DT MEAN ; DT MEDIAN ; DT MODE ; '
+              'CVOL REAL (km3) ; CVOL SIM MEAN ; ERROR ; % ; QHAT (km3/yr) ; '
+              'CVOL REAL (km3); CVOL SIM MEDIAN ; ERROR ; % ; '
+              'CVOL REAL (km3); CVOL SIM MODE ; ERROR ; % ;')
 
         for e in eruptions:
 
@@ -741,22 +742,26 @@ class MyPlots:
 
             # transform into km3 before printing
             q = bf.Qday_to_Qy(e.qhat)
-            cvol_real, cvol_sim_mean, cvol_sim_median = bf.m3_to_km3(e.cvol.t2), bf.m3_to_km3(e.cvol.sim.mean.value), bf.m3_to_km3(e.cvol.sim.median.value)
+            cvol_real, cvol_sim_mean, cvol_sim_median, cvol_sim_mode = bf.m3_to_km3(e.cvol.t2), bf.m3_to_km3(e.cvol.sim.mean.value), bf.m3_to_km3(e.cvol.sim.median.value), bf.m3_to_km3(e.cvol.sim.mode.value)
             error_from_mean, error_per_from_mean = bf.m3_to_km3(e.cvol.sim.mean.error), e.cvol.sim.mean.error_per
             error_from_median, error_per_from_median = bf.m3_to_km3(e.cvol.sim.median.error), e.cvol.sim.median.error_per
+            error_from_mode, error_per_from_mode = bf.m3_to_km3(e.cvol.sim.mode.error), e.cvol.sim.mode.error_per
 
-            dT_mean, dT_median = e.dT.sim.mean.value, e.dT.sim.median.value
+            dT_mean, dT_median, dT_mode = e.dT.sim.mean.value, e.dT.sim.median.value, e.dT.sim.mode.value
 
-            print(f"{e.id}; {e.date.t2};", end=" ")
+            print(f"{e.id}; {e.date.t2}; {dT:.0f}; ", end=" ")
             # time intervals
-            print(f"{dT:.0f}; {dT_mean}; {dT_median} ;", end=" ")
+            print(f"{dT_mean:.0f}; {dT_median:.0f} ; {dT_mode:.0f} ;", end=" ")
             # real vs mean
             print(f"{cvol_real:.6f}; {cvol_sim_mean:.6f};", end="")
             print(f"{error_from_mean:.6f}; {error_per_from_mean:.2f}%;", end="")
             print(f"{q:.4f}; ", end="")
             # median
             print(f"{cvol_real:.6f}; {cvol_sim_median:.6f};", end="")
-            print(f"{error_from_median:.6f}; {error_per_from_median:.2f}%;", end="\n")
+            print(f"{error_from_median:.6f}; {error_per_from_median:.2f}%;", end="")
+            # mode
+            print(f"{cvol_real:.6f}; {cvol_sim_mode:.6f};", end="")
+            print(f"{error_from_mode:.6f}; {error_per_from_mode:.2f}%;", end="\n")
 
 
     # ---------------------- OBSOLETE

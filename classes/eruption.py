@@ -41,7 +41,7 @@ class OneEruption:
         # same for all methods
         cvolT1 = self.cvol.t1
 
-        if method == 1 or method == 4: # linear (regression)
+        if method == 1: # linear (regression)
             q = self.qperiod
             dT = self.dT.t2
         elif method == 2:   # deterministic
@@ -58,7 +58,7 @@ class OneEruption:
             cvolT1 = self.cvol.t0
 
         else:
-            raise ValueError("Method must be 1, 2, or 3.")
+            raise ValueError("Method must be 1, 2, 3 or 4.")
 
         return cvolT1, q, dT
 
@@ -148,16 +148,27 @@ class OneEruption:
             self.cvol.sim.median.value = np.median(cvolT2)
             self.cvol.sim.median.error, self.cvol.sim.median.error_per = bf.compute_error(self.cvol.t2,
                                                                                         self.cvol.sim.median.value)
+            n_bins = 20
+            self.cvol.sim.mode.value = bf.compute_mode(cvolT2, n_bins)
+            self.cvol.sim.mode.error, self.cvol.sim.mode.error_per = bf.compute_error(self.cvol.t2,
+                                                                                      self.cvol.sim.mode.value)
 
             self.cvol.sim.lower, self.cvol.sim.upper = np.percentile(cvolT2, [2.5, 97.5])
             # evol
             self.evol.sim.mean.value, self.evol.sim.std = bf.compute_mean_std(evolT2)
-            self.evol.sim.mean.error, self.evol.sim.mean.error_per = bf.compute_error(self.evol.t2, self.evol.sim.mean.value)
+            self.evol.sim.mean.error, self.evol.sim.mean.error_per = bf.compute_error(self.evol.t2,
+                                                                                      self.evol.sim.mean.value)
 
             self.evol.sim.median.value = np.median(evolT2)
             self.evol.sim.median.error, self.evol.sim.median.error_per = bf.compute_error(self.evol.t2,
-                                                                                      self.evol.sim.median.value)
+                                                                                          self.evol.sim.median.value)
+
+            self.evol.sim.mode.value = bf.compute_mode(evolT2, n_bins)
+            self.evol.sim.mode.error, self.evol.sim.mode.error_per = bf.compute_error(self.evol.t2,
+                                                                                      self.evol.sim.mode.value)
+
             self.evol.sim.lower, self.evol.sim.upper = np.percentile(evolT2, [2.5, 97.5])
+
             # save mean and std dev for dT
             self.dT.sim.mean.value, self.dT.sim.std = bf.compute_mean_std(dT)
             self.dT.sim.mean.error, self.dT.sim.mean.error_per = bf.compute_error(self.dT.t2, self.dT.sim.mean.value)
@@ -165,6 +176,10 @@ class OneEruption:
             self.dT.sim.median.value = np.median(dT)
             self.dT.sim.median.error, self.dT.sim.median.error_per = bf.compute_error(self.dT.t2,
                                                                                       self.dT.sim.median.value)
+            # save mode and error dT
+            self.dT.sim.mode.value = bf.compute_mode(dT, n_bins)
+            self.dT.sim.mode.error, self.dT.sim.mode.error_per = bf.compute_error(self.dT.t2,
+                                                                                  self.dT.sim.mode.value)
 
             self.dT.sim.lower, self.dT.sim.upper = np.percentile(dT, [2.5, 97.5])
 
@@ -280,11 +295,12 @@ class Sim:
         self.mean = EstimatedValue()
         self.std = 0.0
 
+        self.median = EstimatedValue()
+
+        self.mode = EstimatedValue()
+
         self.lower = 0.0
         self.upper = 0.0
-
-        self.mode = 0.0
-        self.median = EstimatedValue()
 
 
 class EstimatedValue:

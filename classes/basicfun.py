@@ -47,12 +47,21 @@ class Basicfun:
     @staticmethod
     def compute_median(values: list) -> float:
         """Compute median of a list of values"""
-        if not values:
-            return 0
         if not isinstance(values, np.ndarray):
             values = np.array(values)
         median = np.median(values)
         return median
+
+    @staticmethod
+    def compute_mode(values: list, n_bins=20) -> float:
+        """Compute mode of a list of values"""
+        if not isinstance(values, np.ndarray):
+            values = np.array(values)
+        hist, bin_edges = np.histogram(values, n_bins)
+        mode_bin_index = np.argmax(hist)
+        mode_approx = (bin_edges[mode_bin_index] + bin_edges[mode_bin_index + 1]) / 2
+
+        return mode_approx
 
 
     # UT - ok
@@ -318,8 +327,8 @@ class Basicfun:
         dec = Basicfun.dec()
 
         print(f"..........{first_line}")
-        print(f"{Basicfun.pevol(2)} = {evol / dec:.2f} ({dec} m3)")
-        print(f"{Basicfun.pcvol(2)} = {cvol / dec:.2f} ({dec} m3)")
+        print(f"{Basicfun.pevol(2)} = {evol / dec:.2f} ({dec:.0f} m3)")
+        print(f"{Basicfun.pcvol(2)} = {cvol / dec:.2f} ({dec:.0f} m3)")
 
 
     @staticmethod
