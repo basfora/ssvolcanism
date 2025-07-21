@@ -26,8 +26,8 @@ class VolcanoData:
         # source file is formatted
         #---------------------------------
         # TODO add here new info to expand to all volcanoes
-
-
+        self.periods = []
+        self.n_periods = 0
 
 
         # --------------------------------
@@ -164,7 +164,6 @@ class VolcanoData:
 
         # less to write
         mydf = self.df_volcano
-        self.periods = []  # list to store periods
         row = 1
         while True:
             pi = mydf.iat[row, cperiod]  # period number
@@ -186,6 +185,8 @@ class VolcanoData:
             print(f'Saved Period {myperiod.number}: {myperiod.date_t0} - {myperiod.date_tf} (eruptions {myperiod.e0} - {myperiod.ef}), Q = {q} km3/yr')
             row += 1
 
+        # number of periods
+        self.n_periods = len(self.periods)
 
     # UT - OK
     def organize(self, period=1):

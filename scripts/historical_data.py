@@ -6,8 +6,8 @@ from classes.myplots import MyPlots
 # start with HISTORICAL DATA
 # -------------------------------------------------
 
-volcano_name = 'Piton'
-plot_show = False
+volcano_name = 'Hawaii'
+plot_show = True
 
 if __name__ == '__main__':
 

@@ -6,6 +6,8 @@ from classes.basicfun import Basicfun as bf
 import numpy as np
 import datetime
 
+# TODO UNIT TEST FOR collectdata > extract parameters
+
 def parameters_piton_periodI():
     """Parameters pre-defined for unit tests."""
     # Excel file >> Piton de la Fournaise
