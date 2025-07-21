@@ -146,8 +146,6 @@ class MyPlots:
         """Plot eruption volumes (evol) or time intervals (dT) with histograms
         Now: Piton de la Fournaise"""
 
-        # todo add MAX and MIN to stats
-
         # compute stats for plotting
         vd.compute_for_plotting()
         self.period = bf.format_period(vd.list_date[0], vd.list_date[-1])
@@ -158,7 +156,7 @@ class MyPlots:
         fig.suptitle(suptitle)
 
         # -------------------- PLOT 1 (LEFT)
-        if plot_op == 1:
+        if plot_op == 1:    # eruption events (evol)
             xvalues = vd.list_date
             yvalues = vd.list_eruptvol
             # mean and median for eruptions
@@ -176,7 +174,7 @@ class MyPlots:
             # titles
             title1 = self.title_events
             title2 = f"Volume {self.title_hist}"
-        else:
+        else:               # time intervals (dT)
             xvalues = [i for i in range(1, len(vd.list_date))]
             yvalues = vd.intervals
             # mean and median for intervals
@@ -187,7 +185,7 @@ class MyPlots:
             # label for time
             label_mean = f"{mean_value:.0f} {self.unit[1]}"
             label_median = f"{median_value:.0f} {self.unit[1]}"
-            label_max = f"Max = {min(yvalues):.0f}/{max(yvalues):.0f} {self.unit[1]}"
+            label_max = f"Min/Max = {min(yvalues):.0f}/{max(yvalues):.0f} {self.unit[1]}"
             # label_min = f"Min = {min(yvalues):.0f} {self.unit[1]}"
             labely = f"{self.label_interval}"
             labelx = self.label_number

@@ -142,14 +142,50 @@ class VolcanoData:
 
         # get paths and extensions
         self.collect_from()
-        # Read the Excel file
+        # Read the Excel file (all of it)
         self.df_volcano = pd.read_excel(self.path_to_file, date_format='%d/%m/%Y')
+
+        self.extract_parameters()
 
         # todo remove this when all volcanoes are implemented
         if 'Piton' in self.name:
             self.piton_rates()
 
         return self.df_volcano
+
+    def extract_parameters(self):
+        """Extract parameters from the DataFrame for the volcano"""
+
+        # columns of interest - Periods info
+        cperiod = 6
+        cID0, cIDf = 7, 8
+        cedatet0, cedatetf = 9, 10
+        cQ = 11  # rate in km3/yr
+
+        # less to write
+        mydf = self.df_volcano
+        self.periods = []  # list to store periods
+        row = 1
+        while True:
+            pi = mydf.iat[row, cperiod]  # period number
+            if pd.isna(pi):
+                break
+            myperiod = OfficialPeriod(pi)
+            # get paramters for the period
+            datet0, datetf = mydf.iat[row, cedatet0], mydf.iat[row, cedatetf]
+            eid_t0, eid_tf = mydf.iat[row, cID0], mydf.iat[row, cIDf]
+            q = mydf.iat[row, cQ]
+
+            # save them in the period instance
+            myperiod.set_dates(datet0.date(), datetf.date())
+            myperiod.set_eIDs(eid_t0, eid_tf)
+            myperiod.set_q(q)
+
+            # store and print
+            self.periods.append(myperiod)
+            print(f'Saved Period {myperiod.number}: {myperiod.date_t0} - {myperiod.date_tf} (eruptions {myperiod.e0} - {myperiod.ef}), Q = {q} km3/yr')
+            row += 1
+
 
     # UT - OK
     def organize(self, period=1):
@@ -318,11 +354,46 @@ class VolcanoData:
 class OfficialPeriod:
     """Class to handle periods of interest for the volcano data"""
 
-    def __init__(self):
+    def __init__(self, period_number: int):
         """Initialize the period with eruption dates, volumes and cumulative volumes"""
         # todo: start, end dates, eruptions and volume, and q
+        # TODO volume
 
+        self.number= period_number
 
+        # date of first and last eruption
+        self.date_t0: datetime.date
+        self.date_tf: datetime.date
+
+        # first and last eruption ID
+        self.e0: int
+        self.ef: int
+
+        # rate for the period
+        self.q: float
+        self.q_yr: float
+
+    def set_dates(self, datet0, datetf):
+        """Set the start and end dates of the period"""
+        if isinstance(datet0, datetime.date) and isinstance(datetf, datetime.date):
+            self.date_t0 = datet0
+            self.date_tf = datetf
+        else:
+            exit("Invalid date format. Use datetime.date objects.")
+
+    def set_eIDs(self, eid_t0, eid_tf):
+        """Set the first and last eruption IDs of the period"""
+        if isinstance(eid_t0, int) and isinstance(eid_tf, int):
+            self.e0 = eid_t0
+            self.ef = eid_tf
+        else:
+            exit("Invalid eruption ID format. Use integers.")
+
+    def set_q(self, q):
+        """Set the rate for the period"""
+
+        self.q = q
+        self.q_yr = bf.Qday_to_Qy(q)
 
 if __name__ == "__main__":
     # create an instance of the class for a volcano

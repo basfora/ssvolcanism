@@ -7,7 +7,7 @@ from classes.myplots import MyPlots
 # -------------------------------------------------
 
 volcano_name = 'Piton'
-plot_show = True
+plot_show = False
 
 if __name__ == '__main__':
 
