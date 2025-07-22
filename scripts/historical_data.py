@@ -20,6 +20,7 @@ if __name__ == '__main__':
     # to save plot
     base_name = volcano_name + '_Period'
 
+    print(f"...Plotting historical data")
     for period in range(vdata.n_periods + 1):
         vdata.organize_period(period)
 

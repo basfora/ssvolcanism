@@ -1,23 +1,24 @@
 """Importing all data from Excel files and saving them
 Return 3 lists: edates, evol, cvol"""
 import datetime
-
-from classes.basicfun import Basicfun as bf
 import numpy as np
-
 import pandas as pd
 import os
+import copy
+
+from classes.basicfun import Basicfun as bf
+from classes.subset import MySubset
 
 
 class VolcanoData:
     """Class to import data from excel files"""
 
-    def __init__(self, name=None, printing=False):
+    def __init__(self, name: str, printing=False):
 
         self.printing = printing
         self.save_plot = True
         # file name to be imported
-        self.name = ''
+        self.name = name
         self.extension = '.xlsx'
         self.raw_data_dir = 'rawdata'
         self.plot_dir = 'plots'
@@ -44,11 +45,7 @@ class VolcanoData:
         self.r1, self.rend = 0, 0 # row to start and end collection of data
         self.date0 = None # start of period
 
-        self.volcano_name = [
-            'Piton de la Fournaise',
-            'Hawaii',
-            'Iceland',
-            'Western Galapagos']
+        self.volcano_name: str
 
         # --------------------------------
         # DATA HANDLING
@@ -94,27 +91,28 @@ class VolcanoData:
         # --------------------------------
         # INIT FUNCTIONS
         # --------------------------------
-        self.set_name(name)
+        self.set_volcano_name(name)
         self.import_data()
         self.extract_parameters()
         # ---------------------------------
 
-    def set_name(self, name=None):
+    def set_volcano_name(self, filename=None):
         """Set the name of the file to be imported"""
 
         """Set the name of the period"""
-        if 'piton' in name.lower():
-            self.name = 'Piton de la Fournaise'
-        elif 'hawaii' in name.lower():
-            self.name = 'Hawaii'
-        elif 'iceland' in name.lower():
-            self.name = 'Iceland'
-        elif 'galapagos' in name.lower():
-            self.name = 'Western Galapagos'
+        if 'piton' in filename.lower():
+            vname = 'Piton de la Fournaise'
+        elif 'hawaii' in filename.lower():
+            vname = 'Hawaii'
+        elif 'iceland' in filename.lower():
+            vname = 'Iceland'
+        elif 'galapagos' in filename.lower():
+            vname = 'Western Galapagos'
         else:
-            name = input("Enter the name of the file: ")
+            vname = input("Enter the name of the volcano: ")
 
-        self.name = name
+        self.volcano_name = vname
+        print(f"Volcano: {self.volcano_name}")
 
     # UT - OK
     def collect_from(self):
@@ -135,6 +133,7 @@ class VolcanoData:
         if ".xlsx" not in self.path_to_file:
             self.path_to_file += self.extension
 
+        print(f"... Importing data from file: {self.name}")
         return self.path_to_file
 
     # UT - OK
@@ -143,6 +142,7 @@ class VolcanoData:
 
         # get paths and extensions
         self.collect_from()
+
         # Read the Excel file (all of it)
         self.df_volcano = pd.read_excel(self.path_to_file, date_format='%d/%m/%Y')
 
@@ -157,8 +157,6 @@ class VolcanoData:
         cedatet0, cedatetf = 9, 10
         cQ = 11  # rate in km3/yr
 
-        print(self.df_volcano)
-
         # less to write
         mydf = self.df_volcano
         row = 1
@@ -166,7 +164,7 @@ class VolcanoData:
             pi = mydf.iat[row, cperiod]  # period number
             if pd.isna(pi):
                 break
-            myperiod = OfficialPeriod(pi)
+            myperiod = MySubset(pi)
             # get paramters for the period
             datet0, datetf = mydf.iat[row, cedatet0], mydf.iat[row, cedatetf]
             eid_t0, eid_tf = mydf.iat[row, cID0], mydf.iat[row, cIDf]
@@ -185,17 +183,43 @@ class VolcanoData:
             # save them in the period instance
             myperiod.set_dates(datet0.date(), datetf.date())
             myperiod.set_eIDs(eid_t0, eid_tf)
-            myperiod.set_q(qyr)
             myperiod.set_cvol(cvol_t0, cvol_tf)
+            myperiod.set_q(qyr)
 
             # store and print
             self.periods[myperiod.label] = myperiod
-            print(f'Saved Period {myperiod.label}: {myperiod.date_t0} - {myperiod.date_tf} (eruptions {myperiod.e0} - {myperiod.ef})', end=' ')
-            print(f"Rate: {myperiod.q_yr:.4f} km3/yr, cvol(t0): {myperiod.cvol_t0} | cvol(tf): {myperiod.cvol_tf} m3")
             row += 1
 
-        # number of periods
+            # --- print info about the period ---
+            # print(self.df_volcano)
+            print(f'Saved Period {myperiod.label}: {myperiod.date_t0} - {myperiod.date_tf} (eruptions {myperiod.e0} - {myperiod.ef})', end=' ')
+            print(f"Rate: {myperiod.q_yr:.4f} km3/yr, cvol(t0): {myperiod.cvol_t0} | cvol(tf): {myperiod.cvol_tf} m3")
+
+        # number of periods (do not change after this)
         self.n_periods = max(self.periods.keys())
+        self.period_zero()  # create period 0 with all data
+
+    def period_zero(self):
+        """Period 0 is all data (periods 1 and 2 combined)"""
+
+        if self.n_periods == 1:
+            # if there is only one period, just copy it
+            p0 = copy.deepcopy(self.periods[1])
+        else:
+            # create a new period 0
+            p0 = MySubset(0)
+            lastkey = self.n_periods
+            # t0: first period, tf: last period
+            p0.set_dates(self.periods[1].date_t0, self.periods[lastkey].date_tf)
+            p0.set_eIDs(self.periods[1].e0, self.periods[lastkey].ef)
+            p0.set_cvol(self.periods[1].cvol_t0, self.periods[lastkey].cvol_tf)
+            q = bf.compute_q(p0.cvol_t0, p0.cvol_tf, p0.date_dT)
+            p0.set_q(q, 'day')  # set rate in m3/day
+
+        self.periods[0] = p0
+
+        return
+
 
     # UT - OK
     def organize_period(self, period=1):
@@ -344,59 +368,6 @@ class VolcanoData:
 
 
 # todo: transform this into subset (with timeline etc)
-# for official periods, number 0+, subsets number -1
-class OfficialPeriod:
-    """Class to handle periods of interest for the volcano data"""
-
-    def __init__(self, period_number: int):
-        """Initialize the period with eruption dates, volumes and cumulative volumes"""
-
-        self.label = period_number
-
-        # date of first and last eruption
-        self.date_t0: datetime.date
-        self.date_tf: datetime.date
-
-        # first and last eruption ID
-        self.e0: int
-        self.ef: int
-
-        # rate for the period
-        self.q: float
-        self.q_yr: float
-
-        # cvol
-        self.cvol_t0: float = 0.0  # cumulative volume at t0
-        self.cvol_tf: float = 0.0  # cumulative volume at tf
-
-        # todo: number of eruptions and everything in compute for plotting
-
-    def set_dates(self, datet0, datetf):
-        """Set the start and end dates of the period"""
-        if isinstance(datet0, datetime.date) and isinstance(datetf, datetime.date):
-            self.date_t0 = datet0
-            self.date_tf = datetf
-        else:
-            exit("Invalid date format. Use datetime.date objects.")
-
-    def set_eIDs(self, eid_t0, eid_tf):
-        """Set the first and last eruption IDs of the period"""
-        if isinstance(eid_t0, int) and isinstance(eid_tf, int):
-            self.e0 = eid_t0
-            self.ef = eid_tf
-        else:
-            exit("Invalid eruption ID format. Use integers.")
-
-    def set_q(self, qyr):
-        """Set the rate for the period"""
-
-        self.q_yr = qyr
-        self.q = bf.Qy_to_Qday(qyr)  # convert to m3/day
-
-    def set_cvol(self, cvol0, cvolf):
-        """Set the cumulative volume at t0 and tf"""
-        self.cvol_t0 = cvol0
-        self.cvol_tf = cvolf
 
 if __name__ == "__main__":
     # create an instance of the class for a volcano

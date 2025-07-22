@@ -4,18 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="todo edit">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="collect data all volcanoes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/old/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/subset.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/subset.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rawdata/TableGalapagos.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/rawdata/TableGalapagos.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rawdata/TableIceland.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/rawdata/TableIceland.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton_historical_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_linear.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton_linear.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_qline.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton_qline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_collect.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +67,7 @@
     "Python tests.Python tests in test_collect.py.executor": "Debug",
     "Python.collect-data.executor": "Run",
     "Python.collectdata.executor": "Run",
-    "Python.historical_data.executor": "Debug",
+    "Python.historical_data.executor": "Run",
     "Python.main.executor": "Run",
     "Python.piton.executor": "Run",
     "Python.piton_historical_data.executor": "Debug",
@@ -533,11 +529,18 @@
       <option name="project" value="LOCAL" />
       <updated>1753123307686</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="collect data all volcanoes">
+      <option name="closed" value="true" />
+      <created>1753148780441</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1753148780441</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="unit tests start" />
     <MESSAGE value="needs dT debug" />
     <MESSAGE value="error is still high" />
     <MESSAGE value="N = 1000 enough" />
@@ -562,7 +565,8 @@
     <MESSAGE value="started changes to collect data" />
     <MESSAGE value="collect period param" />
     <MESSAGE value="todo edit" />
-    <option name="LAST_COMMIT_MESSAGE" value="todo edit" />
+    <MESSAGE value="collect data all volcanoes" />
+    <option name="LAST_COMMIT_MESSAGE" value="collect data all volcanoes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

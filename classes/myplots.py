@@ -15,6 +15,8 @@ from classes.basicfun import Basicfun as bf
 from classes.collectdata import VolcanoData
 from classes.eruption import OneEruption
 
+# todo ivestigate this warning, where is it coming from?
+# os.environ['QT_QPA_PLATFORM'] = 'wayland'
 
 class MyPlots:
     def __init__(self, name=None):

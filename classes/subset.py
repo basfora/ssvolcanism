@@ -1,75 +1,86 @@
-"""Historical Data from a volcano"""
-
-
 import datetime
 
 from classes.basicfun import Basicfun as bf
-import numpy as np
 
-# todo: I need to add a class for period info (Qline)
-# todo need to have a class for a datasubset to interface with collect data AND prediction without having to repeat
+
+
+
+# for official periods, number 0+, subsets number -1
 class MySubset:
-    """Info about period limits"""
+    """Class to handle periods of interest for the volcano data
+    :param period_number: integer representing the period number:
+    -1 for subsets, 0 for all data, 1, 2, ... for official volcanism periods"""
 
-    def __init__(self, edates: list, evol, cvol):
+    def __init__(self, period_number: int):
+        """Initialize the period with eruption dates, volumes and cumulative volumes"""
 
-        # idenfification purposes
-        self.volcano = None
+        # identifier: -1 for custom subsets, 0 for all data, 1, 2, ... for official periods
+        self.label = period_number
 
-        # is it a period of interest?
-        self.period = False  # True if period is of interest, False if just some subset
+        # --------------------
+        # Given by data file: Table<VolcanoName>.xlsx
+        # --------------------
+        # date of first and last eruption
+        self.date_t0: datetime.date
+        self.date_tf: datetime.date
+        self.date_dT: datetime.timedelta  # time interval between t0 and tf
 
-        # period characteristics IN THE FILE: periods, init/final eruption ID, init/final dates, Q
+        # first and last eruption ID
+        self.e0: int
+        self.ef: int
 
-        # TODO FOLLOW MY PREVIOUS CONVENTION!! (prediction / eruptions naming convention)
-        # first and last eruptions
-        self.first_eid = None
-        self.last_eid = None
+        # rate for the period
+        self.q_yr: float    # km3/year (used for visualization)
+        self.q: float       # m3/day (used for calculations)
 
-        # start and end dates
-        self.start_edate = None
-        self.end_edate = None
+        # actual eruption data within edate[t0, tf]
+        self.edates = list()    # list of eruption dates (datetime.date)
+        self.evols = list()     # list of eruption volumes (m3)
+        self.cvols = list()     # list of cumulative volumes (m3)
 
-        self.date0 = None
-        self.datef = None
+        # --------------------
+        # Computed values
+        # --------------------
+        # Cumulative Volume (cvol)
+        self.cvol_t0: float = 0.0  # cumulative volume at t0
+        self.cvol_tf: float = 0.0  # cumulative volume at tf
 
-        # rate for that period
-        self.q = None  # m3/day
-        self.q_yr = None  # km3/yr
 
-        # data from the file (add second)
-        self.edates = edates
-        self.evol = evol
-        self.cvol = cvol
 
-        # computed or extracted from data
-        # start and end cumulative volume
-        self.cvol_t0 = None
-        self.cvol_tf = None
 
-        # todo put other stuff here? intervals, timeline, etc.
 
-    # TODO
-    # info clearly labeled on the data file: PERIODS, INIT/FINAL ERUPTION ID, INIT/FINAL DATES, Q
-    def set_dates(self, date0, datef):
+        # todo: number of eruptions and everything in compute for plotting
+
+    def set_dates(self, datet0, datetf):
         """Set the start and end dates of the period"""
-        if isinstance(date0, datetime.date) and isinstance(datef, datetime.date):
-            self.date0 = date0
-            self.datef = datef
+        if isinstance(datet0, datetime.date) and isinstance(datetf, datetime.date):
+            self.date_t0 = datet0
+            self.date_tf = datetf
+            self.date_dT = bf.compute_days(datet0, datetf)  # time interval
         else:
             exit("Invalid date format. Use datetime.date objects.")
 
-    def set_name(self, name):
-
-        """Set the name of the period"""
-        if 'piton' in name.lower():
-            self.name = 'Piton de la Fournaise'
-        elif 'hawaii' in name.lower():
-            self.name = 'Hawaii'
-        elif 'iceland' in name.lower():
-            self.name = 'Iceland'
-        elif 'galapagos' in name.lower():
-            self.name = 'Western Galapagos'
+    def set_eIDs(self, eid_t0, eid_tf):
+        """Set the first and last eruption IDs of the period"""
+        if isinstance(eid_t0, int) and isinstance(eid_tf, int):
+            self.e0 = eid_t0
+            self.ef = eid_tf
         else:
-            exit(f"Unknown volcano name: {name}. Please check the name and try again.")
+            exit("Invalid eruption ID format. Use integers.")
 
+    def set_q(self, q: float, opt='yr'):
+        """Set the rate for the period
+        :param q: float, rate in m3/day or km3/year
+        :param opt: 'yr' for km3/year, 'day' for m3/day"""
+
+        if opt == 'yr':
+            self.q_yr = q
+            self.q = bf.Qy_to_Qday(q)
+        else:
+            self.q = q
+            self.q_yr = bf.Qday_to_Qy(q)
+
+    def set_cvol(self, cvol0, cvolf):
+        """Set the cumulative volume at t0 and tf"""
+        self.cvol_t0 = cvol0
+        self.cvol_tf = cvolf
