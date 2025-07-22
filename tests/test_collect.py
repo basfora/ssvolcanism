@@ -11,12 +11,12 @@ import datetime
 def parameters_piton_periodI():
     """Parameters pre-defined for unit tests."""
     # Excel file >> Piton de la Fournaise
-    name_file = 'PitondelaFournaise_data'
+    name_file = 'TablePiton'
     # PITON period 1: 1 to 74 | period 2: 74 to 120
     # r1, rend = 1, 74
     p = 1
 
-    qperiod = 0.0024
+    qperiod = 0.0107
 
     return name_file, p, qperiod
 
@@ -26,7 +26,7 @@ def periodI_first5():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(p)
+    edates, evol, cvol = piton_data.organize_period(p)
     # consider first 5
     mydates = edates[:5]
     myevol = evol[:5]
@@ -40,7 +40,7 @@ def test_get_data():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(p)
+    edates, evol, cvol = piton_data.organize_period(p)
 
     # DATA IMPORT
     # size of the data
@@ -80,7 +80,7 @@ def test_basic_stats():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edates, evol, cvol = piton_data.organize(p)
+    edates, evol, cvol = piton_data.organize_period(p)
     thv = 1e-1
     tht = 1e-4
 
@@ -216,7 +216,7 @@ def test_prediction_input():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edateall, evolall, cvolall = piton_data.organize(p)
+    edateall, evolall, cvolall = piton_data.organize_period(p)
 
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5
@@ -254,7 +254,7 @@ def test_historical_stats():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edatesall, evolall, cvolall = piton_data.organize(p)
+    edatesall, evolall, cvolall = piton_data.organize_period(p)
 
     # last eruption ID (real data, prediction will be ID + 1)
     last_eruption = 5
@@ -311,7 +311,7 @@ def test_deterministic_prediction():
     # init data collection instance (VolcanoData)
     piton_data = vd(name=name_file, printing=False)
     # get data from the file
-    edatesall, evolall, cvolall = piton_data.organize(p)
+    edatesall, evolall, cvolall = piton_data.organize_period(p)
 
     # - check Q period
     qperiod = piton_data.Q1

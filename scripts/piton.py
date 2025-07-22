@@ -18,7 +18,7 @@ if __name__ == '__main__':
     # IMPORT REAL DATA
     piton_data = vd(name=name_file, printing=False)
     # get relevant data from the file
-    edates, evol, cvol = piton_data.organize(period=0)  # period 0 for all data
+    edates, evol, cvol = piton_data.organize_period(period=0)  # period 0 for all data
 
     # save first eruption
     oe = OneEruption(eruption_id=1)

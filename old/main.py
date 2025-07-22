@@ -11,7 +11,7 @@ if __name__ == '__main__':
     # import data from Excel file >> Piton de la Fournaise
     piton_data = vd(name=name_file, printing=True)
     # get data from the file
-    piton_data.organize()
+    piton_data.organize_period()
 
     piton_data.set_Qlong(Q_long_term=0.0024)
 

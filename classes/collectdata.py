@@ -26,7 +26,7 @@ class VolcanoData:
         # source file is formatted
         #---------------------------------
         # TODO add here new info to expand to all volcanoes
-        self.periods = []
+        self.periods = {}
         self.n_periods = 0
 
 
@@ -96,6 +96,7 @@ class VolcanoData:
         # --------------------------------
         self.set_name(name)
         self.import_data()
+        self.extract_parameters()
         # ---------------------------------
 
     def set_name(self, name=None):
@@ -145,12 +146,6 @@ class VolcanoData:
         # Read the Excel file (all of it)
         self.df_volcano = pd.read_excel(self.path_to_file, date_format='%d/%m/%Y')
 
-        self.extract_parameters()
-
-        # todo remove this when all volcanoes are implemented
-        if 'Piton' in self.name:
-            self.piton_rates()
-
         return self.df_volcano
 
     def extract_parameters(self):
@@ -161,6 +156,8 @@ class VolcanoData:
         cID0, cIDf = 7, 8
         cedatet0, cedatetf = 9, 10
         cQ = 11  # rate in km3/yr
+
+        print(self.df_volcano)
 
         # less to write
         mydf = self.df_volcano
@@ -173,61 +170,71 @@ class VolcanoData:
             # get paramters for the period
             datet0, datetf = mydf.iat[row, cedatet0], mydf.iat[row, cedatetf]
             eid_t0, eid_tf = mydf.iat[row, cID0], mydf.iat[row, cIDf]
-            q = mydf.iat[row, cQ]
+            qyr = mydf.iat[row, cQ]
+
+            # get volume in km3/yr
+            if eid_t0 == 1:
+                # first eruption, cumulative volume is 0
+                cvol_t0 = 0.0
+            else:
+                # get cumulative volume at t0
+                cvol_t0 = mydf.iat[eid_t0-1, 4]
+            # get cumulative volume at tf
+            cvol_tf = mydf.iat[eid_tf, 4]
 
             # save them in the period instance
             myperiod.set_dates(datet0.date(), datetf.date())
             myperiod.set_eIDs(eid_t0, eid_tf)
-            myperiod.set_q(q)
+            myperiod.set_q(qyr)
+            myperiod.set_cvol(cvol_t0, cvol_tf)
 
             # store and print
-            self.periods.append(myperiod)
-            print(f'Saved Period {myperiod.number}: {myperiod.date_t0} - {myperiod.date_tf} (eruptions {myperiod.e0} - {myperiod.ef}), Q = {q} km3/yr')
+            self.periods[myperiod.label] = myperiod
+            print(f'Saved Period {myperiod.label}: {myperiod.date_t0} - {myperiod.date_tf} (eruptions {myperiod.e0} - {myperiod.ef})', end=' ')
+            print(f"Rate: {myperiod.q_yr:.4f} km3/yr, cvol(t0): {myperiod.cvol_t0} | cvol(tf): {myperiod.cvol_tf} m3")
             row += 1
 
         # number of periods
-        self.n_periods = len(self.periods)
+        self.n_periods = max(self.periods.keys())
 
     # UT - OK
-    def organize(self, period=1):
-        """Get data from file and return it as a list
-        default: PitondelaFournaise
-        years: 1936 - March 1998
-        :param period: 1 for period I (1936-1998), 2 for period II (1999-2023), 0 for all data
+    def organize_period(self, period=1):
+        """Get data from file and return it as lists
+        :param period: 1 for period I, 2 for period II, 0 for all data
         """
         # ----------------------------------
+        # todo merge with extract_parameters
 
-        # :param r1: row to start from (default 1), period II: 74
-        #         :param rend: row to end at (default 74), period II: 120
-
-        # set rows to use according to the period
-        if 'Piton' in self.name:
-            # Define period (I, II or both)
-            if period == 1:
-                self.period = 1
-                r1, rend = 1, 74
-                self.date0 = datetime.date(1936,1,8)
-                cvolT0 = 0
-            elif period == 2:
-                self.period = 2
-                r1, rend = 74, 120
-                self.date0 = datetime.date(1999, 7, 19)
-                cvolT0 = 658060000
-            else:
-                self.period = 0
-                r1, rend = 1, 120
-                self.date0 = datetime.date(1936, 1, 8)
-                cvolT0 = 0
+        self.period = period
+        if period > 0:
+            pi = self.periods[period]
+            r1, rend = pi.e0, pi.ef + 1
+            self.date0 = pi.date_t0  # start date of the period
+            cvolT0 = pi.cvol_t0
+            # todo change that to be just q
+            if pi.label == 1:
+                self.Q1 = pi.q  # rate for period 1
+            elif pi.label == 2:
+                self.Q2 = pi.q  # rate for period 2
         else:
-            # todo under construction
-            # for other volcanoes, set default values
-            r1, rend = 1, 74
-            cvolT0 = 0
+            r1 = self.periods[1].e0  # first eruption ID
+            last_key = max(self.periods.keys())
+            rend = self.periods[last_key].ef + 1    # first eruption ID + 1
+            self.date0 = self.periods[1].date_t0
+            cvolT0 = self.periods[1].cvol_t0
 
         # columns to use: B and E
         cDate, cErupted, cCV = 1, 3, 4
-        
         # -----------------------------------
+
+        # print(self.df_volcano)
+
+        # todo separate lists of ALL data (from import data)
+        # todo break list of all data inside periods
+        #  (add time intervals, timeline etc inside period instance)
+        #  use period instances for q-fit
+        #  use all data for deterministic and stochastic
+
         # separate relevant data from the file, as DataFrames
         self.series_date = self.df_volcano.iloc[r1:rend, cDate]
         self.series_eruptvol = self.df_volcano.iloc[r1:rend, cErupted]
@@ -258,7 +265,6 @@ class VolcanoData:
         # mean, median and mode for eruption intervals
         self.mean_dT, self.std_dT = bf.compute_mean_std(self.intervals)
         self.median_dT = bf.compute_median(self.intervals)
-
 
     def linear_extrapolation(self, opt=1):
         """Linear extrapolation of eruption volumes and cumulative volumes"""
@@ -313,12 +319,8 @@ class VolcanoData:
             print(f"Unknown method {method}. Use 1 for linear extrapolation or 2 for q line.")
             return None
 
-
-
     def get_a_b(self):
         return self.a, self.b
-
-
 
     def output_real_data(self, idx_0=None, idx_f=None):
         """Output relevant data for analysis as lists"""
@@ -341,26 +343,15 @@ class VolcanoData:
         return rel_dates, rel_eruptvol, rel_cumvol
 
 
-    def piton_rates(self):
-        """Set the rates of eruptions for PitondelaFournaise
-        Source: manuscript by Galetto (2025), Q unit: km3/yr
-        Q unit for computation: m3/day"""
-
-        # Transform km3/yr ro m3/day
-        self.Q1 = bf.Qy_to_Qday(0.0107)
-        self.Q2 = bf.Qy_to_Qday(0.0228)
-        self.Qlong = bf.Qy_to_Qday(0.0024)
-
-
+# todo: transform this into subset (with timeline etc)
+# for official periods, number 0+, subsets number -1
 class OfficialPeriod:
     """Class to handle periods of interest for the volcano data"""
 
     def __init__(self, period_number: int):
         """Initialize the period with eruption dates, volumes and cumulative volumes"""
-        # todo: start, end dates, eruptions and volume, and q
-        # TODO volume
 
-        self.number= period_number
+        self.label = period_number
 
         # date of first and last eruption
         self.date_t0: datetime.date
@@ -373,6 +364,12 @@ class OfficialPeriod:
         # rate for the period
         self.q: float
         self.q_yr: float
+
+        # cvol
+        self.cvol_t0: float = 0.0  # cumulative volume at t0
+        self.cvol_tf: float = 0.0  # cumulative volume at tf
+
+        # todo: number of eruptions and everything in compute for plotting
 
     def set_dates(self, datet0, datetf):
         """Set the start and end dates of the period"""
@@ -390,14 +387,19 @@ class OfficialPeriod:
         else:
             exit("Invalid eruption ID format. Use integers.")
 
-    def set_q(self, q):
+    def set_q(self, qyr):
         """Set the rate for the period"""
 
-        self.q = q
-        self.q_yr = bf.Qday_to_Qy(q)
+        self.q_yr = qyr
+        self.q = bf.Qy_to_Qday(qyr)  # convert to m3/day
+
+    def set_cvol(self, cvol0, cvolf):
+        """Set the cumulative volume at t0 and tf"""
+        self.cvol_t0 = cvol0
+        self.cvol_tf = cvolf
 
 if __name__ == "__main__":
     # create an instance of the class for a volcano
     piton = VolcanoData(name='PitondelaFournaise_data', printing=True)
     # get data from the file
-    piton.organize()
+    piton.organize_period()

@@ -17,11 +17,11 @@ from classes.eruption import OneEruption
 
 
 class MyPlots:
-    def __init__(self, piton=True):
-        self.name = "MyPlots"
+    def __init__(self, name=None):
 
         # volcano name
-        self.volcano_name: str
+        self.volcano_name = self.set_name(name)
+
         self.volcano_subname: str
         self.period = None
 
@@ -126,13 +126,25 @@ class MyPlots:
 
         self.savepath = self.get_save_path()
 
-        if piton:
-            self.set_piton()
 
-    def set_piton(self):
-        """Set volcano name and subname for Piton de la Fournaise."""
-        self.volcano_name = "Piton de la Fournaise"
+
+    def set_name(self, name=None):
+        """Set the name of the volcano"""
+
+        if 'piton' in name.lower():
+            self.volcano_name = 'Piton de la Fournaise'
+        elif 'hawaii' in name.lower():
+            self.volcano_name = 'Hawaii'
+        elif 'iceland' in name.lower():
+            self.volcano_name = 'Iceland'
+        elif 'galapagos' in name.lower():
+            self.volcano_name = 'Western Galapagos'
+        else:
+            self.volcano_name = input("Enter the name of the file: ")
+
         self.volcano_subname = "Period"
+
+        return self.volcano_name
 
     def save_fig(self, fig, savename=None):
         """Save figure to the specified path."""
@@ -232,6 +244,10 @@ class MyPlots:
                       label=f"{self.label_mean} {label_mean}")
         ax[1].axvline(median_value, color=self.color_median, linestyle=self.line_median,
                       label=f"{self.label_median} {label_median}")
+
+        # todo add MODE
+        # ax[1].axvline(mode_value, color=self.color_mode, linestyle=self.line_mode,
+        #               label=f"{self.label_mode} {label_mode}")
 
         # std
         # ax[1].axvline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,

@@ -5,9 +5,9 @@ from classes.myplots import MyPlots
 # ------------------------------------------------
 # start with HISTORICAL DATA
 # -------------------------------------------------
-
-volcano_name = 'Hawaii'
-plot_show = True
+volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g':'Galapagos'}
+volcano_name = volcanoes['p']
+plot_show = False
 
 if __name__ == '__main__':
 
@@ -20,16 +20,14 @@ if __name__ == '__main__':
     # to save plot
     base_name = volcano_name + '_Period'
 
-    # todo change range to grab from vd.n_periods
-
-    for period in range(3):
-        vdata.organize(period)
+    for period in range(vdata.n_periods + 1):
+        vdata.organize_period(period)
 
         # plot evolution volume and time interval
         save_evol = f'{base_name}{period}_Evol'
         save_dT = f'{base_name}{period}_dT'
 
-        mp = MyPlots()
+        mp = MyPlots(name_file)
         mp.plot_set01(vdata, 1, save_evol, plot_show)
         mp.plot_set01(vdata, 2, save_dT, plot_show)
 

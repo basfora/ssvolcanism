@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     # Period 1
     for p in range(3):
-        piton.organize(period=p)
+        piton.organize_period(period=p)
 
         # polyfit for period
 

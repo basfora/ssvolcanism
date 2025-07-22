@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     # Period 1
     for p in range(3):
-        piton.organize(period=p)
+        piton.organize_period(period=p)
         save_evol = f'{base_name}{p}_Evol'
         save_dT = f'{base_name}{p}_dT'
         # plot evolution volume and time interval

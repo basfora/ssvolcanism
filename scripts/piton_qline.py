@@ -25,7 +25,7 @@ if __name__ == '__main__':
     p, q_period = 1, piton_data.Q1
 
     # get relevant data from the file
-    piton_data.organize(p)  # period 0 for all data
+    piton_data.organize_period(p)  # period 0 for all data
     # get qline - period I
     piton_data.linear_extrapolation(3)
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     p, q_period = 2, piton_data.Q2
 
     # get relevant data from the file
-    piton_data.organize(p)  # period 0 for all data
+    piton_data.organize_period(p)  # period 0 for all data
     # get qline - period I
     piton_data.linear_extrapolation(3)
 
