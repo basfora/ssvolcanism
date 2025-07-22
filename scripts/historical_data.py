@@ -22,6 +22,7 @@ if __name__ == '__main__':
 
     print(f"...Plotting historical data")
     for period in range(vdata.n_periods + 1):
+        # todo change to integrate with subset (but do not change myplots yet!!)
         vdata.organize_period(period)
 
         # plot evolution volume and time interval

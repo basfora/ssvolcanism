@@ -3,8 +3,6 @@ import datetime
 from classes.basicfun import Basicfun as bf
 
 
-
-
 # for official periods, number 0+, subsets number -1
 class MySubset:
     """Class to handle periods of interest for the volcano data
@@ -41,13 +39,11 @@ class MySubset:
         # --------------------
         # Computed values
         # --------------------
+        # number of eruptions
+        self.n: int
         # Cumulative Volume (cvol)
         self.cvol_t0: float = 0.0  # cumulative volume at t0
         self.cvol_tf: float = 0.0  # cumulative volume at tf
-
-
-
-
 
         # todo: number of eruptions and everything in compute for plotting
 
@@ -65,6 +61,7 @@ class MySubset:
         if isinstance(eid_t0, int) and isinstance(eid_tf, int):
             self.e0 = eid_t0
             self.ef = eid_tf
+            self.n = eid_tf - eid_t0 + 1  # number of eruptions
         else:
             exit("Invalid eruption ID format. Use integers.")
 
@@ -84,3 +81,39 @@ class MySubset:
         """Set the cumulative volume at t0 and tf"""
         self.cvol_t0 = cvol0
         self.cvol_tf = cvolf
+
+    def set_lists(self, edates, evols, cvols):
+        """Set the lists of eruption dates, volumes and cumulative volumes"""
+        if isinstance(edates, list) and isinstance(evols, list) and isinstance(cvols, list):
+            self.edates = edates
+            self.evols = evols
+            self.cvols = cvols
+        else:
+            exit("Invalid list format. Use lists of datetime.date and float.")
+
+        # compute time and stats after setting lists
+        self.compute_time()
+        self.compute_stats()
+
+    # TODO NOW: compute for plotting stuff
+    def compute_time(self):
+
+        # intervals between eruptions
+        self.intervals = bf.compute_intervals(self.edates)
+        self.timeline = bf.compute_timeline(self.intervals, 0)
+
+
+        return
+
+    def compute_stats(self):
+
+        # mean, median and mode for eruption volumes
+        self.mean_evol, self.std_evol = bf.compute_mean_std(self.evols)
+        self.median_evol = bf.compute_median(self.evols)
+
+
+
+
+        return
+
+    # TODO LATER: def sanity_check(number of eruption, q etc)

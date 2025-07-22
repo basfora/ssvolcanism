@@ -27,9 +27,10 @@ class VolcanoData:
         # source file is formatted
         #---------------------------------
         # TODO add here new info to expand to all volcanoes
-        self.periods = {}
         self.n_periods = 0
-
+        self.periods = {}
+        self.rlimits = {}  # row limits for each period, used for plotting
+        self.columns = {}
 
         # --------------------------------
         # PATHS
@@ -96,6 +97,13 @@ class VolcanoData:
         self.extract_parameters()
         # ---------------------------------
 
+    def define_columns(self):
+        """Where to find the data, change if source file formatting changes"""
+
+
+        return
+
+    # OK
     def set_volcano_name(self, filename=None):
         """Set the name of the file to be imported"""
 
@@ -148,6 +156,7 @@ class VolcanoData:
 
         return self.df_volcano
 
+    # OK
     def extract_parameters(self):
         """Extract parameters from the DataFrame for the volcano"""
 
@@ -199,6 +208,7 @@ class VolcanoData:
         self.n_periods = max(self.periods.keys())
         self.period_zero()  # create period 0 with all data
 
+    # OK
     def period_zero(self):
         """Period 0 is all data (periods 1 and 2 combined)"""
 
@@ -221,7 +231,19 @@ class VolcanoData:
         return
 
 
-    # UT - OK
+    def organize_eruption_data(self, period=1):
+        """Save eruption data into period instance"""
+        # organize data for the period (todo merge with extract_parameters or organize period)
+        list_date, list_eruptvol, list_cumvol = self.organize_period(period)
+
+        myperiod = self.periods[period]
+
+        # save data in the period instance
+        myperiod.set_lists(list_date, list_eruptvol, list_cumvol)
+
+
+
+    # TODO modify to integrate with subset
     def organize_period(self, period=1):
         """Get data from file and return it as lists
         :param period: 1 for period I, 2 for period II, 0 for all data
@@ -240,7 +262,7 @@ class VolcanoData:
                 self.Q1 = pi.q  # rate for period 1
             elif pi.label == 2:
                 self.Q2 = pi.q  # rate for period 2
-        else:
+        else:   # todo dont need this anymore, use period 0
             r1 = self.periods[1].e0  # first eruption ID
             last_key = max(self.periods.keys())
             rend = self.periods[last_key].ef + 1    # first eruption ID + 1
@@ -251,14 +273,13 @@ class VolcanoData:
         cDate, cErupted, cCV = 1, 3, 4
         # -----------------------------------
 
-        # print(self.df_volcano)
-
         # todo separate lists of ALL data (from import data)
         # todo break list of all data inside periods
         #  (add time intervals, timeline etc inside period instance)
         #  use period instances for q-fit
         #  use all data for deterministic and stochastic
 
+        # TODO important commands start here!
         # separate relevant data from the file, as DataFrames
         self.series_date = self.df_volcano.iloc[r1:rend, cDate]
         self.series_eruptvol = self.df_volcano.iloc[r1:rend, cErupted]
@@ -275,21 +296,19 @@ class VolcanoData:
         # only need date and cumulative volume
         return self.list_date, self.list_eruptvol, self.list_cumvol,
 
+
+    # todo MOVE TO SUBSET
     def compute_for_plotting(self):
         """Compute mean, median and mode for plotting"""
 
-        # mean, median and mode for eruption volumes
-        self.mean_evol, self.std_evol = bf.compute_mean_std(self.list_eruptvol)
-        self.median_evol = bf.compute_median(self.list_eruptvol)
 
-        # intervals between eruptions
-        self.intervals = bf.compute_intervals(self.list_date)
-        self.timeline = bf.compute_timeline(self.intervals, 0)  # start from 1
 
         # mean, median and mode for eruption intervals
         self.mean_dT, self.std_dT = bf.compute_mean_std(self.intervals)
         self.median_dT = bf.compute_median(self.intervals)
 
+
+    # todo move to prediction ----
     def linear_extrapolation(self, opt=1):
         """Linear extrapolation of eruption volumes and cumulative volumes"""
 
@@ -345,7 +364,10 @@ class VolcanoData:
 
     def get_a_b(self):
         return self.a, self.b
+    # todo end --------------------------------
 
+
+    # TODO modify to integrate with subset (use vd.period[0])
     def output_real_data(self, idx_0=None, idx_f=None):
         """Output relevant data for analysis as lists"""
         if idx_0 is None:
@@ -366,8 +388,6 @@ class VolcanoData:
 
         return rel_dates, rel_eruptvol, rel_cumvol
 
-
-# todo: transform this into subset (with timeline etc)
 
 if __name__ == "__main__":
     # create an instance of the class for a volcano
