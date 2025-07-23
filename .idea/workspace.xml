@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="subset class integrated in collectdata and historical plots">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="output subset from collectdata">
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_historical_data.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +60,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python tests.Python tests in test_collect.py.executor": "Debug",
     "Python.collect-data.executor": "Run",
-    "Python.collectdata.executor": "Debug",
+    "Python.collectdata.executor": "Run",
     "Python.historical_data.executor": "Run",
     "Python.main.executor": "Run",
     "Python.piton.executor": "Run",
@@ -557,11 +555,18 @@
       <option name="project" value="LOCAL" />
       <updated>1753308765052</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="output subset from collectdata">
+      <option name="closed" value="true" />
+      <created>1753309530446</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1753309530446</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="cleaned collect data class" />
     <MESSAGE value="eruption class" />
     <MESSAGE value="historical data start" />
     <MESSAGE value="historical data plots" />
@@ -586,7 +591,8 @@
     <MESSAGE value="historical data ok" />
     <MESSAGE value="middle of subset edit" />
     <MESSAGE value="subset class integrated in collectdata and historical plots" />
-    <option name="LAST_COMMIT_MESSAGE" value="subset class integrated in collectdata and historical plots" />
+    <MESSAGE value="output subset from collectdata" />
+    <option name="LAST_COMMIT_MESSAGE" value="output subset from collectdata" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

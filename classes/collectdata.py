@@ -272,8 +272,6 @@ class VolcanoData:
 
         return edates, evol, cvol
 
-
-    # TODO: function to take as inputs eID0, eIDf
     def create_subset(self, eID0=None, eIDf=None):
         """Create a subset of the data based on eruption IDs"""
 
