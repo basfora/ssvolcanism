@@ -4,42 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="middle of subset edit">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="subset class integrated in collectdata and historical plots">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VolcanoWriteUp.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/VolcanoWriteUp.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/subset.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/subset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/computethings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period0_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period0_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period0_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period0_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_Evol.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_dT.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_qline.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton_qline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_collect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/piton_historical_data.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -581,11 +549,18 @@
       <option name="project" value="LOCAL" />
       <updated>1753222562801</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="subset class integrated in collectdata and historical plots">
+      <option name="closed" value="true" />
+      <created>1753308765052</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1753308765052</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="N = 1000 enough" />
     <MESSAGE value="cleaned collect data class" />
     <MESSAGE value="eruption class" />
     <MESSAGE value="historical data start" />
@@ -610,7 +585,8 @@
     <MESSAGE value="collect data all volcanoes" />
     <MESSAGE value="historical data ok" />
     <MESSAGE value="middle of subset edit" />
-    <option name="LAST_COMMIT_MESSAGE" value="middle of subset edit" />
+    <MESSAGE value="subset class integrated in collectdata and historical plots" />
+    <option name="LAST_COMMIT_MESSAGE" value="subset class integrated in collectdata and historical plots" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
