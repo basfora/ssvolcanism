@@ -2,36 +2,37 @@
 from classes.collectdata import VolcanoData as vd
 from classes.myplots import MyPlots
 
+volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g': 'Galapagos'}
+volcano_id = volcanoes['g']
+plot_show = False
+
 # ------------------------------------------------
 # start with HISTORICAL DATA
 # -------------------------------------------------
-volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g':'Galapagos'}
-volcano_name = volcanoes['p']
-plot_show = False
-
 if __name__ == '__main__':
 
     # Excel file
-    name_file = f'Table{volcano_name}'
+    name_file = f'Table{volcano_id}'
 
     # IMPORT REAL DATA
     vdata = vd(name=name_file, printing=False)
 
     # to save plot
-    base_name = volcano_name + '_Period'
+    base_name = volcano_id + '_Period'
 
     print(f"...Plotting historical data")
-    for period in range(vdata.n_periods + 1):
-        # todo change to integrate with subset (but do not change myplots yet!!)
-        vdata.organize_period(period)
+    for iperiod in range(vdata.n_periods + 1):
+
+        # get period data as subset
+        mydata = vdata.periods[iperiod]
 
         # plot evolution volume and time interval
-        save_evol = f'{base_name}{period}_Evol'
-        save_dT = f'{base_name}{period}_dT'
+        save_evol = f'{base_name}{iperiod}_Evol'
+        save_dT = f'{base_name}{iperiod}_dT'
 
-        mp = MyPlots(name_file)
-        mp.plot_set01(vdata, 1, save_evol, plot_show)
-        mp.plot_set01(vdata, 2, save_dT, plot_show)
+        mp = MyPlots(vdata.volcano_name)
+        mp.plot_set01(mydata, 1, save_evol, plot_show)
+        mp.plot_set01(mydata, 2, save_dT, plot_show)
 
 
 

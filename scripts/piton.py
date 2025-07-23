@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # save first eruption
     oe = OneEruption(eruption_id=1)
     oe.save_raw(edates[0], evol[0], cvol[1])
-    oe.qperiod = piton_data.Q1
+    oe.qperiod = piton_data.periods[1].q
     eruptions = [oe]
 
     # LOOP OVER ERUPTIONS
@@ -42,9 +42,9 @@ if __name__ == '__main__':
 
         # set q period
         if last_id < 73:
-            q_period = piton_data.Q1
+            q_period = piton_data.periods[1].q
         else:
-            q_period = piton_data.Q2
+            q_period = piton_data.periods[2].q
         pp.set_period_info(q_period)
 
         enext, evolnext, cvolnext = piton_data.output_next(last_eruption)

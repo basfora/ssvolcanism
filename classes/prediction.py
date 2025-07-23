@@ -124,22 +124,7 @@ class PredictionData:
 
     def comp_historical_stats(self):
 
-        if self.in_evol is None:
-            print(f"No data to analyse. Please restart program")
-            exit()
 
-        # compute delta volume CVOL
-        self.cvol_delta = bf.compute_delta_vol(self.cvol_t0, self.cvol_t1)
-        self.evol_sum = sum(self.in_evol)
-
-        # compute mean, std dev EVOL
-        self.evol_mean, self.evol_std = bf.compute_mean_std(self.in_evol)
-
-        # compute TIME
-        self.dT_days = bf.compute_intervals(self.in_edates)
-        self.dT_mean, self.dT_std = bf.compute_mean_std(self.dT_days)
-        self.timeline = bf.compute_timeline(self.dT_days)
-        self.time_total = bf.compute_days(self.date_t0, self.date_t1)
 
         # compute RATE Q
         self.qhat = bf.compute_q(self.cvol_t0, self.cvol_t1, self.time_total)

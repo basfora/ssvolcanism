@@ -28,7 +28,7 @@ class OneEruption:
         self.dT = TInterval()
 
         # -------------- variables at T1 (initial variables/parameters)
-        # parameters specific for each prediction method (Q)
+        # parameters specific for each prediction method (Q in m3/day)
         self.qperiod = None
         # stochastic
         self.qhat = None

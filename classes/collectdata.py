@@ -1,12 +1,10 @@
 """Importing all data from Excel files and saving them
 Return 3 lists: edates, evol, cvol"""
-import datetime
 import numpy as np
 import pandas as pd
 import os
 import copy
 
-from classes.basicfun import Basicfun as bf
 from classes.subset import MySubset
 
 
@@ -21,16 +19,14 @@ class VolcanoData:
         self.name = name
         self.extension = '.xlsx'
         self.raw_data_dir = 'rawdata'
-        self.plot_dir = 'plots'
 
         #---------------------------------
         # source file is formatted
         #---------------------------------
         # TODO add here new info to expand to all volcanoes
+        self.columns = {}
         self.n_periods = 0
         self.periods = {}
-        self.rlimits = {}  # row limits for each period, used for plotting
-        self.columns = {}
 
         # --------------------------------
         # PATHS
@@ -40,11 +36,6 @@ class VolcanoData:
         # path to the raw data folder (where Excel file is)
         self.raw_data_path = ''
         self.path_to_file = ''
-
-        # Piton specific
-        self.period = None # 0 for all data, 1 for period 1, 2 for period 2
-        self.r1, self.rend = 0, 0 # row to start and end collection of data
-        self.date0 = None # start of period
 
         self.volcano_name: str
 
@@ -58,48 +49,46 @@ class VolcanoData:
         self.series_cumvol = None
 
         # as lists (to be outputed)
-        self.list_date = []
-        self.list_eruptvol = []
-        self.list_cumvol = []
-
-        # --------------------------------
-        # for computing stuff
+        self.edates_list = []
+        self.evols_list = []
+        self.cvols_list = []
         self.n = 0  # number of eruptions
-        # rates
-        self.Qlong = None
-        self.Q1 = None  # rate for period 1
-        self.Q2 = None  # rate for period 2
-        self.Q3 = None  # rate for other period
 
         # --------------------------------
-        # To Have for plotting (might delete later)
-        self.mean_evol = None  # mean eruption volume
-        self.std_evol = None
-        self.median_evol = None  # median eruption volume
-        self.mode_evol = None
-
+        # TODO DELETE ALL
         self.intervals = []  # list of intervals between eruptions
         self.timeline = []  # timeline of eruptions
         self.line_points = None  # points for linear extrapolation
-
-
-        self.mean_dT = None  # mean eruption interval
-        self.std_dT = None
-        self.median_dT = None  # median eruption interval
-        self.mode_dT = None
-
-
         # --------------------------------
         # INIT FUNCTIONS
         # --------------------------------
+        self.define_columns()
+
+        self.printstatus(0)
         self.set_volcano_name(name)
         self.import_data()
-        self.extract_parameters()
+        self.dataframe_to_lists()  # convert DataFrame to lists
+        self.define_periods()      # organize into the official periods listed on file
+        self.printstatus(-1)
+
         # ---------------------------------
 
     def define_columns(self):
         """Where to find the data, change if source file formatting changes"""
 
+        # period parameters
+        self.columns['period'] = 6  # column with period number
+        self.columns['ID0'] = 7
+        self.columns['IDf'] = 8
+        self.columns['date_t0'] = 9
+        self.columns['date_tf'] = 10
+        self.columns['Q'] = 11  # rate in km3/yr
+
+        # actual data
+        self.columns['eID'] = 0  # eruption ID
+        self.columns['date'] = 1
+        self.columns['evol'] = 3
+        self.columns['cvol'] = 4
 
         return
 
@@ -120,7 +109,6 @@ class VolcanoData:
             vname = input("Enter the name of the volcano: ")
 
         self.volcano_name = vname
-        print(f"Volcano: {self.volcano_name}")
 
     # UT - OK
     def collect_from(self):
@@ -141,7 +129,7 @@ class VolcanoData:
         if ".xlsx" not in self.path_to_file:
             self.path_to_file += self.extension
 
-        print(f"... Importing data from file: {self.name}")
+        print(f"... Importing data of Volcano {self.volcano_name} from file: {self.name}")
         return self.path_to_file
 
     # UT - OK
@@ -156,44 +144,73 @@ class VolcanoData:
 
         return self.df_volcano
 
+    def dataframe_to_lists(self):
+        """Go into data frame and return lists of dates, eruption volumes and cumulative volumes"""
+
+        # columns to use: B and E
+        cID, cDate, cErupted, cCV = self.columns['eID'], self.columns['date'], self.columns['evol'], self.columns['cvol']
+
+        # separate relevant data from the file, as DataFrames
+        r1 = 1  # start from the second row (first row is header) until NaN
+        self.series_eIDS = self.df_volcano.iloc[r1:, 0]  # eruption IDs
+        self.series_date = self.df_volcano.iloc[r1:, cDate]
+        self.series_eruptvol = self.df_volcano.iloc[r1:, cErupted]
+        self.series_cumvol = self.df_volcano.iloc[r1:, cCV]
+
+        # organize data into lists
+        self.eIDs = self.series_eIDS.tolist()  # eruption IDs
+        self.edates_list = [d.date() for d in self.series_date]
+        self.evols_list = self.series_eruptvol.tolist()
+        # adjust for fake zero init of CVOL (where it started to measure)
+        self.cvols_list = [0.0] + self.series_cumvol.tolist()
+        # number of eruptions
+        self.n = len(self.evols_list)
+
+        # print status
+        print(f"... Imported data of {self.n} eruptions from {self.edates_list[0]} to {self.edates_list[-1]}")
+
     # OK
-    def extract_parameters(self):
+    def define_periods(self):
         """Extract parameters from the DataFrame for the volcano"""
 
         # columns of interest - Periods info
-        cperiod = 6
-        cID0, cIDf = 7, 8
-        cedatet0, cedatetf = 9, 10
-        cQ = 11  # rate in km3/yr
+        cperiod = self.columns['period']
+        cID0, cIDf = self.columns['ID0'], self.columns['IDf']
+        cedatet0, cedatetf = self.columns['date_t0'], self.columns['date_tf']
+        cQ = self.columns['Q']
 
         # less to write
         mydf = self.df_volcano
         row = 1
         while True:
-            pi = mydf.iat[row, cperiod]  # period number
-            if pd.isna(pi):
+            iperiod = mydf.iat[row, cperiod]  # period number
+            if pd.isna(iperiod):
                 break
-            myperiod = MySubset(pi)
             # get paramters for the period
             datet0, datetf = mydf.iat[row, cedatet0], mydf.iat[row, cedatetf]
-            eid_t0, eid_tf = mydf.iat[row, cID0], mydf.iat[row, cIDf]
+            eID0, eIDf = mydf.iat[row, cID0], mydf.iat[row, cIDf]
             qyr = mydf.iat[row, cQ]
 
-            # get volume in km3/yr
-            if eid_t0 == 1:
+            # get cumulative volume at t0 (m3)
+            if eID0 == 1:
                 # first eruption, cumulative volume is 0
-                cvol_t0 = 0.0
+                cvolt0 = 0.0
             else:
-                # get cumulative volume at t0
-                cvol_t0 = mydf.iat[eid_t0-1, 4]
-            # get cumulative volume at tf
-            cvol_tf = mydf.iat[eid_tf, 4]
+                cvolt0 = mydf.iat[eID0-1, 4]
+            # get cumulative volume at tf (m3)
+            cvoltf = mydf.iat[eIDf, 4]
 
-            # save them in the period instance
+            # create period instance
+            myperiod = MySubset(iperiod)
+            # add period parameters
+            myperiod.set_vname(self.volcano_name)
             myperiod.set_dates(datet0.date(), datetf.date())
-            myperiod.set_eIDs(eid_t0, eid_tf)
-            myperiod.set_cvol(cvol_t0, cvol_tf)
+            myperiod.set_eIDs(eID0, eIDf)
+            myperiod.set_cvol(cvolt0, cvoltf)
             myperiod.set_q(qyr)
+            # add actual data to the period instance
+            edates, evols, cvols = self.select_data(eID0, eIDf)
+            myperiod.set_lists(edates, evols, cvols)
 
             # store and print
             self.periods[myperiod.label] = myperiod
@@ -202,7 +219,7 @@ class VolcanoData:
             # --- print info about the period ---
             # print(self.df_volcano)
             print(f'Saved Period {myperiod.label}: {myperiod.date_t0} - {myperiod.date_tf} (eruptions {myperiod.e0} - {myperiod.ef})', end=' ')
-            print(f"Rate: {myperiod.q_yr:.4f} km3/yr, cvol(t0): {myperiod.cvol_t0} | cvol(tf): {myperiod.cvol_tf} m3")
+            print(f"Rate: {myperiod.qyr:.4f} km3/yr, cvol(t0): {myperiod.cvol_t0} | cvol(tf): {myperiod.cvol_tf} m3")
 
         # number of periods (do not change after this)
         self.n_periods = max(self.periods.keys())
@@ -214,105 +231,69 @@ class VolcanoData:
 
         if self.n_periods == 1:
             # if there is only one period, just copy it
-            p0 = copy.deepcopy(self.periods[1])
+            myperiod = copy.deepcopy(self.periods[1])
         else:
             # create a new period 0
-            p0 = MySubset(0)
-            lastkey = self.n_periods
+            myperiod = MySubset(0)
+            lastpi = self.n_periods
             # t0: first period, tf: last period
-            p0.set_dates(self.periods[1].date_t0, self.periods[lastkey].date_tf)
-            p0.set_eIDs(self.periods[1].e0, self.periods[lastkey].ef)
-            p0.set_cvol(self.periods[1].cvol_t0, self.periods[lastkey].cvol_tf)
-            q = bf.compute_q(p0.cvol_t0, p0.cvol_tf, p0.date_dT)
-            p0.set_q(q, 'day')  # set rate in m3/day
+            datet0, datetf = self.periods[1].date_t0, self.periods[lastpi].date_tf
+            eID0, eIDf = self.periods[1].e0, self.periods[lastpi].ef
+            cvolt0, cvoltf = self.periods[1].cvol_t0, self.periods[lastpi].cvol_tf
 
-        self.periods[0] = p0
+            # add period parameters
+            myperiod.set_vname(self.volcano_name)
+            myperiod.set_dates(datet0, datetf)
+            myperiod.set_eIDs(eID0, eIDf)
+            myperiod.set_cvol(cvolt0, cvoltf)
+            # add actual data to the period instance
+            edates, evols, cvols = self.select_data(eID0, eIDf)
+            myperiod.set_lists(edates, evols, cvols)
+
+        self.periods[0] = myperiod
 
         return
 
+    # TODO UNIT TEST FOR NONE and ONE INSTANCE inputs
+    def select_data(self, id0=None, idf=None):
+        """Select data based on eruption IDs
+        id0: first eruption ID, to start from first available eruption, use None
+        idf: last eruption ID, to end at last available eruption, use None
+        for only one eruption, use id0 = idf"""
 
-    def organize_eruption_data(self, period=1):
-        """Save eruption data into period instance"""
-        # organize data for the period (todo merge with extract_parameters or organize period)
-        list_date, list_eruptvol, list_cumvol = self.organize_period(period)
+        # for all available data, use None
+        if id0 is None:  # get from first eruption
+            id0 = 1
+        if idf is None:  # get until last eruption
+            idf = self.n
 
-        myperiod = self.periods[period]
+        # python uses 0-based indexing, so we need to adjust
+        idx0, idxf = id0 - 1, idf - 1
 
-        # save data in the period instance
-        myperiod.set_lists(list_date, list_eruptvol, list_cumvol)
+        # if only one eruption is needed
+        if id0 == idf:
+            # return only one eruption
+            edates = [self.edates_list[idx0]]
+            evol = [self.evols_list[idx0]]
+            cvol = [self.cvols_list[idx0 + 1]]
+        else:
+            edates = self.edates_list[idx0:idxf+1]
+            evol = self.evols_list[idx0:idxf+1]
+            cvol = self.cvols_list[idx0:idxf + 2]  # cvol starts with 0, so we need to include idf + 1
 
+        return edates, evol, cvol
 
-
-    # TODO modify to integrate with subset
-    def organize_period(self, period=1):
-        """Get data from file and return it as lists
-        :param period: 1 for period I, 2 for period II, 0 for all data
-        """
-        # ----------------------------------
-        # todo merge with extract_parameters
-
-        self.period = period
-        if period > 0:
-            pi = self.periods[period]
-            r1, rend = pi.e0, pi.ef + 1
-            self.date0 = pi.date_t0  # start date of the period
-            cvolT0 = pi.cvol_t0
-            # todo change that to be just q
-            if pi.label == 1:
-                self.Q1 = pi.q  # rate for period 1
-            elif pi.label == 2:
-                self.Q2 = pi.q  # rate for period 2
-        else:   # todo dont need this anymore, use period 0
-            r1 = self.periods[1].e0  # first eruption ID
-            last_key = max(self.periods.keys())
-            rend = self.periods[last_key].ef + 1    # first eruption ID + 1
-            self.date0 = self.periods[1].date_t0
-            cvolT0 = self.periods[1].cvol_t0
-
-        # columns to use: B and E
-        cDate, cErupted, cCV = 1, 3, 4
-        # -----------------------------------
-
-        # todo separate lists of ALL data (from import data)
-        # todo break list of all data inside periods
-        #  (add time intervals, timeline etc inside period instance)
-        #  use period instances for q-fit
-        #  use all data for deterministic and stochastic
-
-        # TODO important commands start here!
-        # separate relevant data from the file, as DataFrames
-        self.series_date = self.df_volcano.iloc[r1:rend, cDate]
-        self.series_eruptvol = self.df_volcano.iloc[r1:rend, cErupted]
-        self.series_cumvol = self.df_volcano.iloc[r1:rend, cCV]
-        self.n = len(self.series_eruptvol)  # number of eruptions
-        # -----------------------------------
-        # turn into lists to make it easier to see/plot
-        self.list_eruptvol = self.series_eruptvol.tolist()
-
-        # adjust for fake zero init
-        self.list_cumvol = [cvolT0] + self.series_cumvol.tolist()
-        self.list_date = [d.date() for d in self.series_date]
-
-        # only need date and cumulative volume
-        return self.list_date, self.list_eruptvol, self.list_cumvol,
-
-
-    # todo MOVE TO SUBSET
-    def compute_for_plotting(self):
-        """Compute mean, median and mode for plotting"""
-
-
-
-        # mean, median and mode for eruption intervals
-        self.mean_dT, self.std_dT = bf.compute_mean_std(self.intervals)
-        self.median_dT = bf.compute_median(self.intervals)
-
+    @staticmethod
+    def printstatus(opt=0):
+        if opt == 0:
+            print(f"==============================\n... Initializing VolcanoData collection")
+        elif opt == -1:
+            print(f"Data collection completed\n==============================")
 
     # todo move to prediction ----
     def linear_extrapolation(self, opt=1):
         """Linear extrapolation of eruption volumes and cumulative volumes"""
 
-        self.compute_for_plotting()
         # use timeline to fit to line
         xvalues = self.timeline
         yvalues = self.list_cumvol[1:]
@@ -367,30 +348,10 @@ class VolcanoData:
     # todo end --------------------------------
 
 
-    # TODO modify to integrate with subset (use vd.period[0])
-    def output_real_data(self, idx_0=None, idx_f=None):
-        """Output relevant data for analysis as lists"""
-        if idx_0 is None:
-            idx_0 = 0
-        if idx_f is None:
-            idx_f = self.n - 1
-
-        rel_dates = self.list_date[idx_0:idx_f]
-        rel_cumvol = self.list_cumvol[idx_0:idx_f + 1]
-        rel_eruptvol = self.list_eruptvol[idx_0:idx_f]
-
-        return rel_dates, rel_eruptvol, rel_cumvol
-
-    def output_next(self, idx_next):
-        rel_dates = self.list_date[idx_next]
-        rel_cumvol = self.list_cumvol[idx_next + 1]
-        rel_eruptvol = self.list_eruptvol[idx_next]
-
-        return rel_dates, rel_eruptvol, rel_cumvol
-
-
 if __name__ == "__main__":
+    """Main function to test the VolcanoData class"""
+    vname = 'Piton'
+    name_file = f'Table{vname}'
     # create an instance of the class for a volcano
-    piton = VolcanoData(name='PitondelaFournaise_data', printing=True)
-    # get data from the file
-    piton.organize_period()
+    piton_data = VolcanoData(name_file, printing=True)
+

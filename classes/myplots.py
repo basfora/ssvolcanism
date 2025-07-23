@@ -13,6 +13,7 @@ from scipy.odr import odr_error
 
 from classes.basicfun import Basicfun as bf
 from classes.collectdata import VolcanoData
+from classes.subset import MySubset
 from classes.eruption import OneEruption
 
 # todo ivestigate this warning, where is it coming from?
@@ -156,13 +157,10 @@ class MyPlots:
         fig.savefig(full_path, dpi=600, bbox_inches='tight')
         print(f"Figure saved: {full_path}")
 
-    def plot_set01(self, vd: VolcanoData, plot_op=1, savename=None, plot_show=False):
-        """Plot eruption volumes (evol) or time intervals (dT) with histograms
-        Now: Piton de la Fournaise"""
+    def plot_set01(self, vd: MySubset, plot_op=1, savename=None, plot_show=False):
+        """Plot eruption volumes (evol) or time intervals (dT) with histograms"""
 
-        # compute stats for plotting
-        vd.compute_for_plotting()
-        self.period = bf.format_period(vd.list_date[0], vd.list_date[-1])
+        self.period = bf.format_period(vd.date_t0, vd.date_tf)
 
         # TITLE
         suptitle = f"{self.volcano_name} {self.w_eruptions} \n{self.period}"
@@ -171,16 +169,18 @@ class MyPlots:
 
         # -------------------- PLOT 1 (LEFT)
         if plot_op == 1:    # eruption events (evol)
-            xvalues = vd.list_date
-            yvalues = vd.list_eruptvol
+            xvalues = vd.edates
+            yvalues = vd.evols
             # mean and median for eruptions
-            mean_value = vd.mean_evol
-            median_value = vd.median_evol
-            std_value = vd.std_evol
-            label_std = f"Std Dev = {std_value/10**self.short:.2f} {self.unit[0]}"
+            mean_value = vd.evol_mean
+            median_value = vd.evol_median
+            std_value = vd.evol_std
+            mode_value = vd.evol_mode
+            label_std = f"{std_value/10**self.short:.2f} {self.unit[0]}"
             # label for volume
             label_mean = f"{mean_value/10**self.short:.2f} {self.unit[0]}"
             label_median = f"{median_value/10**self.short:.2f} {self.unit[0]}"
+            label_mode = f"{mode_value/10**self.short:.2f} {self.unit[0]}"
             label_max = f"Min/Max = {min(yvalues)/10**self.short:.2f}/{max(yvalues)/10**self.short:.2f} {self.unit[0]}"
             # label_min = f"Min = {min(yvalues)/10**self.short:.2f} {self.unit[0]}"
             labely = self.label_vol
@@ -189,16 +189,18 @@ class MyPlots:
             title1 = self.title_events
             title2 = f"Volume {self.title_hist}"
         else:               # time intervals (dT)
-            xvalues = [i for i in range(1, len(vd.list_date))]
+            xvalues = [i for i in range(1, len(vd.edates))]
             yvalues = vd.intervals
             # mean and median for intervals
-            mean_value = vd.mean_dT
-            median_value = vd.median_dT
-            std_value = vd.std_dT
+            mean_value = vd.dT_mean
+            median_value = vd.dT_median
+            std_value = vd.dT_std
+            mode_value = vd.dT_mode
             label_std = f"{std_value:.0f} {self.unit[1]}"
             # label for time
             label_mean = f"{mean_value:.0f} {self.unit[1]}"
             label_median = f"{median_value:.0f} {self.unit[1]}"
+            label_mode = f"{mode_value:.0f} {self.unit[1]}"
             label_max = f"Min/Max = {min(yvalues):.0f}/{max(yvalues):.0f} {self.unit[1]}"
             # label_min = f"Min = {min(yvalues):.0f} {self.unit[1]}"
             labely = f"{self.label_interval}"
@@ -216,6 +218,9 @@ class MyPlots:
         # median
         ax[0].axhline(median_value, color=self.color_median, linestyle=self.line_mean,
                    label=f"{self.label_median} {label_median}")
+        # mode
+        ax[0].axhline(mode_value, color=self.color_mode, linestyle=self.line_mode,
+                      label=f"{self.label_mode} {label_mode}")
 
         # extra stats (MAX and MIN)
         ymin, ymax = bf.compute_limits(yvalues)
@@ -226,7 +231,7 @@ class MyPlots:
 
 
         # std
-        # ax[0].axhline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,
+        #ax[0].axhline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,
         #               label=f"$\pm \sigma$ = {label_std}")
         # ax[0].axhline(mean_value - std_value, color=self.color_std, linestyle=self.line_std)
 
@@ -246,13 +251,11 @@ class MyPlots:
                       label=f"{self.label_mean} {label_mean}")
         ax[1].axvline(median_value, color=self.color_median, linestyle=self.line_median,
                       label=f"{self.label_median} {label_median}")
-
-        # todo add MODE
-        # ax[1].axvline(mode_value, color=self.color_mode, linestyle=self.line_mode,
-        #               label=f"{self.label_mode} {label_mode}")
+        ax[1].axvline(mode_value, color=self.color_mode, linestyle=self.line_mode,
+                       label=f"{self.label_mode} {label_mode}")
 
         # std
-        # ax[1].axvline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,
+        #ax[1].axvline(mean_value + std_value, color=self.color_std, linestyle=self.line_std,
         #               label=f"$\pm \sigma$ = {label_std}")
         # ax[1].axvline(mean_value - std_value, color=self.color_std, linestyle=self.line_std)
 

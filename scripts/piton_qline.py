@@ -22,7 +22,7 @@ if __name__ == '__main__':
     # last eruption ID (real data, prediction will be ID + 1)
     start_after_eruption = 1
     stop_before_eruption = 73
-    p, q_period = 1, piton_data.Q1
+    p, q_period = 1, piton_data.periods[1].q
 
     # get relevant data from the file
     piton_data.organize_period(p)  # period 0 for all data
@@ -40,7 +40,7 @@ if __name__ == '__main__':
             # save first eruption
             oe1 = OneEruption(last_eruption)
             oe1.save_raw(edates[0], evol[0], cvol[1])
-            oe1.qperiod = piton_data.Q1
+            oe1.qperiod = piton_data.periods[1].q
 
             # # save first eruption
             # pt_qline = piton_data.get_line_pt(0, 'qline')
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         # PREDICTION
         # ------------------------------------------------------
         pp = pred(edates, evol, cvol, q_period, last_id)
-        pp.set_period_info(piton_data.Q1)
+        pp.set_period_info(piton_data.periods[1].q)
 
         #if last_eruption < stop_before_eruption:
         enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     # period 2
     start_after_eruption = 1
     stop_before_eruption = 46
-    p, q_period = 2, piton_data.Q2
+    p, q_period = 2, piton_data.periods[2].q
 
     # get relevant data from the file
     piton_data.organize_period(p)  # period 0 for all data
@@ -94,7 +94,7 @@ if __name__ == '__main__':
             # save first eruption -- # 74
             oe1 = OneEruption(last_id + 1)
             oe1.save_raw(edates[0], evol[0], cvol[1])
-            oe1.qperiod = piton_data.Q2  # set qperiod
+            oe1.qperiod = piton_data.periods[2].q  # set qperiod
             # # save first eruption
             # pt_qline = piton_data.get_line_pt(0, 'qline')
             # oe1.save_result(pt_qline[1], oe1.dT.t2, method=4)
@@ -106,7 +106,7 @@ if __name__ == '__main__':
         # PREDICTION
         # ------------------------------------------------------
         pp = pred(edates, evol, cvol, q_period, last_id)
-        pp.set_period_info(piton_data.Q2)
+        pp.set_period_info(piton_data.periods[2].q)
 
         enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
         pp.save_real_next(enext, evolnext, cvolnext)

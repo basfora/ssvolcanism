@@ -6,7 +6,8 @@ from classes.basicfun import Basicfun as bf
 import numpy as np
 import datetime
 
-# TODO UNIT TEST FOR collectdata > extract parameters
+# TODO UNIT TEST FOR collectdata (NEW)
+# SPECIALLY COLLECTDATA.SELECTTDATA
 
 def parameters_piton_periodI():
     """Parameters pre-defined for unit tests."""
@@ -263,7 +264,7 @@ def test_historical_stats():
 
     # start prediction instance (PredictionData)
     pp = pred(edates, evol, cvol, last_eruption)
-    pp.set_period_info(piton_data.Q2)
+    pp.set_period_info(piton_data.periods[2].q)
 
     enext, evolnext, cvolnext = piton_data.output_next(last_eruption)
     pp.save_real_next(enext, evolnext, cvolnext)
@@ -314,7 +315,7 @@ def test_deterministic_prediction():
     edatesall, evolall, cvolall = piton_data.organize_period(p)
 
     # - check Q period
-    qperiod = piton_data.Q1
+    qperiod = piton_data.periods[1].q
     qperiod1 = bf.Qy_to_Qday(0.0107)
     # saved the right value
     assert qperiod == qperiod1

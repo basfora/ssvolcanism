@@ -4,12 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="historical data ok">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="middle of subset edit">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VolcanoWriteUp.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/VolcanoWriteUp.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/basicfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/basicfun.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/subset.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/subset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/old/computethings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/old/sketch.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period0_Evol.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period0_dT.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period0_Evol.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period0_dT.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Iceland_Period1_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period0_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period1_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Piton_Period2_dT.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/piton_qline.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/piton_qline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_collect.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +94,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python tests.Python tests in test_collect.py.executor": "Debug",
     "Python.collect-data.executor": "Run",
-    "Python.collectdata.executor": "Run",
+    "Python.collectdata.executor": "Debug",
     "Python.historical_data.executor": "Run",
     "Python.main.executor": "Run",
     "Python.piton.executor": "Run",
@@ -87,6 +117,28 @@
     </key>
   </component>
   <component name="RunManager" selected="Python.historical_data">
+    <configuration name="collectdata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Volcano" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/classes" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/classes/collectdata.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="historical_data" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -153,28 +205,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="piton_linear" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Volcano" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/piton_linear.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="piton_qline" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Volcano" />
       <option name="ENV_FILES" value="" />
@@ -200,10 +230,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.historical_data" />
+        <item itemvalue="Python.collectdata" />
         <item itemvalue="Python.piton_historical_data" />
         <item itemvalue="Python.piton" />
         <item itemvalue="Python.piton_qline" />
-        <item itemvalue="Python.piton_linear" />
       </list>
     </recent_temporary>
   </component>
@@ -543,11 +573,18 @@
       <option name="project" value="LOCAL" />
       <updated>1753209447425</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="middle of subset edit">
+      <option name="closed" value="true" />
+      <created>1753222562801</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1753222562801</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="error is still high" />
     <MESSAGE value="N = 1000 enough" />
     <MESSAGE value="cleaned collect data class" />
     <MESSAGE value="eruption class" />
@@ -572,7 +609,8 @@
     <MESSAGE value="todo edit" />
     <MESSAGE value="collect data all volcanoes" />
     <MESSAGE value="historical data ok" />
-    <option name="LAST_COMMIT_MESSAGE" value="historical data ok" />
+    <MESSAGE value="middle of subset edit" />
+    <option name="LAST_COMMIT_MESSAGE" value="middle of subset edit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -583,6 +621,13 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>

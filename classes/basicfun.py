@@ -61,7 +61,7 @@ class Basicfun:
         mode_bin_index = np.argmax(hist)
         mode_approx = (bin_edges[mode_bin_index] + bin_edges[mode_bin_index + 1]) / 2
 
-        return mode_approx
+        return mode_approx.astype(float)
 
 
     # UT - ok
