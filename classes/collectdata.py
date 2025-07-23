@@ -233,22 +233,11 @@ class VolcanoData:
             # if there is only one period, just copy it
             myperiod = copy.deepcopy(self.periods[1])
         else:
-            # create a new period 0
-            myperiod = MySubset(0)
             lastpi = self.n_periods
-            # t0: first period, tf: last period
-            datet0, datetf = self.periods[1].date_t0, self.periods[lastpi].date_tf
             eID0, eIDf = self.periods[1].e0, self.periods[lastpi].ef
-            cvolt0, cvoltf = self.periods[1].cvol_t0, self.periods[lastpi].cvol_tf
 
-            # add period parameters
-            myperiod.set_vname(self.volcano_name)
-            myperiod.set_dates(datet0, datetf)
-            myperiod.set_eIDs(eID0, eIDf)
-            myperiod.set_cvol(cvolt0, cvoltf)
-            # add actual data to the period instance
-            edates, evols, cvols = self.select_data(eID0, eIDf)
-            myperiod.set_lists(edates, evols, cvols)
+            # create a new period 0
+            myperiod = self.create_subset(eID0, eIDf)
 
         self.periods[0] = myperiod
 
@@ -282,6 +271,29 @@ class VolcanoData:
             cvol = self.cvols_list[idx0:idxf + 2]  # cvol starts with 0, so we need to include idf + 1
 
         return edates, evol, cvol
+
+
+    # TODO: function to take as inputs eID0, eIDf
+    def create_subset(self, eID0=None, eIDf=None):
+        """Create a subset of the data based on eruption IDs"""
+
+        # select data based on eruption IDs
+        edates, evols, cvols = self.select_data(eID0, eIDf)
+        datet0, datetf = edates[0], edates[-1]
+        cvolt0, cvoltf = cvols[0], cvols[-1]
+
+        # create a new MySubset instance
+        mysubset = MySubset(0)
+        # add period parameters
+        mysubset.set_vname(self.volcano_name)
+        mysubset.set_dates(datet0, datetf)
+        mysubset.set_eIDs(eID0, eIDf)
+        mysubset.set_cvol(cvolt0, cvoltf)
+        # add actual data to the period instance
+        mysubset.set_lists(edates, evols, cvols)
+
+        return mysubset
+
 
     @staticmethod
     def printstatus(opt=0):
