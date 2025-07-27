@@ -46,10 +46,12 @@ class MyPlots:
         self.w_eruptions = "Eruptions"
 
         self.label_break = ', '
+        self.label_eruptions = "Eruptions" + self.label_break
         self.label_mean = "Mean" + self.label_break
         self.label_mean_symbol = "$\mu$ = "
         self.label_median = "Median" + self.label_break
         self.label_mode = "Mode" + self.label_break
+        self.label_minmax = "Min/Max" + self.label_break
         self.label_real = "Real" + self.label_break
         self.unit = [f"10$^{self.short}$ m$^3$",'days']
 
@@ -178,10 +180,11 @@ class MyPlots:
             mode_value = vd.evol_mode
             label_std = f"{std_value/10**self.short:.2f} {self.unit[0]}"
             # label for volume
+            label_eruptions = f"{vd.n}"
             label_mean = f"{mean_value/10**self.short:.2f} {self.unit[0]}"
             label_median = f"{median_value/10**self.short:.2f} {self.unit[0]}"
             label_mode = f"{mode_value/10**self.short:.2f} {self.unit[0]}"
-            label_max = f"Min/Max = {min(yvalues)/10**self.short:.2f}/{max(yvalues)/10**self.short:.2f} {self.unit[0]}"
+            label_max = f"{min(yvalues)/10**self.short:.2f}/{max(yvalues)/10**self.short:.2f} {self.unit[0]}"
             # label_min = f"Min = {min(yvalues)/10**self.short:.2f} {self.unit[0]}"
             labely = self.label_vol
             labelx = self.label_date
@@ -198,10 +201,11 @@ class MyPlots:
             mode_value = vd.dT_mode
             label_std = f"{std_value:.0f} {self.unit[1]}"
             # label for time
+            label_eruptions = f"{vd.n}"
             label_mean = f"{mean_value:.0f} {self.unit[1]}"
             label_median = f"{median_value:.0f} {self.unit[1]}"
             label_mode = f"{mode_value:.0f} {self.unit[1]}"
-            label_max = f"Min/Max = {min(yvalues):.0f}/{max(yvalues):.0f} {self.unit[1]}"
+            label_max = f"{min(yvalues):.0f}/{max(yvalues):.0f} {self.unit[1]}"
             # label_min = f"Min = {min(yvalues):.0f} {self.unit[1]}"
             labely = f"{self.label_interval}"
             labelx = self.label_number
@@ -210,24 +214,28 @@ class MyPlots:
             title2 = f"Time Interval {self.title_hist}"
 
 
+
+
         # PLOT ERUPTIONS (EVOL)
-        ax[0].scatter(xvalues, yvalues, marker=self.marker_real, color=self.color_real, label=f"{self.w_eruptions}")
+        ax[0].scatter(xvalues, yvalues, marker=self.marker_real, color=self.color_real,
+                      label=f'{self.label_eruptions}{label_eruptions}')
+
         # mean
         ax[0].axhline(mean_value, color=self.color_mean, linestyle=self.line_mean,
-                   label=f"{self.label_mean} {label_mean}")
+                   label=f"{self.label_mean}{label_mean}")
         # median
         ax[0].axhline(median_value, color=self.color_median, linestyle=self.line_mean,
-                   label=f"{self.label_median} {label_median}")
+                   label=f"{self.label_median}{label_median}")
         # mode
         ax[0].axhline(mode_value, color=self.color_mode, linestyle=self.line_mode,
-                      label=f"{self.label_mode} {label_mode}")
+                      label=f"{self.label_mode}{label_mode}")
 
         # extra stats (MAX and MIN)
         ymin, ymax = bf.compute_limits(yvalues)
         idx_min, idx_max = yvalues.index(ymin), yvalues.index(ymax)
         xmin, xmax = xvalues[idx_min], xvalues[idx_max]
         ax[0].scatter(xmin, ymin, marker='o', facecolors='none', edgecolors='red', s=100)
-        ax[0].scatter(xmax, ymax, marker='o', facecolors='none', edgecolors='red', s=100, label=label_max)
+        ax[0].scatter(xmax, ymax, marker='o', facecolors='none', edgecolors='red', s=100, label=f'{self.label_minmax}{label_max}')
 
 
         # std

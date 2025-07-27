@@ -24,7 +24,6 @@ class MySubset:
         # date of first and last eruption
         self.date_t0: datetime.date
         self.date_tf: datetime.date
-        self.dT_total: datetime.timedelta  # time interval between t0 and tf
 
         # first and last eruption ID
         self.e0: int
@@ -138,10 +137,24 @@ class MySubset:
         self.dT_median = bf.compute_median(self.intervals)
         self.dT_mode = bf.compute_mode(self.intervals)
 
+        # non-official period, needs to compute q based on data
         if self.label < 1:
             q = bf.compute_q(self.cvol_t0, self.cvol_tf, self.dT_total_days)
             self.set_q(q, 'day')
 
         return
 
-    # TODO LATER: def sanity_check(number of eruption, q etc)
+    def sanity_check(self):
+        # todo expand this as needed
+
+        assert self.n == self.ef - self.e0 + 1, "Number of eruptions does not match IDs"
+        assert len(self.edates) == self.n, "Number of eruption dates does not match n"
+        assert len(self.evols) == self.n, "Number of eruption volumes does not match n"
+        assert len(self.cvols) == self.n + 1, "Number of cumulative volumes does not match n"
+
+        # time
+        assert self.dT_total_days == sum(self.intervals), "Total days does not match intervals sum"
+        assert len(self.intervals) == self.n - 1, "Number of intervals does not match n-1"
+        assert len(self.timeline) == self.n, "Timeline length does not match n"
+        assert self.timeline[-1] == self.dT_total_days, "Last timeline value does not match total days"
+

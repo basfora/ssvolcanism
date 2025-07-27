@@ -5,9 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="subset class integrated in collectdata and historical plots">
+      <change afterPath="$PROJECT_DIR$/tests/test_basicfun.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_collectdata.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Volcano.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Volcano.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_historical_data.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/classes/subset.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/subset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_collect.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/text_prediction.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,8 +68,8 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python tests.Python tests in test_collect.py.executor": "Debug",
     "Python.collect-data.executor": "Run",
-    "Python.collectdata.executor": "Debug",
-    "Python.historical_data.executor": "Run",
+    "Python.collectdata.executor": "Run",
+    "Python.historical_data.executor": "Debug",
     "Python.main.executor": "Run",
     "Python.piton.executor": "Run",
     "Python.piton_historical_data.executor": "Debug",
@@ -208,7 +214,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-598b0484d0b5-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.74" />
+        <option value="bundled-python-sdk-4c141bd692a7-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.90" />
       </set>
     </attachedChunks>
   </component>

@@ -16,17 +16,9 @@ class VolcanoData:
         self.printing = printing
         self.save_plot = True
         # file name to be imported
-        self.name = name
+        self.file_name = name
         self.extension = '.xlsx'
         self.raw_data_dir = 'rawdata'
-
-        #---------------------------------
-        # source file is formatted
-        #---------------------------------
-        # TODO add here new info to expand to all volcanoes
-        self.columns = {}
-        self.n_periods = 0
-        self.periods = {}
 
         # --------------------------------
         # PATHS
@@ -36,12 +28,17 @@ class VolcanoData:
         # path to the raw data folder (where Excel file is)
         self.raw_data_path = ''
         self.path_to_file = ''
-
-        self.volcano_name: str
+        self.file_columns = {}  # source file is formatted
+        self.define_columns()
 
         # --------------------------------
         # DATA HANDLING
         # --------------------------------
+        self.volcano_name: str
+        self.n_periods = 0
+        # dictionary of MySubset instances, key is period number
+        self.periods = {}
+
         # original data frames
         self.df_volcano = None
         self.series_date = None
@@ -59,11 +56,10 @@ class VolcanoData:
         self.intervals = []  # list of intervals between eruptions
         self.timeline = []  # timeline of eruptions
         self.line_points = None  # points for linear extrapolation
+
         # --------------------------------
         # INIT FUNCTIONS
         # --------------------------------
-        self.define_columns()
-
         self.printstatus(0)
         self.set_volcano_name(name)
         self.import_data()
@@ -77,18 +73,18 @@ class VolcanoData:
         """Where to find the data, change if source file formatting changes"""
 
         # period parameters
-        self.columns['period'] = 6  # column with period number
-        self.columns['ID0'] = 7
-        self.columns['IDf'] = 8
-        self.columns['date_t0'] = 9
-        self.columns['date_tf'] = 10
-        self.columns['Q'] = 11  # rate in km3/yr
+        self.file_columns['period'] = 6  # column with period number
+        self.file_columns['ID0'] = 7
+        self.file_columns['IDf'] = 8
+        self.file_columns['date_t0'] = 9
+        self.file_columns['date_tf'] = 10
+        self.file_columns['Q'] = 11  # rate in km3/yr
 
         # actual data
-        self.columns['eID'] = 0  # eruption ID
-        self.columns['date'] = 1
-        self.columns['evol'] = 3
-        self.columns['cvol'] = 4
+        self.file_columns['eID'] = 0  # eruption ID
+        self.file_columns['date'] = 1
+        self.file_columns['evol'] = 3
+        self.file_columns['cvol'] = 4
 
         return
 
@@ -124,12 +120,12 @@ class VolcanoData:
         # Get the path to the rawData folder > '../PycharmProjects/volcano/rawdata'
         self.raw_data_path = os.path.join(parent_dir, self.raw_data_dir)
         # path to file
-        self.path_to_file = os.path.join(self.raw_data_path, self.name)
+        self.path_to_file = os.path.join(self.raw_data_path, self.file_name)
         # add extension (.xlsx) if not present
         if ".xlsx" not in self.path_to_file:
             self.path_to_file += self.extension
 
-        print(f"... Importing data of Volcano {self.volcano_name} from file: {self.name}")
+        print(f"... Importing data of Volcano {self.volcano_name} from file: {self.file_name}")
         return self.path_to_file
 
     # UT - OK
@@ -148,7 +144,7 @@ class VolcanoData:
         """Go into data frame and return lists of dates, eruption volumes and cumulative volumes"""
 
         # columns to use: B and E
-        cID, cDate, cErupted, cCV = self.columns['eID'], self.columns['date'], self.columns['evol'], self.columns['cvol']
+        cID, cDate, cErupted, cCV = self.file_columns['eID'], self.file_columns['date'], self.file_columns['evol'], self.file_columns['cvol']
 
         # separate relevant data from the file, as DataFrames
         r1 = 1  # start from the second row (first row is header) until NaN
@@ -174,10 +170,10 @@ class VolcanoData:
         """Extract parameters from the DataFrame for the volcano"""
 
         # columns of interest - Periods info
-        cperiod = self.columns['period']
-        cID0, cIDf = self.columns['ID0'], self.columns['IDf']
-        cedatet0, cedatetf = self.columns['date_t0'], self.columns['date_tf']
-        cQ = self.columns['Q']
+        cperiod = self.file_columns['period']
+        cID0, cIDf = self.file_columns['ID0'], self.file_columns['IDf']
+        cedatet0, cedatetf = self.file_columns['date_t0'], self.file_columns['date_tf']
+        cQ = self.file_columns['Q']
 
         # less to write
         mydf = self.df_volcano
@@ -243,17 +239,45 @@ class VolcanoData:
 
         return
 
-    # TODO UNIT TEST FOR NONE and ONE INSTANCE inputs
     def select_data(self, id0=None, idf=None):
         """Select data based on eruption IDs
-        id0: first eruption ID, to start from first available eruption, use None
-        idf: last eruption ID, to end at last available eruption, use None
-        for only one eruption, use id0 = idf"""
+        id0: first eruption ID, to start from first available eruption, use -1
+        idf: last eruption ID, to end at last available eruption, use -1
+        for only one eruption, use id0: int, idf: None or id0
+        for all data, use id0: None or -1, idf: None or -1
 
-        # for all available data, use None
-        if id0 is None:  # get from first eruption
+        Examples:
+        # select data from eruptions id0 to idf (inclusive)
+        vdata.select_data(id0, idf)
+        # select data from eruption id0 (only)
+        vdata.select_data(id0)
+        # select data from start to eruption idf (inclusive)
+        vdata.select_data(-1, idf)
+        # select data from id0 to end (inclusive)
+        vdata.select_data(id0, -1)
+        # select data from start to end
+        vdata.select_data(-1, -1) or vdata.select_data()
+
+        Returns:
+            edates: list of eruption dates
+            evol: list of eruption volumes
+            cvol: list of cumulative volumes
+        """
+
+        # return all data (both are None) or just one instance (id0 == idf)
+        if idf is None:
+            if id0 is None or id0 == -1:
+                # if both are None, return all data
+                id0, idf = -1, -1
+            else:
+                # id0 is valid, we want only one instance
+                idf = id0
+
+        # get from the start
+        if id0 == -1:
             id0 = 1
-        if idf is None:  # get until last eruption
+        # get until the end
+        if idf == -1:
             idf = self.n
 
         # python uses 0-based indexing, so we need to adjust
@@ -262,18 +286,17 @@ class VolcanoData:
         # if only one eruption is needed
         if id0 == idf:
             # return only one eruption
-            edates = [self.edates_list[idx0]]
-            evol = [self.evols_list[idx0]]
-            cvol = [self.cvols_list[idx0 + 1]]
+            edates = self.edates_list[idx0]
+            evol = self.evols_list[idx0]
+            cvol = self.cvols_list[idx0 + 1]
         else:
-            edates = self.edates_list[idx0:idxf+1]
-            evol = self.evols_list[idx0:idxf+1]
+            edates = self.edates_list[idx0:idxf + 1]
+            evol = self.evols_list[idx0:idxf + 1]
             cvol = self.cvols_list[idx0:idxf + 2]  # cvol starts with 0, so we need to include idf + 1
 
         return edates, evol, cvol
 
 
-    # TODO: function to take as inputs eID0, eIDf
     def create_subset(self, eID0=None, eIDf=None):
         """Create a subset of the data based on eruption IDs"""
 
@@ -302,7 +325,7 @@ class VolcanoData:
         elif opt == -1:
             print(f"Data collection completed\n==============================")
 
-    # todo move to prediction ----
+    # todo move to prediction -----------------
     def linear_extrapolation(self, opt=1):
         """Linear extrapolation of eruption volumes and cumulative volumes"""
 
