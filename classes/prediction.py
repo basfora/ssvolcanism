@@ -4,132 +4,50 @@ from classes.basicfun import Basicfun as bf
 from classes.eruption import OneEruption
 import numpy as np
 
+from classes.subset import MySubset
+
 
 class PredictionData:
 
-    def __init__(self, edates: list, evol: list, cvol: list, q=None, id_last=None):
+    def __init__(self, nextid: int):
         """Initialize the prediction data class
-        :param edates: list of eruption dates [datetime](n)
-        :param evol: list of eruption volumes (m3) [int](n)
-        :param cvol: list of cumulative volumes (m3) [int](n+1)
-        :param id_last: ID of last eruption (if None, use all data)
         """
+        # input data for prediction
+        self.indata = None
+        self.n = 0  # number of data points
 
-        # for storage and information purposes
-        # inputs (real data collection)
-        self.in_edates = None
-        self.in_evol = None
-        self.in_cvol = None
-        self.n = 0
+        # next eruption ID (to be used in prediction)
+        self.next_id = nextid
+        print(f"Prediction instance created for eruption id # {self.next_id}")
+        self.oe = None
 
-        # period being used for prediction
-        self.date_t0 = None
-        self.date_t1 = None
-        # current time, T1
-        self.day_t1 = None
-
-        # cumulative volume
-        self.cvol_t0 = 0.0
-        self.cvol_t1 = 0.0
-
-        # eruption instance to save real and prediction data for target eruption
-        self.oe = None  # instance for next eruption
-
-        # -----------------------------------------------------
-        # COMPUTED (BASIC STATS) - to be used in analysis
-        # EVOL (m3)
-        self.evol_mean = 0.0
-        self.evol_std = 0.0
-        self.evol_sum = 0.0
-        # CVOL (m3)
-        self.cvol_delta = 0.0
-        # TIME (DAYS)
-        self.dT_days = []
-        self.dT_mean, self.dT_std = 0.0, 0.0
-        # for timeline
-        self.time_total = 0.0
-        self.timeline = []
-        # RATE (m3/day)
-        self.qhat = None
-        self.qperiod = None
-
-        # -----------------------------------------------------
-        # INIT FUNCTIONS
-        # First things first, save input data
-        self.save_input_data(edates, evol, cvol, q, id_last)
-        self.comp_historical_stats()
-        self.print_real_dataset()
-
-    def save_input_data(self, edates: list, evol: list, cvol: list, q=None, id_last=None):
-        """Just save input data directly and crate prediction instance
-        :param edates: list of TimeSeries [int](n)
-        :param evol: list of eruption volumes (m3), [int](n)
-        :param cvol: list of cumulative volume (m3) [int](n+1)
-        :param id_last: number ID of LAST known eruption"""
-
-        # if id of last eruption is None, id = last available in dataset
-        if id_last is None:
-            id_last = len(evol) # number of eruptions (n) = last eruption id
-
-        # save input data up to last eruption
-        self.in_edates = edates
-        self.in_evol = evol
-        self.in_cvol = cvol  # adjust for fake 0 init
-        # number of data points for prediction
-        self.n = len(self.in_evol)
-
-        # save T0 and T1 data for easy access
-        # period
-        self.date_t0 = self.in_edates[0]
-        self.date_t1 = self.in_edates[-1]
-        # time since beggining of period
-        self.day_t1 = bf.compute_days(self.date_t0, self.date_t1)  # days from T0 to T1
-
-        # cumulative volume (m3)
-        self.cvol_t0 = self.in_cvol[0]
-        self.cvol_t1 = self.in_cvol[-1]
-
-        # ---------------------- CREATE ERUPTION INSTANCE
-
-        # next eruption id
-        self.next_id = id_last + 1  # next eruption ID (python starts at 0)
-
-        self.create_eruption_instance(q)
-
-        bf.print_mark()
-        print(f"Prediction instance created, id = {self.next_id}")
-
-    def save_real_next(self, edate, evol, cvol):
-        self.oe.date.t2 = edate
-        self.oe.evol.t2 = evol
-        self.oe.cvol.t2 = cvol # cumulative volume at next eruption
-        # interval
-        self.oe.dT.t2 = bf.compute_days(self.date_t1, self.oe.date.t2)
-
-    def create_eruption_instance(self, q):
-
-        self.oe = OneEruption(self.next_id)  # create an instance to save prediction data
-
-        # save T1 data
-        self.oe.date.t1 = self.date_t1
-        self.oe.cvol.t1 = self.cvol_t1
-        self.oe.dT.t1 = self.day_t1  # time interval in days from beginning of period to T1
-        # not needed but for symmetry
-        self.oe.evol.t1 = self.in_evol[-1]
-
-        # save T0 data
-        self.oe.date.t0 = self.date_t0
-        self.oe.cvol.t0 = self.cvol_t0
-        self.oe.qperiod = q
-
-    def comp_historical_stats(self):
+        self.a = dict()  # dictionary to save a, b for qline method
+        self.b = dict()
+        self.line_pts = dict()  # dictionary to save line points for qline method
 
 
+    def input_dataset(self, subdata: MySubset):
 
-        # compute RATE Q
-        self.qhat = bf.compute_q(self.cvol_t0, self.cvol_t1, self.time_total)
-        self.oe.qhat = self.qhat  # save in OneEruption instance
+        self.indata = subdata
+        self.n = subdata.n  # number of data points
 
+    def input_eruption(self, oe: OneEruption):
+
+        assert oe.id == self.next_id, "Eruption ID does not match the next ID for prediction."
+
+        # save t0 data in eruption instance
+        edate, evol, cvol = self.indata.date_t0, self.indata.evols[0], self.indata.cvol_t0
+        oe.save_real(edate, evol, cvol, 't0')
+
+        oe.dT.t0_1 = bf.compute_days(self.indata.date_t0, self.indata.date_tf)  # time interval in days from beginning of subset to T1
+        oe.qhat = self.indata.q  # set theoretical rate of eruptions (m3/day)
+
+        # save inside class (might modify and delete later)
+        self.oe = oe
+
+        return self.oe
+
+    # TODO DELETE ---------------------------------------------------------------
     def print_real_dataset(self):
         """Print info about the period of real data to be used for prediction"""
 
@@ -141,11 +59,9 @@ class PredictionData:
         bf.print_time(self.dT_mean, self.dT_std, self.time_total)
         bf.print_rate(self.qhat)
 
-    # ------------------------------------------------------------
-    def set_period_info(self, qperiod: float):
-        """Set the theoretical rate of eruptions (m3/day)"""
-        # save qperiod in OneEruption instance
-        self.oe.qperiod = qperiod
+        #         bf.print_mark()
+        #
+    # TODO END DELETE ------------------------------------------------------------
 
     def run_methods(self):
 
@@ -159,14 +75,6 @@ class PredictionData:
         # stochastic method (3)
         self.stochastic_method()
         self.oe.print_instance(3)
-
-        # qline method "4"
-        # self.qline_method()
-        # self.oe.print_instance(4)
-
-        # linear extrapolation (1)
-        # self.linear_extrapolation()
-        # self.oe.print_instance(1)
 
         return self.oe
 
@@ -189,38 +97,25 @@ class PredictionData:
         # save
         self.oe.save_result(cvolT2, dT, method=2)
 
-    # METHOD 4: QLINE
-    def qline_method(self):
-
-        # get parameters for qline method
-        cvolT0, q, dT = self.oe.get_parameters(4)
-
-        # compute based on q line
-        cvolT2 = bf.state_equation(cvolT0, q, dT)
-
-        # save
-        self.oe.save_result(cvolT2, dT)
-
     # METHOD 3: STOCHASTIC FORECAST
     def stochastic_method(self):
         """Set the theoretical rate of eruptions (m3/day) for stochastic method"""
 
-        # get parameters for deterministic method
-        cvolT1, q, N = self.oe.get_parameters(method=3)
+        # get parameters for stochastic method
+        cvolT1, qhat, N = self.oe.get_parameters(method=3)
 
         # set up simulation parameters - time interval
-        dTdata = self.dT_days  # use dT from historical data
+        dTdata = self.indata.intervals  # use dT from historical data
         if len(dTdata) == 0:
             dTdata = np.random.randint(2, 1200, 50)  # if no data, use random dT
+
         dTsim = np.random.choice(dTdata, N, replace=True)
 
         # compute CVOL(T2) = CVOL(T1) + Qhat * dTsim (for each dT)
-        CVsim = [bf.state_equation(cvolT1, self.qhat, dT) for dT in dTsim]
+        CVsim = [bf.state_equation(cvolT1, qhat, dT) for dT in dTsim]
 
         # save simulation results
         self.oe.save_result(CVsim, dTsim, method=3)
-
-
 
 
 

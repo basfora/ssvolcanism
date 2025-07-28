@@ -24,6 +24,7 @@ class MyPlots:
 
         # volcano name
         self.volcano_name = self.set_name(name)
+        self.volcano_nickname = None
 
         self.volcano_subname: str
         self.period = None
@@ -36,7 +37,7 @@ class MyPlots:
         self.leg_fontsize = 10
         self.label_fontsize = 14
 
-        self.yth = 0.05  # y-axis limit for volume in m3
+        self.yth = 0.07  # y-axis limit for volume in m3
         self.short = 6
 
         # type data
@@ -71,8 +72,8 @@ class MyPlots:
         self.leg_real = "Real Data"
         self.leg_pred = "Predicted Data"
         self.leg_exp = "Expected"
-        self.leg_Q1 = "Period I, Q = 0.0107 km$^3$/yr"
-        self.leg_Q2 = "Period II, Q = 0.0228 km$^3$/yr"
+        self.leg_Q1 = "Period I, Q = "
+        self.leg_Q2 = "Period II, Q = "
         self.leg_error = "Error"
         self.leg_ptcloud = "Simulated"
         self.leg_qhat = "$\hat{Q}$"
@@ -130,8 +131,6 @@ class MyPlots:
         self.width_ptcloud = 0.5
 
         self.savepath = self.get_save_path()
-
-
 
     def set_name(self, name=None):
         """Set the name of the volcano"""
@@ -290,10 +289,15 @@ class MyPlots:
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
-        # separate eruptions (class)
-        ep1 = eruptions[:73]  # period I
-        ep2 = eruptions[73:]  # period II
-        self.sanity_piton_periods(ep1, ep2)
+        ep1 = [oe for oe in eruptions if oe.part_of_period == 1]  # period I
+        ep2 = [oe for oe in eruptions if oe.part_of_period == 2]  # period II
+
+        q1 = bf.Qday_to_Qy(ep1[0].qperiod)  # Q for period I
+        if len(ep2) > 0:
+            q2 = bf.Qday_to_Qy(ep2[0].qperiod)  # Q for period I
+
+        if 'piton' in self.volcano_name.lower():
+            self.sanity_piton_periods(ep1, ep2)
 
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
@@ -308,24 +312,34 @@ class MyPlots:
             yvalues_real = [e.cvol.t2 for e in eruptions]  # n
             # expected values (deterministic prediction)
             yvalues1 = [e.cvol.det.value for e in ep1 if e.cvol.det.value is not None]
-            yvalues2 = [e.cvol.det.value for e in ep2 if e.cvol.det.value is not None]
+            if len(ep2) > 0:
+                yvalues2 = [e.cvol.det.value for e in ep2 if e.cvol.det.value is not None]
         elif option == 'evol':
             myvol     = self.title_evol
             # yvalues: real eruption volumes (EVOL)
             yvalues_real = [e.evol.t2 for e in eruptions]  # n
             # expected values (deterministic prediction)
             yvalues1 = [e.evol.det.value for e in ep1 if e.evol.det.value is not None]
-            yvalues2 = [e.evol.det.value for e in ep2 if e.evol.det.value is not None]
+            if len(ep2) > 0:
+                yvalues2 = [e.evol.det.value for e in ep2 if e.evol.det.value is not None]
         else:
             exit("Option must be 'cvol' or 'evol'.")
 
         # ---------------- PLOT 1 (MAIN)
         # Plot real values (n)
         ax.scatter(xvalues, yvalues_real, marker=self.marker_real, color=self.color_real, linewidth=3, label=self.leg_real)
-        # Plot predicted values - period I (eruptions # 2 - 73)
-        ax.scatter(xvalues1, yvalues1, marker=self.marker_det, color=self.color_pred1, linewidth=1, label=self.leg_Q1)
-        # Plot predicted values - period II (eruptions # 74 - end)
-        ax.scatter(xvalues2, yvalues2, marker=self.marker_det, color=self.color_pred2, linewidth=1, label=self.leg_Q2)
+
+
+        # Plot predicted values - period I
+        ax.scatter(xvalues1, yvalues1, marker=self.marker_det, color=self.color_pred1, linewidth=1,
+                   label=f"{self.leg_Q1}{q1:.4f}{self.label_q}")
+
+        # if period II exists, plot predicted values
+        if len(ep2) > 0:
+            # Plot predicted values - period II
+            ax.scatter(xvalues2, yvalues2, marker=self.marker_det, color=self.color_pred2, linewidth=1,
+                       label=f"{self.leg_Q2}{q2:.4f}{self.label_q}")
+
         # plot title, labels and legend
         mytitle = f"{myvol}: {self.title_exp}"
         ax.set(title=mytitle, xlabel=self.label_date, ylabel=self.label_vol)
@@ -469,10 +483,15 @@ class MyPlots:
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
-        # separate eruptions (class)
-        ep1 = eruptions[:73]  # period I
-        ep2 = eruptions[73:]  # period II
-        self.sanity_piton_periods(ep1, ep2)
+        ep1 = [oe for oe in eruptions if oe.part_of_period == 1]  # period I
+        ep2 = [oe for oe in eruptions if oe.part_of_period == 2]  # period II
+
+        q1 = bf.Qday_to_Qy(ep1[0].qperiod)  # Q for period I
+        if len(ep2) > 0:
+            q2 = bf.Qday_to_Qy(ep2[0].qperiod)  # Q for period I
+
+        if 'piton' in self.volcano_name.lower():
+            self.sanity_piton_periods(ep1, ep2)
 
         # -------------------- DATA PREPARATION
         # xvalues: dates of eruptions
@@ -482,27 +501,34 @@ class MyPlots:
 
         if option == 'cvol':
             myvol = f"{self.title_cvol} {self.title_linear}"
+
             # yvalues: real cumulative volumes (CVOL)
             yvalues_real = [e.cvol.t2 for e in eruptions]  # n
             # expected values (linear prediction)
             e1 = eruptions[0]  # first eruption, add so it can appear on plot
-            e2 = ep2[0]  # last eruption of period I
-            yvalues1 = [e1.cvol.t2] + [e.cvol.qline.value for e in ep1 if e.cvol.qline.value is not None]
-            yvalues2 = [e2.cvol.t2] + [e.cvol.qline.value for e in ep2 if e.cvol.qline.value is not None]
+            e2 = ep1[-1]  # last eruption of period I
+            #yvalues1 = [e1.cvol.t2] + [e.cvol.qline.value for e in ep1 if e.cvol.qline.value is not None]
+            #yvalues2 = [e2.cvol.t2] + [e.cvol.qline.value for e in ep2 if e.cvol.qline.value is not None]
+            yvalues1 = [e.cvol.qline.value for e in ep1 if e.cvol.qline.value is not None]
+            yvalues2 = [e.cvol.qline.value for e in ep2 if e.cvol.qline.value is not None]
+
         else:
             exit("Option must be 'cvol'")
 
         # ---------------- PLOT 1 (MAIN)
         # Plot real values (n)
         ax.scatter(xvalues, yvalues_real, marker=self.marker_real, color=self.color_real, linewidth=3,
-                   label=self.leg_real)
+                   label=f"{self.leg_real}{self.label_break}{len(eruptions)} eruptions")
         # Plot predicted values - period I (eruptions # 2 - 73)
         #ax.plot([xvalues1, xvalues2], [yvalues1, yvalues2], marker=self.marker_linear, color=self.color_pred1,)
-        ax.plot(xvalues1, yvalues1, marker=self.marker_linear, color=self.color_pred1,
-                   linewidth=1, label=self.leg_Q1)
-        # Plot predicted values - period II (eruptions # 74 - end)
-        ax.plot(xvalues2, yvalues2, marker=self.marker_linear, color=self.color_pred2, linestyle=self.line_linear,
-                   linewidth=1, label=self.leg_Q2)
+        ax.plot(xvalues1, yvalues1, marker=self.marker_linear, color=self.color_pred1, linewidth=1,
+                label=f"{self.leg_Q1}{q1:.4f}{self.label_q}")
+
+        # if period II exists, plot predicted values
+        if len(ep2) > 0:
+            # Plot predicted values - period II (eruptions # 74 - end)
+            ax.plot(xvalues2, yvalues2, marker=self.marker_linear, color=self.color_pred2, linestyle=self.line_linear,
+                    linewidth=1, label=f"{self.leg_Q2}{q2:.4f}{self.label_q}")
 
         # plot title, labels and legend
         mytitle = f"{myvol}: {self.title_exp}"
@@ -524,31 +550,31 @@ class MyPlots:
     def det_plots(self, eruptions: list, show_plot: bool):
 
         # Plot 1: CVOL real vs expected (DET)
-        base_name = 'Piton_Period0_Cvol_Det'
+        base_name = f'{self.volcano_nickname}_Period0_Cvol_Det'
         self.plot_real_vs_expected(eruptions, 'cvol', base_name, show_plot)
 
         # Plot 2: CVOL error
-        base_name = 'Piton_Period0_Cvol_DetError'
+        base_name = f'{self.volcano_nickname}_Period0_Cvol_DetError'
         self.plot_volume_error(eruptions, 'cvol', 'det',
                                    base_name, show_plot)
 
         # Plot 3: EVOL real vs expected
-        base_name = 'Piton_Period0_Evol_Det'
+        base_name = f'{self.volcano_nickname}_Period0_Evol_Det'
         self.plot_real_vs_expected(eruptions, 'evol',
                                        base_name, show_plot)
 
         # Plot 4: EVOL error
-        base_name = 'Piton_Period0_Evol_DetError'
+        base_name = f'{self.volcano_nickname}_Period0_Evol_DetError'
         self.plot_volume_error(eruptions, 'evol', 'det',
                                    base_name, show_plot)
 
     def linear_plots(self, eruptions: list, show_plot: bool):
         # Plot 5: CVOL real vs expected (LINEAR)
-        base_name = 'Piton_Period0_Cvol_QLine'
+        base_name = f'{self.volcano_nickname}_Period0_Cvol_QLine'
         self.plot_linear(eruptions, 'cvol', 'linear',
                              base_name, show_plot)
 
-        base_name = 'Piton_Period0_Cvol_QLineError'
+        base_name = f'{self.volcano_nickname}_Period0_Cvol_QLineError'
         self.plot_volume_error(eruptions, 'cvol', 'qline',
                                    base_name, show_plot)
 
@@ -557,7 +583,7 @@ class MyPlots:
         # Plot 6: Stochastic Forecast
 
         for eid in eruptions_to_plot:
-            base_name = f'Piton_Stochastic_{eid}'
+            base_name = f'{self.volcano_nickname}_Stochastic_{eid}'
             self.plot_stochastic(eruptions, eid, base_name, show_plot)
 
         return
@@ -659,12 +685,6 @@ class MyPlots:
         self.save_fig(fig, savename)
 
 
-
-
-
-
-
-
         return
 
 
@@ -711,7 +731,7 @@ class MyPlots:
                 continue  # skip first eruption and first of period II
 
             # parameters for deterministic method
-            dT = e.dT.t2
+            dT = e.dT.t1_2
             e_previous = eruptions[e.id - 2]
             assert e_previous.cvol.t2 == e.cvol.t1, f"Cumulative volume at T1 does not match previous eruption's CVOL(T2) - {e.id}: {e_previous.cvol.t2, e.cvol.t1}"
 
@@ -753,7 +773,7 @@ class MyPlots:
                 continue  # skip first eruption and first of period II
 
             # parameters for deterministic method
-            dT = e.dT.t2
+            dT = e.dT.t1_2
             e_previous = eruptions[e.id - 2]
             assert e_previous.cvol.t2 == e.cvol.t1, f"Cumulative volume at T1 does not match previous eruption's CVOL(T2) - {e.id}: {e_previous.cvol.t2, e.cvol.t1}"
 

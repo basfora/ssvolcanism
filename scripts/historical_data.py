@@ -1,4 +1,4 @@
-"""Plot everything related to Piton volcano"""
+"""Plot Hisrtorical Data of each volcano"""
 from classes.collectdata import VolcanoData as vd
 from classes.myplots import MyPlots
 

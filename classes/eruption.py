@@ -16,6 +16,7 @@ class OneEruption:
         """
 
         self.id = eruption_id
+        self.part_of_period = 0
 
         # --------------- variables at T2 (target variables)
         # date of the eruption (T2)
@@ -27,7 +28,7 @@ class OneEruption:
         # time interval between eruptions dT = T2 - T1
         self.dT = TInterval()
 
-        # -------------- variables at T1 (initial variables/parameters)
+
         # parameters specific for each prediction method (Q in m3/day)
         self.qperiod = None
         # stochastic
@@ -43,30 +44,41 @@ class OneEruption:
 
         if method == 1: # linear (regression)
             q = self.qperiod
-            dT = self.dT.t2
+            dT = self.dT.t1_2
         elif method == 2:   # deterministic
-            # known (real) dT
-            dT = self.dT.t2
             q = self.qperiod
+            dT = self.dT.t1_2 # real dT since last eruption
         elif method == 3:   # stochastic
-            dT = self.cvol.sim.N
             q = self.qhat
+            dT = self.cvol.sim.N    # number of points for simulation, not real dT
         elif method == 4:   # qline
+            cvolT1 = self.cvol.t0   # from beginning of period
             q = self.qperiod
-            # from beginning of period
-            dT = self.dT.t1
-            cvolT1 = self.cvol.t0
-
+            dT = self.dT.t0_2
         else:
             raise ValueError("Method must be 1, 2, 3 or 4.")
 
         return cvolT1, q, dT
 
-    def save_raw(self, edate: datetime.date, evol: int, cvol: int):
+    def save_real(self, edate: datetime.date, evol: int, cvol: int, when='t2'):
 
-        self.date.t2 = edate
-        self.cvol.t2 = cvol
-        self.evol.t2 = evol
+        if when == 't2':
+            # save real data at T2
+            self.date.t2 = edate
+            self.evol.t2 = evol
+            self.cvol.t2 = cvol
+        elif when == 't1':
+            # save real data at T1
+            self.date.t1 = edate
+            self.evol.t1 = evol
+            self.cvol.t1 = cvol
+        elif when == 't0':
+            # save real data at T0
+            self.date.t0 = edate
+            self.evol.t0 = evol
+            self.cvol.t0 = cvol
+        else:
+            raise ValueError("Invalid time point. Use 't0', 't1' or 't2'.")
 
         return
 
@@ -87,7 +99,6 @@ class OneEruption:
         evolT2 = bf.compute_delta_vol(self.cvol.t1, cvolT2)
         evol_error, evol_error_per = bf.compute_error(self.evol.t2, evolT2)
 
-        # get estimated date
         dateT2 = bf.transform_days_to_date(dT, self.date.t1)
 
         if method == 0:  # real data
@@ -134,7 +145,7 @@ class OneEruption:
                 self.evol.sim.pts[i].error_per = evol_error_per[i]
                 # DT
                 dt = dT[i]
-                dt_er, dt_er_per = bf.compute_error(self.dT.t2, dt)
+                dt_er, dt_er_per = bf.compute_error(self.dT.t1_2, dt)
                 self.dT.sim.pts[i].value = dT[i]
                 self.dT.sim.pts[i].error = dt_er
                 self.dT.sim.pts[i].error_per = dt_er_per
@@ -171,14 +182,14 @@ class OneEruption:
 
             # save mean and std dev for dT
             self.dT.sim.mean.value, self.dT.sim.std = bf.compute_mean_std(dT)
-            self.dT.sim.mean.error, self.dT.sim.mean.error_per = bf.compute_error(self.dT.t2, self.dT.sim.mean.value)
+            self.dT.sim.mean.error, self.dT.sim.mean.error_per = bf.compute_error(self.dT.t1_2, self.dT.sim.mean.value)
             # save median and confidence interval for dT
             self.dT.sim.median.value = np.median(dT)
-            self.dT.sim.median.error, self.dT.sim.median.error_per = bf.compute_error(self.dT.t2,
+            self.dT.sim.median.error, self.dT.sim.median.error_per = bf.compute_error(self.dT.t1_2,
                                                                                       self.dT.sim.median.value)
             # save mode and error dT
             self.dT.sim.mode.value = bf.compute_mode(dT, n_bins)
-            self.dT.sim.mode.error, self.dT.sim.mode.error_per = bf.compute_error(self.dT.t2,
+            self.dT.sim.mode.error, self.dT.sim.mode.error_per = bf.compute_error(self.dT.t1_2,
                                                                                   self.dT.sim.mode.value)
 
             self.dT.sim.lower, self.dT.sim.upper = np.percentile(dT, [2.5, 97.5])
@@ -194,7 +205,6 @@ class OneEruption:
             self.dT.qline.error, self.dT.qline.error_per = 0, 0
 
             # save the date of the eruption
-            dateT2 = bf.transform_days_to_date(dT, self.date.t0)
             self.date.linear = dateT2
         else:
 
@@ -212,7 +222,7 @@ class OneEruption:
                 evol = self.evol.t2
                 cvol = self.cvol.t2
                 edate = self.date.t2
-                dT_days = self.dT.t2
+                dT_days = self.dT.t1_2
                 # todo move to here, it's all over the place now
                 bf.print_one_eruption(self.id, evol, cvol, edate, dT_days)
         elif what  ==1:
@@ -245,9 +255,9 @@ class Vol:
 
     def __init__(self):
         # real data (what really happened if available)
-        self.t0 = None
-        self.t1 = None
-        self.t2 = None
+        self.t0 = None  # start of the period
+        self.t1 = None  # right before eruption
+        self.t2 = None  # at the end/after eruption
         # ------------ estimations
 
         # method I
@@ -265,9 +275,8 @@ class TInterval:
 
     def __init__(self):
         # real data (what really happened if available)
-        self.t0 = None
-        self.t1 = None
-        self.t2 = None
+        self.t0_2 = None # right before eruption
+        self.t1_2 = None # at the end/after eruption
         # ------------ estimations
 
         # method I

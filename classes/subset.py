@@ -63,6 +63,10 @@ class MySubset:
         self.dT_std: float = 0.0
         self.dT_median: float = 0.0
         self.dT_mode: float = 0.0
+        # linear fit for cumulative volume
+        self.a: float = 0.0  # slope
+        self.b: float = 0.0  # intercept
+        self.line_points = list()  # points for the linear fit line (x, y)
 
     def set_vname(self, vname: str):
         """Set the volcano name for the period"""
@@ -143,6 +147,22 @@ class MySubset:
             self.set_q(q, 'day')
 
         return
+
+    def compute_qline(self):
+
+        xvalues = self.timeline
+        yvalues = self.cvols[1:]
+
+        x1, y1 = xvalues[0], yvalues[0]
+        x2, y2 = xvalues[-1], yvalues[-1]
+        a = (y2 - y1) / (x2 - x1)  # slope
+        b = y1 - a * x1  # intercept
+
+        # save the slope and intercept
+        self.a, self.b = a, b
+
+        # create points for the line based on fit and timeline
+        self.line_points = [(x, a * x + b) for x in xvalues]
 
     def sanity_check(self):
         # todo expand this as needed
