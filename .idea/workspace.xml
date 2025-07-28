@@ -4,136 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="del some plots">
-      <change afterPath="$PROJECT_DIR$/scripts/prediction_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/prediction.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/prediction.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/subset.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/subset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_10.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_100.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_101.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_102.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_103.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_104.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_105.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_106.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_107.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_108.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_109.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_11.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_110.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_111.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_112.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_113.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_114.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_115.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_116.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_117.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_118.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_119.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_12.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_13.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_14.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_15.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_16.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_17.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_18.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_19.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_2.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_20.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_21.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_22.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_23.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_24.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_25.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_26.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_27.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_28.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_29.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_3.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_30.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_31.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_32.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_33.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_34.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_35.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_36.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_37.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_38.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_39.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_4.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_40.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_41.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_42.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_43.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_44.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_45.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_46.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_47.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_48.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_49.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_5.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_50.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_51.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_52.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_53.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_54.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_55.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_56.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_57.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_58.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_59.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_6.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_60.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_61.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_62.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_63.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_64.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_65.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_66.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_67.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_68.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_69.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_7.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_70.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_71.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_72.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_73.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_74.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_75.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_76.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_77.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_78.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_79.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_8.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_80.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_81.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_82.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_83.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_84.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_85.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_86.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_87.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_88.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_89.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_9.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_90.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_91.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_92.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_93.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_94.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_95.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_96.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_97.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_98.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/StochasticPiton/Piton_Stochastic_99.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_linear.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/piton_qline.py" beforeDir="false" />
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="all plots">
+      <change beforePath="$PROJECT_DIR$/VolcanoWriteUp.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/VolcanoWriteUp.pdf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -700,11 +572,18 @@
       <option name="project" value="LOCAL" />
       <updated>1753657293044</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="all plots">
+      <option name="closed" value="true" />
+      <created>1753686045004</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1753686045004</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="historical data start" />
     <MESSAGE value="historical data plots" />
     <MESSAGE value="what a mess" />
     <MESSAGE value="what a mess 2" />
@@ -729,7 +608,8 @@
     <MESSAGE value="subset class integrated in collectdata and historical plots" />
     <MESSAGE value="unit test collect data" />
     <MESSAGE value="del some plots" />
-    <option name="LAST_COMMIT_MESSAGE" value="del some plots" />
+    <MESSAGE value="all plots" />
+    <option name="LAST_COMMIT_MESSAGE" value="all plots" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
