@@ -3,9 +3,9 @@ from classes.collectdata import VolcanoData as vd
 from classes.myplots import MyPlots
 
 volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g': 'Galapagos'}
-volcano_id = volcanoes['p']
+volcano_id = volcanoes['i']
 plot_show = False
-print_oe = True
+print_oe = False
 
 
 if __name__ == '__main__':
@@ -56,9 +56,9 @@ if __name__ == '__main__':
     mp.det_plots(eruptionsout, plot_show)
     #
     # # STOCHASTIC PLOTS
-    ids_to_plot = [i for i in range(2, vdata.n+1)]
-    mp.sanity_check_stoc(eruptionsout)
-    mp.stoc_plots(eruptionsout, ids_to_plot, plot_show)
+    #ids_to_plot = [i for i in range(2, vdata.n+1)]
+    #mp.sanity_check_stoc(eruptionsout)
+    #mp.stoc_plots(eruptionsout, ids_to_plot, plot_show)
 
 
 
