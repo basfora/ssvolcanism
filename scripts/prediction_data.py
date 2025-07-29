@@ -1,11 +1,11 @@
 """Prediction data generation and plot script"""
 from classes.collectdata import VolcanoData as vd
 from classes.myplots import MyPlots
-from classes.prediction import PredictionData as pred
 
 volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g': 'Galapagos'}
-volcano_id = volcanoes['h']
+volcano_id = volcanoes['p']
 plot_show = False
+print_oe = True
 
 
 if __name__ == '__main__':
@@ -15,14 +15,15 @@ if __name__ == '__main__':
 
     # IMPORT REAL DATA
     vdata = vd(name=name_file, printing=False)
-    eruptionsin = vdata.create_eruptions()
+    eruptionsin = vdata.create_eruptions_list(print_oe)
 
     start_after_eruption = 1  # first eruption ID
     stop_before_eruption = vdata.n  # last eruption ID
-    last_id = start_after_eruption
 
-    eruptionsout = [eruptionsin[0]]  # save first eruption
     # loop over eruptions
+    last_id = start_after_eruption
+    # save first eruption
+    eruptionsout = [eruptionsin[1]]
     while last_id < stop_before_eruption:
 
         # create subset of historical data until eruption # last_id
@@ -30,23 +31,20 @@ if __name__ == '__main__':
 
         # create prediction instance for next eruption
         nextid = last_id + 1
-        pp = pred(nextid)
-        # save subset data
-        pp.input_dataset(vsub)
-        # input oe instance
-        pp.input_eruption(eruptionsin[nextid - 1])
+        nextoe = eruptionsin[nextid]  # next eruption instance
 
-        # run methods to compute prediction
-        oe = pp.run_methods()
+        # run prediction methods
+        oe = vsub.run_prediction(nextoe)
 
-        # save results
+        # save modified instance
         eruptionsout.append(oe)
 
         # increment last_id
         last_id += 1
 
-
-    # plot results
+    # -------------------------------------------------
+    # PLOT RESULTS
+    # -------------------------------------------------
     mp = MyPlots(vdata.volcano_name)
     mp.volcano_nickname = volcano_id
 

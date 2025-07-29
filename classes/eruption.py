@@ -1,9 +1,7 @@
-
 """Data class for a single eruption event."""
-from classes.basicfun import Basicfun as bf
 import numpy as np
 import datetime
-
+from classes.basicfun import Basicfun as bf
 
 class OneEruption:
     """Class to represent a single eruption event with its date, volume, and cumulative volume."""
@@ -11,14 +9,16 @@ class OneEruption:
     def __init__(self, eruption_id: int):
         """
         Initialize the OneEruption instance.
-
         :param eruption_id: # of eruption (1, 2, 3, ...)
         """
 
+        # identifiers: eruption ID and which period it is in
         self.id = eruption_id
-        self.part_of_period = 0
+        self.period = 0
+        # option to print results when True
+        self.print = False
 
-        # --------------- variables at T2 (target variables)
+        # --------------- Variables at T2 (target variables)
         # date of the eruption (T2)
         self.date = EDate()
         # volume of the eruption EVOL(T2)
@@ -28,39 +28,40 @@ class OneEruption:
         # time interval between eruptions dT = T2 - T1
         self.dT = TInterval()
 
-
-        # parameters specific for each prediction method (Q in m3/day)
+        # ----------------- Parameters
+        # qline parameters (a, b)
+        self.a, self.b = None, None
+        # deterministic: period rate of eruption computed from all eruptions in period (Q in m3/day)
         self.qperiod = None
-        # stochastic
+        # stochastic: estimated rate of eruption until previous eruption (Qhat in m3/day)
         self.qhat = None
-        # add more parameters if needed
-        self.a, self.b = None, None  # for qline
+
 
     def get_parameters(self, method=2):
-        """Get parameters for the prediction methods."""
+        """Get parameters for each prediction methods."""
 
-        # same for all methods
-        cvolT1 = self.cvol.t1
-
-        if method == 1: # linear (regression)
-            q = self.qperiod
-            dT = self.dT.t1_2
-        elif method == 2:   # deterministic
-            q = self.qperiod
-            dT = self.dT.t1_2 # real dT since last eruption
-        elif method == 3:   # stochastic
-            q = self.qhat
-            dT = self.cvol.sim.N    # number of points for simulation, not real dT
-        elif method == 4:   # qline
+        # q-line
+        if method == 1:
             cvolT1 = self.cvol.t0   # from beginning of period
             q = self.qperiod
             dT = self.dT.t0_2
+        # deterministic
+        elif method == 2:
+            cvolT1 = self.cvol.t1
+            q = self.qperiod
+            dT = self.dT.t1_2 # real dT since last eruption
+        # stochastic
+        elif method == 3:
+            cvolT1 = self.cvol.t1
+            q = self.qhat
+            dT = self.cvol.sim.N    # number of points for simulation, not real dT
         else:
             raise ValueError("Method must be 1, 2, 3 or 4.")
 
         return cvolT1, q, dT
 
     def save_real(self, edate: datetime.date, evol: int, cvol: int, when='t2'):
+        """Save real (measured) data for the eruption"""
 
         if when == 't2':
             # save real data at T2
@@ -72,49 +73,81 @@ class OneEruption:
             self.date.t1 = edate
             self.evol.t1 = evol
             self.cvol.t1 = cvol
+
         elif when == 't0':
             # save real data at T0
             self.date.t0 = edate
             self.evol.t0 = evol
             self.cvol.t0 = cvol
+
         else:
             raise ValueError("Invalid time point. Use 't0', 't1' or 't2'.")
 
+        # start with checking if intervals are already computed
+        if self.date.t2 is not None:
+            # compute dT from T1 to T2 if T1 is available
+            if self.date.t1 is not None:
+                self.dT.t1_2 = bf.compute_days(self.date.t1, self.date.t2)
+            # compute dT from T0 to T2 if T0 is available
+            elif self.date.t0 is not None:
+                self.dT.t0_2 = bf.compute_days(self.date.t0, self.date.t2)
+            else:
+                # do nothing, no previous date available
+                pass
+
         return
 
-    def save_result(self, cvolT2, dT, method=2):
+    def save_parameter(self, param: tuple or float, method=1):
+
+        if method == 1:  # qline
+            self.a, self.b = param[0], param[1]
+        elif method == 2:  # deterministic
+            self.qperiod = param
+        elif method == 3:  # stochastic
+            self.qhat = param
+        else:
+            print(f"Method {method} invalid for saving parameters.")
+
+    def save_result(self, dT, cvolT2, method=2):
         """Save the result of the prediction
         :param cvolT2: estimated cumulative vol (m3) at T2; float (methods 0-2), list (method 3)
         :param dT: estimated time interval (days); int (method 0-2), list (method 3)
         :param method: type of estimation:
         - method 0: real data
-        - method 1: linear (change to qline)
+        - method 1: linear (qline)
         - method 2: deterministic
         - method 3: stochastic"""
+        # todo: function can use a cleaning
 
         # error in CVOL
         cvol_error, cvol_error_per = bf.compute_error(self.cvol.t2, cvolT2)
 
-        # compute evol
+        # compute EVOL at T2
         evolT2 = bf.compute_delta_vol(self.cvol.t1, cvolT2)
         evol_error, evol_error_per = bf.compute_error(self.evol.t2, evolT2)
 
-        dateT2 = bf.transform_days_to_date(dT, self.date.t1)
+        # compute date of the eruption
+        date_ref = self.date.t1
+        if date_ref is None:    # first eruption, no T1
+            date_ref = self.date.t0
+        if date_ref is None:  # no T0 either, use current date
+            date_ref = self.date.t2
+        dateT2 = bf.transform_days_to_date(dT, date_ref)
 
         if method == 0:  # real data
             self.cvol.t2 = cvolT2
             self.evol.t2 = evolT2
             self.dT.t2 = dT
 
-        elif method == 1:   # linear
-            self.cvol.linear.value = cvolT2
-            self.cvol.linear.error, self.cvol.linear.error_per = cvol_error, cvol_error_per
+        elif method == 1:   # q-linear
+            self.cvol.qline.value = cvolT2
+            self.cvol.qline.error, self.cvol.qline.error_per = cvol_error, cvol_error_per
 
-            self.evol.linear.value = evolT2
-            self.evol.linear.error, self.evol.linear.error_per = evol_error, evol_error_per
+            self.evol.qline.value = evolT2
+            self.evol.qline.error, self.evol.qline.error_per = evol_error, evol_error_per
 
-            self.dT.linear.value = dT
-            self.dT.linear.error, self.dT.linear.error_per = 0, 0
+            self.dT.qline.value = dT
+            self.dT.qline.error, self.dT.qline.error_per = 0, 0
 
             # save the date of the eruption
             self.date.linear = dateT2
@@ -193,26 +226,13 @@ class OneEruption:
                                                                                   self.dT.sim.mode.value)
 
             self.dT.sim.lower, self.dT.sim.upper = np.percentile(dT, [2.5, 97.5])
-
-        elif method == 4: # qline
-            self.cvol.qline.value = cvolT2
-            self.cvol.qline.error, self.cvol.qline.error_per = cvol_error, cvol_error_per
-
-            self.evol.qline.value = evolT2
-            self.evol.qline.error, self.evol.qline.error_per = evol_error, evol_error_per
-
-            self.dT.qline.value = dT
-            self.dT.qline.error, self.dT.qline.error_per = 0, 0
-
-            # save the date of the eruption
-            self.date.linear = dateT2
         else:
-
             raise ValueError("Method must be 1, 2, or 3.")
 
         return
 
     def print_instance(self, what=0):
+        """Print the instance of the eruption data."""
 
         if what == 0: # real data
             if self.evol.t2 is None:
@@ -223,31 +243,39 @@ class OneEruption:
                 cvol = self.cvol.t2
                 edate = self.date.t2
                 dT_days = self.dT.t1_2
-                # todo move to here, it's all over the place now
+
                 bf.print_one_eruption(self.id, evol, cvol, edate, dT_days)
-        elif what  ==1:
-            evol = self.evol.linear.value
-            cvol = self.cvol.linear.value
-            bf.print_estimate(evol, cvol,'LINEAR EXTRAPOLATION')
+            return
+
+        elif what == 1:
+            first_line = 'QLINE METHOD'
+            evol = self.evol.qline.value
+            cvol = self.cvol.qline.value
+
         elif what == 2:
+            first_line = 'DETERMINISTIC METHOD'
             evol = self.evol.det.value
             cvol = self.cvol.det.value
-            bf.print_estimate(evol, cvol, 'DETERMINISTIC METHOD')
+
         elif what == 3:
+            first_line = 'STOCHASTIC METHOD - MEAN'
             evol = self.evol.sim.mean.value
             cvol = self.cvol.sim.mean.value
-            bf.print_estimate(evol, cvol, 'STOCHASTIC METHOD - MEAN')
+            bf.print_estimate(evol, cvol, first_line)
 
-            evol = self.evol.sim.mean.value
-            cvol = self.cvol.sim.mean.value
-            bf.print_estimate(evol, cvol, 'STOCHASTIC METHOD - MEDIAN')
+            first_line = 'STOCHASTIC METHOD - MEDIAN'
+            evol = self.evol.sim.median.value
+            cvol = self.cvol.sim.median.value
+            bf.print_estimate(evol, cvol, first_line)
 
-        elif what == 4:
-            evol = self.evol.det.value
-            cvol = self.cvol.det.value
-            bf.print_estimate(evol, cvol, 'QLINE METHOD')
+            first_line = 'STOCHASTIC METHOD - MODE'
+            evol = self.evol.sim.mode.value
+            cvol = self.cvol.sim.mode.value
         else:
             return
+
+        # print
+        bf.print_estimate(evol, cvol, first_line)
 
 
 class Vol:
@@ -262,7 +290,6 @@ class Vol:
 
         # method I
         self.qline = EstimatedValue()
-        self.linear = EstimatedValue()
         # method II
         self.det = EstimatedValue()
         # method III
@@ -275,13 +302,12 @@ class TInterval:
 
     def __init__(self):
         # real data (what really happened if available)
-        self.t0_2 = None # right before eruption
-        self.t1_2 = None # at the end/after eruption
+        self.t0_2 = None # from beginning of the period to T2
+        self.t1_2 = None # interval from T1 to T2
         # ------------ estimations
 
         # method I
         self.qline = EstimatedValue()
-        self.linear = EstimatedValue()
         # method II
         self.det = EstimatedValue()
         # method III
@@ -294,7 +320,6 @@ class Sim:
 
     def __init__(self):
 
-        # todo transform in list of EstimatedValue (to include value, error, error_per)
         self.N = 10000
         self.pts = [EstimatedValue() for i in range(self.N)]  # list of points (date, volume, cumulative volume)
 
@@ -322,7 +347,8 @@ class EDate:
 
     def __init__(self):
 
-        # todo maybe better way is to save edate and tinterval in one class, have a transform method to convert days to date
+        # todo maybe better way is to save edate and tinterval in one class,
+        #  have a transform method to convert days to date
 
         # real data (what really happened if available)
         self.t0 = None
@@ -332,7 +358,6 @@ class EDate:
 
         # method I
         self.qline = EstimatedValue()
-        self.linear = EstimatedValue()
         # method II
         self.det = EstimatedValue()
         # method III

@@ -49,6 +49,8 @@ class Basicfun:
         """Compute median of a list of values"""
         if not isinstance(values, np.ndarray):
             values = np.array(values)
+            if np.size(values) == 0:
+                return 0
         median = np.median(values)
         return median
 
@@ -186,6 +188,8 @@ class Basicfun:
     @staticmethod
     def compute_days(date1, date2):
         """Compute the number of days between two dates"""
+        if date1 is None or date2 is None:
+            return 0
         return abs((date2 - date1).days)
 
     # UT - OK

@@ -56,12 +56,6 @@ class VolcanoData:
         self.n = 0  # number of eruptions
 
         # --------------------------------
-        # TODO DELETE ALL
-        self.intervals = []  # list of intervals between eruptions
-        self.timeline = []  # timeline of eruptions
-        self.line_points = None  # points for linear extrapolation
-
-        # --------------------------------
         # INIT FUNCTIONS
         # --------------------------------
         self.printstatus(0)
@@ -211,6 +205,7 @@ class VolcanoData:
             # add actual data to the period instance
             edates, evols, cvols = self.select_data(eID0, eIDf)
             myperiod.set_lists(edates, evols, cvols)
+            # compute Q-LINE for this period
             myperiod.compute_qline()
 
             # store and print
@@ -239,11 +234,13 @@ class VolcanoData:
 
             # create a new period 0
             myperiod = self.create_subset(eID0, eIDf, 0)
+            myperiod.compute_qline()
 
         self.periods[0] = myperiod
 
         return
 
+    # UT - OK
     def select_data(self, id0=None, idf=None):
         """Select data based on eruption IDs
         id0: first eruption ID, to start from first available eruption, use -1
@@ -303,7 +300,7 @@ class VolcanoData:
 
 
     def create_subset(self, eID0=None, eIDf=None, label=-1):
-        """Create a subset of the data based on eruption IDs"""
+        """Create a subset of the data based on eruption IDs (inclusive)"""
 
         # select data based on eruption IDs
         edates, evols, cvols = self.select_data(eID0, eIDf)
@@ -321,7 +318,7 @@ class VolcanoData:
         # CREATE a new MySubset instance
         mysubset = MySubset(label)
 
-        # add period parameters
+        # add subset/period parameters
         mysubset.set_vname(self.volcano_name)
         mysubset.set_dates(datet0, datetf)
         mysubset.set_eIDs(eID0, eIDf)
@@ -332,58 +329,58 @@ class VolcanoData:
 
         return mysubset
 
-    # todo: might make it more efficient and move somewhere else
-    def create_eruptions(self):
-        """Create instances of OneEruption for each eruption in the data"""
+    def create_eruptions_list(self, print_instance=False) -> dict:
+        """Create an instance of OneEruption for each eruption in the data,
+        Save in each instance:
+         T2: real data for that eruption
+         T1: and previous eruption
+        PERIOD: period number, Q rate, Q-LINE parameters and results
+        Output list of OneEruption instances
 
-        eruptions = list()  # list to store OneEruption instances
+        Note: this can be done outside the class, but it is convenient to have it here
+        """
+
+        eruptions = dict()  # list to store OneEruption instances
 
         # create an instance for each eruption
         for i in range(self.n):
             eid = i + 1  # eruption ID starts from 1
 
-            # get data for the eruption (T2)
-            edate, evol, cvol = self.select_data(eid)
             # create an instance of OneEruption with ID
             oe = OneEruption(eid)
 
-            # save real data
+            # T2: get and save data for the eruption (T2)
+            edate, evol, cvol = self.select_data(eid)
             oe.save_real(edate, evol, cvol, 't2')
 
+            # T1: get and save data for the previous eruption (T1)
             if eid > 1:
                 edatet1, evolt1, cvolt1 = self.select_data(eid - 1)
             else:
-                evolt1, cvolt1 = 0, 0  # first eruption has no previous eruption
-                edatet1 = edate  # use the same date for the first eruption
+                evolt1, cvolt1 = 0, 0   # first eruption has no previous eruption
+                edatet1 = None         # use the same date for the first eruption
+            oe.save_real(edatet1, evolt1, cvolt1, 't1') # save previous eruption data
 
-            oe.save_real(edatet1, evolt1, cvolt1, 't1')  # save previous eruption data
-            oe.dT.t1_2 = bf.compute_days(edatet1, edate)  # save time interval since last eruption
-
-            # q rate for period (ignore period 0)
+            # PERIOD-RELATED DATA (Q-LINE)
             for pi in range(1, self.n_periods + 1):
                 myperiod = self.periods[pi]
 
+                # find which period this eruption belongs to
                 if myperiod.e0 <= eid <= myperiod.ef:
-                    t0 = myperiod.date_t0
-                    # save
-                    oe.part_of_period = pi
-                    oe.qperiod = myperiod.q  # copy the rate
-                    oe.dT.t0_2 = bf.compute_days(t0, edate)  # time interval from start of period to T2
-                    # get qline point for this eruption
-                    oe.a, oe.b = myperiod.a, myperiod.b
-                    idx = eid - myperiod.e0  # index of the eruption in the period
-                    q_pts = myperiod.line_points[idx]
-                    oe.save_result(q_pts[1], oe.dT.t1_2, method=4)  # save qline point
+                    # save period data in the eruption instance
+                    oe.period = pi
+                    # q rate of the period
+                    oe.save_parameter(myperiod.q, 2)  # rate of eruption (m3/day)
+                    # save q-line parameters and results to instance (q-line is period-based)
+                    oe = myperiod.qline_method(oe)
+
                     break
 
-
-
-
-            eruptions.append(oe)
+            # save the eruption instance
+            oe.print = print_instance  # save printing option
+            eruptions[eid] = oe
 
         return eruptions
-
-
 
     @staticmethod
     def printstatus(opt=0):
@@ -391,64 +388,6 @@ class VolcanoData:
             print(f"==============================\n... Initializing VolcanoData collection")
         elif opt == -1:
             print(f"Data collection completed\n==============================")
-
-    # todo move to prediction -----------------
-
-    def linear_extrapolation(self, subset: MySubset, opt=1):
-        """Linear extrapolation of eruption volumes and cumulative volumes"""
-
-        # use timeline to fit to line
-        xvalues = subset.timeline
-        yvalues = subset.cvols[1:]
-
-
-        if opt == 1:
-            # no forced initial point, just fit the line
-            a, b = np.polyfit(xvalues, yvalues, 1)
-
-        elif opt == 2:
-            # force the first point to be the cumulative volume at T0
-            x0 = xvalues[0]
-            y0 = yvalues[0]
-
-            xvalues_adj = [x - x0 for x in xvalues]  # adjust x values to start from 0
-            yvalues_adj = [y - y0 for y in yvalues]  # adjust x values to start from 0
-
-            a, _ = np.polyfit(xvalues_adj, yvalues_adj, 1)
-            b = y0 - a * x0  # compute b to ensure the line passes through (x0, y0)
-        else:
-            x1, y1 = xvalues[0], yvalues[0]
-            x2, y2 = xvalues[-1], yvalues[-1]
-            a = (y2 - y1) / (x2 - x1)  # slope
-            b = y1 - a * x1  # intercept
-
-        # save the slope and intercept
-        self.a, self.b = a, b
-
-        # create points for the line based on fit and timeline
-        self.line_points = [(x, a * x + b) for x in self.timeline]
-
-    def get_line_pt(self, eruption_idx: int, method='qline'):
-        """Get the point on the line for a given eruption ID"""
-
-        if method == 'linear':
-            if not self.line_points:
-                self.linear_extrapolation(1)
-            return self.line_points[eruption_idx]
-
-        elif method == 'qline':
-            if not self.line_points:
-                self.linear_extrapolation(3)
-            return self.line_points[eruption_idx]
-
-
-        else:
-            print(f"Unknown method {method}. Use 1 for linear extrapolation or 2 for q line.")
-            return None
-
-    def get_a_b(self):
-        return self.a, self.b
-    # todo end --------------------------------
 
 
 if __name__ == "__main__":

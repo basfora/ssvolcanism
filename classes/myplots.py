@@ -289,8 +289,8 @@ class MyPlots:
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
-        ep1 = [oe for oe in eruptions if oe.part_of_period == 1]  # period I
-        ep2 = [oe for oe in eruptions if oe.part_of_period == 2]  # period II
+        ep1 = [oe for oe in eruptions if oe.period == 1]  # period I
+        ep2 = [oe for oe in eruptions if oe.period == 2]  # period II
 
         q1 = bf.Qday_to_Qy(ep1[0].qperiod)  # Q for period I
         if len(ep2) > 0:
@@ -483,8 +483,8 @@ class MyPlots:
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
         fig.suptitle(suptitle)
 
-        ep1 = [oe for oe in eruptions if oe.part_of_period == 1]  # period I
-        ep2 = [oe for oe in eruptions if oe.part_of_period == 2]  # period II
+        ep1 = [oe for oe in eruptions if oe.period == 1]  # period I
+        ep2 = [oe for oe in eruptions if oe.period == 2]  # period II
 
         q1 = bf.Qday_to_Qy(ep1[0].qperiod)  # Q for period I
         if len(ep2) > 0:
