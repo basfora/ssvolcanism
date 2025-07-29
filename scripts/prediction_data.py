@@ -3,7 +3,7 @@ from classes.collectdata import VolcanoData as vd
 from classes.myplots import MyPlots
 
 volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g': 'Galapagos'}
-volcano_id = volcanoes['i']
+volcano_id = volcanoes['p']
 plot_show = False
 print_oe = False
 
@@ -15,7 +15,7 @@ if __name__ == '__main__':
 
     # IMPORT REAL DATA
     vdata = vd(name=name_file, printing=False)
-    eruptionsin = vdata.create_eruptions_list(print_oe)
+    eruptionsin = vdata.create_eruptions_hash(print_oe)
 
     start_after_eruption = 1  # first eruption ID
     stop_before_eruption = vdata.n  # last eruption ID
@@ -49,16 +49,18 @@ if __name__ == '__main__':
     mp.volcano_nickname = volcano_id
 
     # QLINE PLOTS
+    mp.sanity_check(eruptionsout, 'qline')
     mp.linear_plots(eruptionsout, plot_show)
 
+
     # DETERMINISTIC PLOTS
-    mp.sanity_check_det(eruptionsout)
+    mp.sanity_check(eruptionsout, 'det')
     mp.det_plots(eruptionsout, plot_show)
     #
     # # STOCHASTIC PLOTS
-    #ids_to_plot = [i for i in range(2, vdata.n+1)]
-    #mp.sanity_check_stoc(eruptionsout)
-    #mp.stoc_plots(eruptionsout, ids_to_plot, plot_show)
+    ids_to_plot = [i for i in range(2, vdata.n+1)]
+    mp.sanity_check_stoc(eruptionsout)
+    mp.stoc_plots(eruptionsout, ids_to_plot, plot_show)
 
 
 

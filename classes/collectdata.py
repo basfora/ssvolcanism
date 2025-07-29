@@ -329,7 +329,7 @@ class VolcanoData:
 
         return mysubset
 
-    def create_eruptions_list(self, print_instance=False) -> dict:
+    def create_eruptions_hash(self, print_instance=False) -> dict:
         """Create an instance of OneEruption for each eruption in the data,
         Save in each instance:
          T2: real data for that eruption
@@ -369,9 +369,13 @@ class VolcanoData:
                 if myperiod.e0 <= eid <= myperiod.ef:
                     # save period data in the eruption instance
                     oe.period = pi
+                    # relative number within the period
+                    oe.rel_id = eid - myperiod.e0 + 1  # eruption ID in the period
+                    # days since the start of the period
+                    oe.xt = bf.compute_days(edate, myperiod.date_t0)
                     # q rate of the period
                     oe.save_parameter(myperiod.q, 2)  # rate of eruption (m3/day)
-                    # save q-line parameters and results to instance (q-line is period-based)
+                    # save Q-LINE parameters and results to instance (q-line is period-based)
                     oe = myperiod.qline_method(oe)
 
                     break

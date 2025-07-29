@@ -167,8 +167,8 @@ class MySubset:
         # save subset-related info (might not be a full period)
         nextoe.save_parameter(self.q, 3)  # set theoretical rate of eruptions (m3/day)
 
-        # T0: real data for first eruption in subset
-
+        # T0: real data for first eruption in SUBSET
+        nextoe.save_real(self.date_t0, self.evols[0], self.cvol_t0, 't0')
 
         # run methods for prediction
         oe = self.run_all_methods(nextoe)
@@ -187,9 +187,9 @@ class MySubset:
         # stochastic method (3)
         oe = self.stochastic_method(oe)
 
+        print(f"Predicting eruption {oe.id} using eruptions {self.e0} - {self.ef}")
         if oe.print:
             print('--------------------------------------------------')
-            print(f"Prediction for eruption {oe.id} using eruptions {self.e0} - {self.ef}:")
             # print real if available
             oe.print_instance(0)
             oe.print_instance(1)
@@ -233,7 +233,7 @@ class MySubset:
 
         return oe
 
-    def get_qline_pt(self, eid: int)-> tuple:
+    def get_qline_pt(self, eid: int, opt='dT')-> tuple:
         """Get the points for the Q-line fit for a given eruption ID
         To be used when subset is an official period"""
 
@@ -253,6 +253,10 @@ class MySubset:
 
         # RETRIEVE Q-LINE POINT: (t2, cvol(t2))
         pt = self.line_points[idx]  # get the point for the Q-line fit
+
+        # return the point as (t02, cvol(t2))
+        if opt != 'dT':
+            return pt
 
         # transform timeline into interval since previous eruption (to align with the other methods)
         t2 = pt[0]  # time at T2 in timeline
@@ -282,6 +286,8 @@ class MySubset:
 
         # create points for the line based on fit and timeline
         self.line_points = [(x, a * x + b) for x in xvalues]
+
+        print(f"... Q-line fit computed for period {self.label}")
 
     # METHOD 2: DETERMINISTIC
     @staticmethod

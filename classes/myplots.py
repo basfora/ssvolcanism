@@ -495,7 +495,7 @@ class MyPlots:
         print(f"Error Statistics ({option} {method}):")
         print(f"Min: {e_min_km3:.6f} | Max: {e_max_km3:.6f} km3")
         print(f"Median: {e_median_km3:.4f} km3")
-        print(f"Mean: {e_mean_km3:.4f} +- {e_std_km3:.4f} km3")
+        print(f"Mean: {e_mean_km3:.6f} +- {e_std_km3:.4f} km3")
         print(f"Variance: {e_var_km3:.6f} km6")
         print(f"MSE: {e_mse_km3:.9f} km6")
         print(f"RMSE: {e_rmse_km3:.6f} km3")
@@ -693,16 +693,18 @@ class MyPlots:
 
 
     @staticmethod
-    def sanity_check_det(eruptions: list):
+    def sanity_check(eruptions: list, method='det'):
         """Print results of deterministic prediction."""
-        print("Deterministic Prediction CVOL(T2) in km3:")
+
+        bf.print_mark()
+        print(f"{method.upper()} Prediction CVOL(T2) in km3:")
 
         print('ID ; DATE ; DT (days) ; CVOL REAL ; EXPECTED ; ERROR ; % ; Q (km3/yr) ; ')
 
         for e in eruptions:
 
-            if e.id == 1 or e.id == 74:
-                continue  # skip first eruption and first of period II
+            if e.rel_id == 1:
+                continue  # skip first eruption of each period
 
             # parameters for deterministic method
             dT = e.dT.t1_2
@@ -710,20 +712,25 @@ class MyPlots:
             assert e_previous.cvol.t2 == e.cvol.t1, f"Cumulative volume at T1 does not match previous eruption's CVOL(T2) - {e.id}: {e_previous.cvol.t2, e.cvol.t1}"
 
             # check state equation and error
-            cvolT2 = e.qperiod * dT + e.cvol.t1
-            assert round(cvolT2, 1) == round(e.cvol.det.value, 1), "Cvol(T2) does not match expected value"
+            if method == 'det':
+                # cvolT2 = e.qperiod * dT + e.cvol.t1
+                cvolT2 = e.qperiod * dT + e.cvol.t1
+            else:
+                cvolT2 = e.a * e.xt + e.b
+
+            assert round(cvolT2, 1) == round(getattr(e.cvol,method).value, 1), "Cvol(T2) does not match expected value"
             # check error calculation
-            eaux = round(e.cvol.det.value - e.cvol.t2, 1)
-            assert eaux == round(e.cvol.det.error, 1), f"Error CVOL(T2) real {eaux} vs expected {e.cvol.det.error}"
-            assert round(e.cvol.det.error_per, 2) == round(100 * abs(e.cvol.det.error / e.cvol.t2), 2), "Error percentage does not match expected value"
-            assert round(e.evol.det.value, 1) == round(e.cvol.det.value - e.cvol.t1, 1), "Evol(T2) does not match expected value"
+            eaux = round(getattr(e.cvol,method).value - e.cvol.t2, 1)
+            assert eaux == round(getattr(e.cvol,method).error, 1), f"Error CVOL(T2) real {eaux} vs expected {getattr(e.cvol,method).error}"
+            assert round(getattr(e.cvol,method).error_per, 2) == round(100 * abs(getattr(e.cvol,method).error / e.cvol.t2), 2), "Error percentage does not match expected value"
+            assert round(getattr(e.evol,method).value, 1) == round(getattr(e.cvol,method).value - e.cvol.t1, 1), "Evol(T2) does not match expected value"
 
 
             # transform into km3 before printing
             q = bf.Qday_to_Qy(e.qperiod)
-            cvol_real, cvol_det = bf.m3_to_km3(e.cvol.t2), bf.m3_to_km3(e.cvol.det.value)
-            error, error_per = bf.m3_to_km3(e.cvol.det.error), e.cvol.det.error_per
-            evol_real, evol_det = bf.m3_to_km3(e.evol.t2), bf.m3_to_km3(e.evol.det.value)
+            cvol_real, cvol_det = bf.m3_to_km3(e.cvol.t2), bf.m3_to_km3(getattr(e.cvol,method).value)
+            error, error_per = bf.m3_to_km3(getattr(e.cvol,method).error), getattr(e.cvol,method).error_per
+            evol_real, evol_det = bf.m3_to_km3(e.evol.t2), bf.m3_to_km3(getattr(e.evol,method).value)
 
             print(f"{e.id}; {e.date.t2}; {dT:.0f} ; ", end=" ")
             print(f"{cvol_real:.6f}; {cvol_det:.6f};", end="")
@@ -734,6 +741,8 @@ class MyPlots:
     @staticmethod
     def sanity_check_stoc(eruptions: list):
         """Print results of deterministic prediction."""
+
+        bf.print_mark()
         print("Stochastic Forecast CVOL(T2) in km3:")
 
         print('ID ; DATE ; DT REAL (days) ; DT MEAN ; DT MEDIAN ; DT MODE ; '
@@ -743,8 +752,8 @@ class MyPlots:
 
         for e in eruptions:
 
-            if e.id == 1 or e.id == 74:
-                continue  # skip first eruption and first of period II
+            if e.rel_id == 1:
+                continue  # skip first eruption of each period
 
             # parameters for deterministic method
             dT = e.dT.t1_2
@@ -784,5 +793,3 @@ class MyPlots:
             print(f"{cvol_real:.6f}; {cvol_sim_mode:.6f};", end="")
             print(f"{error_from_mode:.6f}; {error_per_from_mode:.2f}%;", end="\n")
 
-
-    # ---------------------- OBSOLETE

@@ -12,9 +12,12 @@ class OneEruption:
         :param eruption_id: # of eruption (1, 2, 3, ...)
         """
 
-        # identifiers: eruption ID and which period it is in
+        # identifiers: eruption ID
         self.id = eruption_id
+        # which period it is in
         self.period = 0
+        # relative ID within the period (1, 2, ...)
+        self.rel_id = 0
         # option to print results when True
         self.print = False
 
@@ -30,7 +33,7 @@ class OneEruption:
 
         # ----------------- Parameters
         # qline parameters (a, b)
-        self.a, self.b = None, None
+        self.a, self.b, self.xt = None, None, None
         # deterministic: period rate of eruption computed from all eruptions in period (Q in m3/day)
         self.qperiod = None
         # stochastic: estimated rate of eruption until previous eruption (Qhat in m3/day)
@@ -60,7 +63,7 @@ class OneEruption:
 
         return cvolT1, q, dT
 
-    def save_real(self, edate: datetime.date, evol: int, cvol: int, when='t2'):
+    def save_real(self, edate: datetime.date, evol: float, cvol: float, when='t2'):
         """Save real (measured) data for the eruption"""
 
         if when == 't2':
@@ -100,7 +103,7 @@ class OneEruption:
     def save_parameter(self, param: tuple or float, method=1):
 
         if method == 1:  # qline
-            self.a, self.b = param[0], param[1]
+            self.a, self.b = param[0], param[1]  # a, b
         elif method == 2:  # deterministic
             self.qperiod = param
         elif method == 3:  # stochastic
