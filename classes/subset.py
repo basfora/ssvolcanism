@@ -149,10 +149,16 @@ class MySubset:
         self.dT_mode = bf.compute_mode(self.intervals)
 
         # non-official period, needs to compute q based on data
+        q = bf.compute_q(self.cvol_t0, self.cvol_tf, self.dT_total_days)
         if self.label < 1:
-            q = bf.compute_q(self.cvol_t0, self.cvol_tf, self.dT_total_days)
             self.set_q(q, 'day')
-
+        else:
+            # compare given Q with computed Q
+            if abs(q - self.q) / self.q > 0.05:  # if difference > 5%
+                qyr_computed = bf.Qday_to_Qy(q)
+                print(f"**** Warning: Eruptive rate mismatch! ****\n"
+                      f"Computed rate differs from given rate Q = {qyr_computed:.4f} | Q = {self.qyr:.4f} km3/yr for period {self.label}.\n"
+                      f"Given rate will be used for DET Prediction (M2). Computed rate will be used for Q-Line Fit (M1) only.")
         return
 
     # ----------------------------------------------------------

@@ -3,7 +3,7 @@ from classes.collectdata import VolcanoData as vd
 from classes.myplots import MyPlots
 
 volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g': 'Galapagos'}
-volcano_id = volcanoes['g']
+volcano_id = volcanoes['h']
 plot_show = False
 
 # ------------------------------------------------

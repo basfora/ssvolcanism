@@ -319,9 +319,18 @@ class MyPlots:
         ep2 = [oe for oe in eruptions if oe.period == 2]  # period II
 
         # get Q values for periods
-        q1 = bf.Qday_to_Qy(ep1[0].qperiod)  # Q for period I
+        if method == 'qline':
+            # Use computed Q for period
+            use_q = 'a'
+        elif method == 'det':
+            # Use computed Q for period
+            use_q = 'qperiod'
+        else:
+            raise ValueError("Method must be 'qline' or 'det'.")
+
+        q1 = bf.Qday_to_Qy(getattr(ep1[0], use_q))
         if len(ep2) > 0:
-            q2 = bf.Qday_to_Qy(ep2[0].qperiod)  # Q for period I
+            q2 = bf.Qday_to_Qy(getattr(ep2[0], use_q))
 
         # sanity check for Piton de la Fournaise volcano
         if 'piton' in self.volcano_name.lower():

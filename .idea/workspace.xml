@@ -4,13 +4,90 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="merged qline and det plots">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="added check for cvol">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_7_27_25,_3_00 PM_[Changes]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/VolcanoWriteUp.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/VolcanoWriteUp.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/collectdata.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/collectdata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/classes/eruption.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/eruption.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/myplots.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/myplots.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/classes/subset.py" beforeDir="false" afterPath="$PROJECT_DIR$/classes/subset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period0_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period1_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_Evol.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_Evol.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_dT.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/HistoricalData/Hawaii_Period2_dT.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method01/Hawaii_Period0_Cvol_QLine.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method01/Hawaii_Period0_Cvol_QLine.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method01/Hawaii_Period0_Cvol_QLineError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method01/Hawaii_Period0_Cvol_QLineError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method01/Iceland_Period0_Cvol_QLine.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method01/Iceland_Period0_Cvol_QLine.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method01/Iceland_Period0_Cvol_QLineError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method01/Iceland_Period0_Cvol_QLineError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Cvol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Cvol_Det.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Cvol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Cvol_DetError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Evol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Evol_Det.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Evol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method02/Hawaii_Period0_Evol_DetError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method02/Iceland_Period0_Cvol_Det.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method02/Iceland_Period0_Cvol_Det.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method02/Iceland_Period0_Cvol_DetError.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method02/Iceland_Period0_Cvol_DetError.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_10.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_10.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_11.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_11.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_12.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_12.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_13.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_13.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_14.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_14.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_15.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_15.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_16.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_16.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_17.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_17.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_18.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_18.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_19.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_19.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_2.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_2.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_20.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_20.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_21.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_21.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_22.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_22.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_23.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_23.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_24.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_24.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_25.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_25.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_26.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_26.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_27.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_27.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_28.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_28.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_29.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_29.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_3.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_3.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_30.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_30.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_31.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_31.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_32.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_32.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_33.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_33.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_34.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_34.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_35.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_35.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_36.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_36.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_37.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_37.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_38.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_38.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_39.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_39.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_4.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_4.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_40.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_40.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_41.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_41.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_42.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_42.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_43.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_43.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_44.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_44.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_45.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_45.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_46.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_46.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_47.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_47.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_48.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_48.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_49.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_49.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_5.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_5.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_50.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_50.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_51.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_51.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_52.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_52.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_53.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_53.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_54.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_54.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_55.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_55.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_56.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_56.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_57.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_57.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_58.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_58.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_59.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_59.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_6.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_6.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_60.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_60.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_61.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_61.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_7.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_7.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_8.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_8.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_9.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/plots/Method03/Hawaii/Hawaii_Stochastic_9.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rawdata/TableHawaii.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/rawdata/TableHawaii.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/prediction_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/prediction_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -61,28 +138,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in test_collect.py.executor": "Debug",
-    "Python.collect-data.executor": "Run",
-    "Python.collectdata.executor": "Run",
-    "Python.historical_data.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.piton.executor": "Run",
-    "Python.piton_historical_data.executor": "Debug",
-    "Python.piton_linear.executor": "Run",
-    "Python.piton_qline.executor": "Run",
-    "Python.prediction.executor": "Run",
-    "Python.prediction_data.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "/home/basfora/02ProjectSources/PycharmProjects/volcano/classes/collectdata.py",
-    "settings.editor.selected.configurable": "preferences.keymap"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in test_collect.py.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.collect-data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.collectdata.executor&quot;: &quot;Run&quot;,
+    &quot;Python.historical_data.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton_historical_data.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.piton_linear.executor&quot;: &quot;Run&quot;,
+    &quot;Python.piton_qline.executor&quot;: &quot;Run&quot;,
+    &quot;Python.prediction.executor&quot;: &quot;Run&quot;,
+    &quot;Python.prediction_data.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/basfora/02ProjectSources/PycharmProjects/volcano/classes/collectdata.py&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/old" />
@@ -213,7 +290,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-4c141bd692a7-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.90" />
+        <option value="bundled-python-sdk-03e874896e21-d902c0275401-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-252.23892.439" />
       </set>
     </attachedChunks>
   </component>
@@ -225,14 +302,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1748025085415</updated>
-    </task>
-    <task id="LOCAL-00001" summary="import and plot data">
-      <option name="closed" value="true" />
-      <created>1748034528667</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1748034528667</updated>
     </task>
     <task id="LOCAL-00002" summary="import and plot data">
       <option name="closed" value="true" />
@@ -618,11 +687,18 @@
       <option name="project" value="LOCAL" />
       <updated>1753819293905</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="added check for cvol">
+      <option name="closed" value="true" />
+      <created>1753827826286</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1753827826286</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="cvol plots - editting" />
     <MESSAGE value="color coded" />
     <MESSAGE value="plots plots" />
     <MESSAGE value="started qline method" />
@@ -647,7 +723,8 @@
     <MESSAGE value="new hawaii data" />
     <MESSAGE value="readme" />
     <MESSAGE value="merged qline and det plots" />
-    <option name="LAST_COMMIT_MESSAGE" value="merged qline and det plots" />
+    <MESSAGE value="added check for cvol" />
+    <option name="LAST_COMMIT_MESSAGE" value="added check for cvol" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
