@@ -1,4 +1,4 @@
-# Steady-state volcanism
+# Steady-State Volcanism
 Evaluating steady-state volcanism.
 
 
