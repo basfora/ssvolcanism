@@ -1,5 +1,5 @@
-# volcano
-Evaluating steady-state volcanism 
+# Steady-state volcanism
+Evaluating steady-state volcanism.
 
 
 ## Code Structure
