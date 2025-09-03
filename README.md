@@ -12,7 +12,9 @@ This code proposes 3 methods:
 2. Deterministic Time Interval
 3. Stochastic Forecast
 
-**Paper submitted, under review:** Galetto, **Asfora**, Pritchard (2025) _Evaluating steady-state volcanism in Iceland, La Reunion, Hawai'i and western Galapagos: connections with volcanic hazards and future perspectives_
+**Paper submitted, under review:
+
+** Galetto, **Asfora**, Pritchard (2025) _Evaluating steady-state volcanism in Iceland, La Reunion, Hawai'i and western Galapagos: connections with volcanic hazards and future perspectives_
 
 
 ## Code Structure
