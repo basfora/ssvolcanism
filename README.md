@@ -1,5 +1,18 @@
 # Steady-State Volcanism
-Evaluating steady-state volcanism.
+
+Evaluating steady-state volcanism. 
+
+We want to predict variations in eruptions, given:
+- Steady-state rate (q)
+- Date and volume of previous eruptions (measurements)
+- Cumulative volume (sum of previous eruptions)
+
+This code proposes 3 methods:
+1. Q-Line Fit
+2. Deterministic Time Interval
+3. Stochastic Forecast
+
+**Paper submitted, under review:** Galetto, **Asfora**, Pritchard (2025) _Evaluating steady-state volcanism in Iceland, La Reunion, Hawai'i and western Galapagos: connections with volcanic hazards and future perspectives_
 
 
 ## Code Structure
