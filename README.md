@@ -3,11 +3,11 @@
 Evaluating steady-state volcanism. 
 
 We want to predict variations in eruptions, given:
-- Steady-state rate (q)
-- Date and volume of previous eruptions (measurements)
-- Cumulative volume (sum of previous eruptions)
+- Steady-state rate (Q)
+- Date and volume of previous eruptions (observed data)
+- Cumulative volume (sum of previous eruption volumes)
 
-This code showcase 3 methods:
+This code showcases 3 methods:
 
 1. Q-Line Fit
 2. Deterministic Time Interval
