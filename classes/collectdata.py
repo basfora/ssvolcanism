@@ -110,12 +110,12 @@ class VolcanoData:
 
         # Get the current working directory
         self.current_dir = os.getcwd()
-        # Get the parent directory > '../PycharmProjects/volcano'
+        # Get the parent directory > '../PycharmProjects/ssvolcanism'
         parent_dir = os.path.dirname(self.current_dir)
         # fix path for when running unit tests
-        if '/volcano' not in parent_dir:
-            parent_dir += '/volcano'
-        # Get the path to the rawData folder > '../PycharmProjects/volcano/rawdata'
+        if '/ssvolcanism' not in parent_dir:
+            parent_dir += '/ssvolcanism'
+        # Get the path to the rawData folder > '../PycharmProjects/ssvolcanism/rawdata'
         self.raw_data_path = os.path.join(parent_dir, self.raw_data_dir)
         # path to file
         self.path_to_file = os.path.join(self.raw_data_path, self.file_name)
@@ -184,6 +184,11 @@ class VolcanoData:
             datet0, datetf = mydf.iat[row, cedatet0], mydf.iat[row, cedatetf]
             eID0, eIDf = mydf.iat[row, cID0], mydf.iat[row, cIDf]
             qyr = mydf.iat[row, cQ]
+
+            # check # of eruptions
+            if eIDf > self.n:
+                print(f"Warning: Period {iperiod} ends at eruption ID {eIDf}, but only {self.n} eruptions are available.")
+                eIDf = min(eIDf, self.n)
 
             # get cumulative volume at t0 (m3)
             if eID0 == 1:

@@ -103,6 +103,7 @@ class MyPlots:
 
         # fig settings
         self.label_vol = f"Volume ($m^3$)"
+        self.label_cvol = f"Cumulative $V_b (m^3)$"
         self.label_freq = "Frequency"
         self.label_date = "End of Eruption (Date)"
         self.label_interval =f"$\Delta~T (days)$"
@@ -189,8 +190,8 @@ class MyPlots:
         # -------------------- PLOT 1 (LEFT)
         if plot_op == 1:    # eruption events (evol)
             xvalues = vd.edates
-            yvalues = vd.evols
             # mean and median for eruptions
+            yvalues = vd.evols
             mean_value = vd.evol_mean
             median_value = vd.evol_median
             std_value = vd.evol_std
@@ -333,8 +334,8 @@ class MyPlots:
             q2 = bf.Qday_to_Qy(getattr(ep2[0], use_q))
 
         # sanity check for Piton de la Fournaise volcano
-        if 'piton' in self.volcano_name.lower():
-            self.sanity_piton_periods(ep1, ep2)
+        #if 'piton' in self.volcano_name.lower():
+        #    self.sanity_piton_periods(ep1, ep2)
 
         # -------------------------------- DATA PREPARATION
         # xvalues: dates of eruptions
@@ -347,6 +348,7 @@ class MyPlots:
 
         if option == 'cvol':
             myvol = f"{self.title_cvol}"
+            vollabel = self.label_cvol
 
             # expected values (qline or det prediction)
             yvalues1 = [getattr(e.cvol, method).value for e in ep1 if getattr(e.cvol, method).value is not None]
@@ -355,6 +357,7 @@ class MyPlots:
 
         elif option == 'evol':
             myvol = f"{self.title_evol}"
+            vollabel = self.label_vol
 
             # expected values (qline or det prediction)
             yvalues1 = [getattr(e.evol, method).value for e in ep1 if getattr(e.evol, method).value is not None]
@@ -395,7 +398,7 @@ class MyPlots:
         # plot title, labels and legend
         ax.set_title(mytitle, fontdict=self.title_font)
         ax.set_xlabel(self.label_date, fontdict=self.label_font)
-        ax.set_ylabel(self.label_vol, fontdict=self.label_font)
+        ax.set_ylabel(vollabel, fontdict=self.label_font)
         ax.legend(frameon=False, prop=self.leg_font, loc='upper left')
         ax.grid(True)
 
@@ -417,10 +420,12 @@ class MyPlots:
         # get data pts (option) and title (method)
         if option == 'cvol':
             myvol = self.title_cvol
+            vollabel = self.label_cvol
             yvalues = [getattr(e.cvol, method).error for e in eruptions if getattr(e.cvol, method).value is not None]
 
         elif option == 'evol':
             myvol = self.title_evol
+            vollabel = self.label_vol
             yvalues = [getattr(e.evol, method).error for e in eruptions if getattr(e.evol, method).value is not None]
 
         else:
@@ -473,7 +478,7 @@ class MyPlots:
         # plot title, labels and legend
         ax[0].set_title(f"{myvol}{self.title_break}{self.title_error}", fontdict=self.title_font)
         ax[0].set_xlabel(self.label_date, fontdict=self.label_font)
-        ax[0].set_ylabel(self.label_vol, fontdict=self.label_font)
+        ax[0].set_ylabel(vollabel, fontdict=self.label_font)
         ax[0].legend(frameon=False, prop=self.leg_font)
         ax[0].grid(True)
 
