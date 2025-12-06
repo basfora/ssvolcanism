@@ -180,7 +180,7 @@ class VolcanoData:
             iperiod = mydf.iat[row, cperiod]  # period number
             if pd.isna(iperiod):
                 break
-            # get paramters for the period
+            # get parameters for the period
             datet0, datetf = mydf.iat[row, cedatet0], mydf.iat[row, cedatetf]
             eID0, eIDf = mydf.iat[row, cID0], mydf.iat[row, cIDf]
             qyr = mydf.iat[row, cQ]
@@ -367,7 +367,9 @@ class VolcanoData:
             oe.save_real(edatet1, evolt1, cvolt1, 't1') # save previous eruption data
 
             # PERIOD-RELATED DATA (Q-LINE)
-            for pi in range(1, self.n_periods + 1):
+            for pi in self.periods.keys():
+                if pi == 0:
+                    break
                 myperiod = self.periods[pi]
 
                 # find which period this eruption belongs to

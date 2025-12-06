@@ -25,8 +25,6 @@ class MyPlots:
         # volcano name
         self.volcano_name = self.set_name(name)
         self.volcano_nickname = None
-
-        self.volcano_subname: str
         self.period = None
 
         # PLOTSET 1
@@ -35,9 +33,8 @@ class MyPlots:
         # font sizes
         self.suptitle_fontsize = 11
         self.title_fontsize = 13
-        self.leg_fontsize = 11
-        self.label_fontsize = 11
-
+        self.leg_fontsize = 13
+        self.label_fontsize = 13
 
         # fontdict
         self.suptitle_font = {'family': 'serif', 'weight': 'ultralight', 'size': self.suptitle_fontsize, }
@@ -88,10 +85,14 @@ class MyPlots:
 
         # legends
         self.leg_real = "Real Data"
+        self.leg_realf = "$V_{b}$"
         self.leg_pred = "Predicted Data"
         self.leg_exp = "Expected"
-        self.leg_Q1 = "Period I, Q = "
-        self.leg_Q2 = "Period II, Q = "
+
+        self.leg_Q = "Episode "
+        self.leg_Q1 = f"{self.leg_Q} I, Q = " # "Period I, Q = "
+        self.leg_Q2 = f"{self.leg_Q} II, Q = " # "Period II, Q = "
+        self.leg_Q3 = f"{self.leg_Q} III, Q = " # "Period III, Q = "
         self.leg_error = "Error"
         self.leg_ptcloud = "Simulated"
         self.leg_qhat = "$\hat{Q}$"
@@ -121,6 +122,9 @@ class MyPlots:
         self.color_hist = 'cornflowerblue'
         self.color_pred1 = 'brown' # red
         self.color_pred2 = 'salmon'# 'rosybrown' # magenta
+        self.color_pred3 = 'rosybrown' # magenta
+        self.color_pred4 = 'magenta' # magenta
+        self.color_pred_list = [self.color_pred1, self.color_pred2, self.color_pred3, self.color_pred4]
         self.color_ptcloud = 'darkgray'  # 'darkslategray'
 
         # linestyle
@@ -132,7 +136,7 @@ class MyPlots:
         self.line_real = '-'
 
         # marker
-        self.marker_real = 'x'
+        self.marker_real = 's'
         self.marker_det = 'x'
         self.marker_error = '.'
         self.marker_linear = '.'
@@ -151,6 +155,27 @@ class MyPlots:
 
         self.savepath = self.get_save_path()
 
+    def legend_label(self, pi_num, q_value):
+        """Return legend label for period number."""
+        # lazy conversion
+        if pi_num == 1:
+            r_num = "I"
+        elif pi_num == 2:
+            r_num = "II"
+        elif pi_num == 3:
+            r_num = "III"
+        elif pi_num == 4:
+            r_num = "IV"
+        elif pi_num == 5:
+            r_num = "V"
+        else:
+            r_num = pi_num
+        return f"{self.leg_Q}{r_num}, Q = {q_value:.4f} {self.label_q}"
+
+    def legend_real(self, n_eruptions):
+        """Return legend label for real data with number of eruptions."""
+        return f"{self.leg_realf}, {n_eruptions} eruptions (real data)"
+
     def set_name(self, name=None):
         """Set the name of the volcano"""
 
@@ -164,8 +189,6 @@ class MyPlots:
             self.volcano_name = 'Western Galapagos'
         else:
             self.volcano_name = input("Enter the name of the file: ")
-
-        self.volcano_subname = "Period"
 
         return self.volcano_name
 
@@ -316,8 +339,9 @@ class MyPlots:
         fig.suptitle(suptitle, fontproperties=self.suptitle_font)
 
         # separate eruptions by periods
-        ep1 = [oe for oe in eruptions if oe.period == 1]  # period I
-        ep2 = [oe for oe in eruptions if oe.period == 2]  # period II
+        ep_numbers = set(oe.period for oe in eruptions)
+        # create dict
+        ep_dict = {num: [oe for oe in eruptions if oe.period == num] for num in ep_numbers}
 
         # get Q values for periods
         if method == 'qline':
@@ -329,40 +353,42 @@ class MyPlots:
         else:
             raise ValueError("Method must be 'qline' or 'det'.")
 
-        q1 = bf.Qday_to_Qy(getattr(ep1[0], use_q))
-        if len(ep2) > 0:
-            q2 = bf.Qday_to_Qy(getattr(ep2[0], use_q))
+        # get Q values for all periods
+        q_dict = {pi: bf.Qday_to_Qy(getattr(ep_dict[pi][0], use_q)) for pi in ep_dict.keys()}
 
-        # sanity check for Piton de la Fournaise volcano
+        # sanity check for Piton de la Fournaise volcano (this was for initial tests, make it general)
         #if 'piton' in self.volcano_name.lower():
         #    self.sanity_piton_periods(ep1, ep2)
 
         # -------------------------------- DATA PREPARATION
         # xvalues: dates of eruptions
-        xvalues = [e.date.t2 for e in eruptions]    # n
-        xvalues1 = [e.date.t2 for e in ep1 if getattr(getattr(e, option), method).value is not None]         # Period I
-        xvalues2 = [e.date.t2 for e in ep2 if getattr(getattr(e, option), method).value is not None]
+        xvalues = {0: [e.date.t2 for e in eruptions]}  # n
+        # xvalues for each period
+        for pi in ep_dict.keys():
+            xvalues[pi] = [e.date.t2 for e in ep_dict[pi] if getattr(getattr(e, option), method).value is not None]
 
         # yvalues: real cumulative volumes (CVOL)
         yvalues_real = [getattr(e, option).t2 for e in eruptions]  # n
+        yvalues = {}
 
         if option == 'cvol':
             myvol = f"{self.title_cvol}"
             vollabel = self.label_cvol
 
-            # expected values (qline or det prediction)
-            yvalues1 = [getattr(e.cvol, method).value for e in ep1 if getattr(e.cvol, method).value is not None]
-            if len(ep2) > 0:
-                yvalues2 = [getattr(e.cvol, method).value for e in ep2 if getattr(e.cvol, method).value is not None]
+            # expected values (qline or det prediction) for each period
+            for pi in ep_dict.keys():
+                yvalues[pi] = [getattr(e.cvol, method).value for e in ep_dict[pi] if
+                               getattr(e.cvol, method).value is not None]
+
 
         elif option == 'evol':
             myvol = f"{self.title_evol}"
             vollabel = self.label_vol
 
-            # expected values (qline or det prediction)
-            yvalues1 = [getattr(e.evol, method).value for e in ep1 if getattr(e.evol, method).value is not None]
-            if len(ep2) > 0:
-                yvalues2 = [getattr(e.evol, method).value for e in ep2 if getattr(e.evol, method).value is not None]
+            # expected values (qline or det prediction) for each period
+            for pi in ep_dict.keys():
+                yvalues[pi] = [getattr(e.evol, method).value for e in ep_dict[pi] if
+                               getattr(e.evol, method).value is not None]
 
         else:
             raise "Option must be 'cvol' or 'evol'."
@@ -381,26 +407,29 @@ class MyPlots:
 
         # ------------------------------- PLOT 1 (MAIN)
         # PLOT REAL VALUES (n)
-        ax.scatter(xvalues, yvalues_real, marker=self.marker_real, color=self.color_real, linewidth=3,
-                   label=f"{self.leg_real}{self.label_break}{len(eruptions)} eruptions")
+        real_label=self.legend_real(len(eruptions))
+        ax.scatter(xvalues[0], yvalues_real, marker=self.marker_real, facecolors='none', color=self.color_real, linewidth=1,
+                   label=f"{real_label}")
 
         # PLOT PREDICTED VALUES
-        # period I
-        ax.plot(xvalues1, yvalues1, marker=mymarker, color=self.color_pred1,
-                linestyle=mylinestyle, linewidth=1, label=f"{self.leg_Q1}{q1:.4f} {self.label_q}")
+        for pi in ep_dict.keys():
+            # get predicted values and xvalues for period pi
+            xvals = xvalues[pi]
+            yvals = yvalues[pi]
+            q = q_dict[pi]
+            # label for each period
+            mylabel = self.legend_label(pi, q)
 
-        # if period II exists, plot predicted values
-        if len(ep2) > 0:
-            # Plot predicted values - period II (eruptions # 74 - end)
-            ax.plot(xvalues2, yvalues2, marker=mymarker, color=self.color_pred2,
-                    linestyle=mylinestyle, linewidth=1, label=f"{self.leg_Q2}{q2:.4f} {self.label_q}")
+            # plot predicted values for period pi
+            ax.plot(xvals, yvals, marker=mymarker, fillstyle='none', color=self.color_pred_list[pi - 1],
+                    linestyle=mylinestyle, linewidth=1, label=mylabel)
 
         # plot title, labels and legend
         ax.set_title(mytitle, fontdict=self.title_font)
         ax.set_xlabel(self.label_date, fontdict=self.label_font)
         ax.set_ylabel(vollabel, fontdict=self.label_font)
         ax.legend(frameon=False, prop=self.leg_font, loc='upper left')
-        ax.grid(True)
+        ax.grid(False)
 
         # set limits for x and y axes
         ylim = max(yvalues_real) * self.yth  # threshold for y-axis
@@ -476,11 +505,11 @@ class MyPlots:
         #              label=f"{self.label_median} km$^3$")
 
         # plot title, labels and legend
-        ax[0].set_title(f"{myvol}{self.title_break}{self.title_error}", fontdict=self.title_font)
+        ax[0].set_title(f"{self.title_error}", fontdict=self.title_font)
         ax[0].set_xlabel(self.label_date, fontdict=self.label_font)
         ax[0].set_ylabel(vollabel, fontdict=self.label_font)
         ax[0].legend(frameon=False, prop=self.leg_font)
-        ax[0].grid(True)
+        ax[0].grid(False)
 
         # set limits for x and y axes
         ylim = max(yvalues) * self.yth
