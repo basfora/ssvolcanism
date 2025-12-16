@@ -3,7 +3,7 @@ from classes.collectdata import VolcanoData as vd
 from classes.myplots import MyPlots
 
 volcanoes = {'p': 'Piton', 'h': 'Hawaii', 'i': 'Iceland', 'g': 'Galapagos'}
-volcano_id = volcanoes['g']
+volcano_id = volcanoes['h']
 plot_show = False
 
 # ------------------------------------------------
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     base_name = volcano_id + '_Period'
 
     print(f"...Plotting historical data")
-    for iperiod in range(vdata.n_periods + 1):
+    for iperiod in vdata.periods:
 
         # get period data as subset
         mydata = vdata.periods[iperiod]
