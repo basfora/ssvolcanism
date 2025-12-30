@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="plots">
+    <list default="true" id="d131de5d-b901-4f74-980a-050eaa08614a" name="Changes" comment="plots historical data">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period0_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period0_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_Evol.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/plots/HistoricalData/Galapagos_Period1_dT.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/rawdata/TableHawaii.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/rawdata/TableHawaii.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rawdata/TablePiton.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/rawdata/TablePiton.xlsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/historical_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/historical_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,14 +221,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1748025085415</updated>
-    </task>
-    <task id="LOCAL-00006" summary="non parametric, uncertainty propagation draft">
-      <option name="closed" value="true" />
-      <created>1749066345288</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1749066345288</updated>
     </task>
     <task id="LOCAL-00007" summary="started myprediction">
       <option name="closed" value="true" />
@@ -620,11 +606,18 @@
       <option name="project" value="LOCAL" />
       <updated>1765411774085</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="plots historical data">
+      <option name="closed" value="true" />
+      <created>1765851905433</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1765851905433</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="mse unit fixed" />
     <MESSAGE value="error ok" />
     <MESSAGE value="qline plots but it's a mess" />
     <MESSAGE value="stochastic data" />
@@ -649,7 +642,8 @@
     <MESSAGE value="new plots for review" />
     <MESSAGE value="adjusted for n periods" />
     <MESSAGE value="plots" />
-    <option name="LAST_COMMIT_MESSAGE" value="plots" />
+    <MESSAGE value="plots historical data" />
+    <option name="LAST_COMMIT_MESSAGE" value="plots historical data" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

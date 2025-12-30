@@ -1,21 +1,38 @@
 # Steady-State Volcanism
 
-Evaluating steady-state volcanism. 
+This repository analyzes steady-state volcanism in frequently erupting oceanic hotspots (Iceland, La Réunion, Hawaiʻi, and the western Galápagos). We examine how near-constant long-term eruption rates are punctuated by shorter-term cycles that rebalance erupted volumes, offering insight into maximum expected eruptive output and implications for volcanic hazard assessment
+
+## Evaluating Steady-State Volcanism
 
 We want to predict variations in eruptions, given:
-- Steady-state rate (Q)
+- Average steady-state rate (Q)
 - Date and volume of previous eruptions (observed data)
 - Cumulative volume (sum of previous eruption volumes)
 
-This code showcases 3 methods:
+This repo showcases 3 methods:
 
-1. Q-Line Fit
-2. Deterministic Time Interval
+1. **Q-Line Fitting**
+2. **Deterministic Time Interval**
 3. Stochastic Forecast
 
-**Paper:** 
+## Citing this Work
 
-> Galetto, **Asfora**, Pritchard (2025) _Evaluating steady-state volcanism in Iceland, La Reunion, Hawai'i and western Galapagos: connections with volcanic hazards and future perspectives_. Submitted to Volcanica.
+If you use this code or associated algorithms, please cite our paper. Thank you!
+
+> Galetto, F., Asfora, B., and Pritchard, M. E. (2025). *Evaluating steady-state volcanism in Iceland, La Réunion, Hawaiʻi and western Galápagos: Connections with volcanic hazards and future perspectives.* Manuscript under review.
+
+Note: this citation will be updated upon publication decision.
+
+``` 
+ @unpublished{GalettoAsforaPritchard2025,
+  author    = {Galetto, Federico and Asfora, Beatriz and Pritchard, Matthew E.},
+  title     = {Evaluating steady-state volcanism in Iceland, La R{\'e}union, Hawai{\textquotesingle}i and western Gal{\'a}pagos: connections with volcanic hazards and future perspectives},
+  year      = {2025},
+  note      = {Manuscript under review}
+}
+```
+
+
 
 
 ## Code Structure
