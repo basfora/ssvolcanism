@@ -103,8 +103,12 @@ class MyPlots:
         self.title_hist = "Distribution"
 
         # fig settings
-        self.label_vol = f"Volume ($m^3$)"
-        self.label_cvol = f"Cumulative $V_b (m^3)$"
+        # volume labels
+        self.label_vol = f"Volume"
+        self.label_cvol = f"Cumulative $V_b$"
+        self.label_unit_m = f"$(m^3)$"
+        self.label_unit_km = f"$(km^3)$"
+        # other labels
         self.label_freq = "Frequency"
         self.label_date = "End of Eruption (Date)"
         self.label_interval =f"$\Delta~T (days)$"
@@ -164,17 +168,44 @@ class MyPlots:
             r_num = "II"
         elif pi_num == 3:
             r_num = "III"
+            # for hawaii alt only
+            # r_num = "II (first part)"
         elif pi_num == 4:
             r_num = "IV"
+            # for hawaii alt only
+            # r_num = "II (second part)"
         elif pi_num == 5:
             r_num = "V"
         else:
             r_num = pi_num
+
         return f"{self.leg_Q}{r_num}, Q = {q_value:.4f} {self.label_q}"
 
     def legend_real(self, n_eruptions):
         """Return legend label for real data with number of eruptions."""
-        return f"{self.leg_realf}, {n_eruptions} eruptions (real data)"
+        # old: f"{self.leg_realf}, {n_eruptions} eruptions (real data)"
+        return f"{self.leg_realf} (real data)"
+
+    def label_volume(self, option, myunit):
+
+        if option == 'cvol':
+            myvol = f"{self.title_cvol}"
+            vollabel = f"{self.label_cvol}"
+
+        elif option == 'evol':
+            myvol = f"{self.title_evol}"
+            vollabel = f"{self.label_vol}"
+        else:
+            raise "Option must be 'cvol' or 'evol'."
+
+        if myunit == 'm':
+            vollabel += f" {self.label_unit_m}"
+        elif myunit =='km':
+            vollabel += f" {self.label_unit_km}"
+        else:
+            raise "Unit must be 'm' or 'km'."
+
+        return myvol, vollabel
 
     def set_name(self, name=None):
         """Set the name of the volcano"""
@@ -322,7 +353,7 @@ class MyPlots:
         if plot_show:
             plt.show()
 
-    def plot_real_vs_expected(self, eruptions: list, option='cvol', method='qline', savename=None, show_plot=True):
+    def plot_real_vs_expected(self, eruptions: list, option='cvol', method='qline', savename=None, show_plot=True, myunit='m'):
         """Plot Volume (CVOL or EVOL) real and deterministic prediction
         :param eruptions: list of OneEruption instances
         :param option: 'cvol' for cumulative volume, 'evol' for eruption volume
@@ -332,11 +363,13 @@ class MyPlots:
 
         # get date limits of the plot for the title
         self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
-
         # supertitle: Volcano Name and Period (dates)
         suptitle = f"{self.volcano_name}{self.label_break}{self.period}"
         fig, ax = plt.subplots(1, 1, figsize=(self.width, self.height))
         fig.suptitle(suptitle, fontproperties=self.suptitle_font)
+
+        # get title and label (method, unit)
+        myvol, vollabel = self.label_volume(option, myunit)
 
         # separate eruptions by periods
         ep_numbers = set(oe.period for oe in eruptions)
@@ -356,10 +389,6 @@ class MyPlots:
         # get Q values for all periods
         q_dict = {pi: bf.Qday_to_Qy(getattr(ep_dict[pi][0], use_q)) for pi in ep_dict.keys()}
 
-        # sanity check for Piton de la Fournaise volcano (this was for initial tests, make it general)
-        #if 'piton' in self.volcano_name.lower():
-        #    self.sanity_piton_periods(ep1, ep2)
-
         # -------------------------------- DATA PREPARATION
         # xvalues: dates of eruptions
         xvalues = {0: [e.date.t2 for e in eruptions]}  # n
@@ -371,27 +400,10 @@ class MyPlots:
         yvalues_real = [getattr(e, option).t2 for e in eruptions]  # n
         yvalues = {}
 
-        if option == 'cvol':
-            myvol = f"{self.title_cvol}"
-            vollabel = self.label_cvol
-
-            # expected values (qline or det prediction) for each period
-            for pi in ep_dict.keys():
-                yvalues[pi] = [getattr(e.cvol, method).value for e in ep_dict[pi] if
-                               getattr(e.cvol, method).value is not None]
-
-
-        elif option == 'evol':
-            myvol = f"{self.title_evol}"
-            vollabel = self.label_vol
-
-            # expected values (qline or det prediction) for each period
-            for pi in ep_dict.keys():
-                yvalues[pi] = [getattr(e.evol, method).value for e in ep_dict[pi] if
-                               getattr(e.evol, method).value is not None]
-
-        else:
-            raise "Option must be 'cvol' or 'evol'."
+        # expected values (qline or det prediction) for each period
+        for pi in ep_dict.keys():
+            yvalues[pi] = [getattr(getattr(e, option), method).value for e in ep_dict[pi] if
+                           getattr(getattr(e, option), method).value is not None]
 
         # style qline or det
         if method == 'qline':
@@ -406,9 +418,12 @@ class MyPlots:
             raise "Method must be 'qline' or 'det'."
 
         # ------------------------------- PLOT 1 (MAIN)
+        # adjust for units
+        yvalues_real_plot = self.adjust_units(yvalues_real, myunit)
+
         # PLOT REAL VALUES (n)
         real_label=self.legend_real(len(eruptions))
-        ax.scatter(xvalues[0], yvalues_real, marker=self.marker_real, facecolors='none', color=self.color_real, linewidth=1,
+        ax.scatter(xvalues[0], yvalues_real_plot, marker=self.marker_real, facecolors='none', color=self.color_real, linewidth=1,
                    label=f"{real_label}")
 
         # PLOT PREDICTED VALUES
@@ -420,8 +435,9 @@ class MyPlots:
             # label for each period
             mylabel = self.legend_label(pi, q)
 
+            yvals_plot = self.adjust_units(yvals, myunit)
             # plot predicted values for period pi
-            ax.plot(xvals, yvals, marker=mymarker, fillstyle='none', color=self.color_pred_list[pi - 1],
+            ax.plot(xvals, yvals_plot, marker=mymarker, fillstyle='none', color=self.color_pred_list[pi - 1],
                     linestyle=mylinestyle, linewidth=1, label=mylabel)
 
         # plot title, labels and legend
@@ -432,8 +448,9 @@ class MyPlots:
         ax.grid(False)
 
         # set limits for x and y axes
-        ylim = max(yvalues_real) * self.yth  # threshold for y-axis
-        ax.set(ylim=(min(yvalues_real) - 2 * ylim, max(yvalues_real) + ylim))
+        ylim = max(yvalues_real_plot) * self.yth  # threshold for y-axis
+        # ax.set(ylim=(min(yvalues_real) - 2 * ylim, max(yvalues_real) + ylim))
+        ax.set(ylim=(-0.001, max(yvalues_real_plot) + ylim))
 
         # show, save and close
         if show_plot:
@@ -443,22 +460,22 @@ class MyPlots:
             savename = f"{self.volcano_nickname}_{option}"
         self.save_fig(fig, savename)
 
-    def plot_volume_error(self, eruptions: list, option='cvol', method='det', savename=None, show_plot=True):
+    def plot_volume_error(self, eruptions: list, option='cvol', method='det', savename=None, show_plot=True, myunit='m'):
         """Plot ERROR between real and predicted VOL, and error histogram"""
 
-        # get data pts (option) and title (method)
-        if option == 'cvol':
-            myvol = self.title_cvol
-            vollabel = self.label_cvol
-            yvalues = [getattr(e.cvol, method).error for e in eruptions if getattr(e.cvol, method).value is not None]
+        # get date limits of the plot for the title
+        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
+        # supertitle: Volcano Name and Period (dates)
+        suptitle = f"{self.volcano_name}{self.label_break}{self.period}"
+        # create figure
+        fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
+        fig.suptitle(suptitle, fontproperties=self.suptitle_font)
 
-        elif option == 'evol':
-            myvol = self.title_evol
-            vollabel = self.label_vol
-            yvalues = [getattr(e.evol, method).error for e in eruptions if getattr(e.evol, method).value is not None]
+        # get title and label (method, unit)
+        myvol, vollabel = self.label_volume(option, myunit)
 
-        else:
-            exit()
+        # get data pts (option)
+        yvalues = [getattr(getattr(e, option), method).error for e in eruptions if getattr(e.cvol, method).value is not None]
 
         if method == 'linear':
             myvol += f" {self.title_linear}"
@@ -466,27 +483,22 @@ class MyPlots:
         if method == 'qline':
             myvol += f" {self.title_qline}"
 
-        self.period = bf.format_period(eruptions[0].date.t2, eruptions[-1].date.t2)
-
-        suptitle = f"{self.volcano_name}{self.label_break}{self.period}"
-        fig, ax = plt.subplots(1, 2, figsize=(self.width, self.height))
-        fig.suptitle(suptitle, fontproperties=self.suptitle_font)
 
         # ------------------------------------- PLOT 02: ERROR
         xvalues = [e.date.t2 for e in eruptions if getattr(e.cvol, method).value is not None]  # n-1
 
+        # km3 for plotting/printing
+        yvalues = self.adjust_units(yvalues, myunit)
+
         # add stats: mean and std
         error_mean, error_std = bf.compute_mean_std(yvalues)
-
-        # km3 for printing
-        yvalues_km3 = bf.m3_to_km3(yvalues)
         # some error stats
-        e_mean_km3, e_std_km3 = bf.compute_mean_std(yvalues_km3)
-        e_median_km3 = bf.compute_median(yvalues_km3)
-        e_var_km3 = bf.var_from_std(e_std_km3)
-        e_min_km3, e_max_km3 = bf.compute_limits(yvalues_km3)
-        e_mse_km3 = bf.compute_mse(yvalues_km3)
-        e_rmse_km3 = bf.compute_rmse(yvalues_km3)
+        e_mean, e_std = bf.compute_mean_std(yvalues)
+        e_median = bf.compute_median(yvalues)
+        e_var = bf.var_from_std(e_std)
+        e_min, e_max = bf.compute_limits(yvalues)
+        e_mse = bf.compute_mse(yvalues)
+        e_rmse = bf.compute_rmse(yvalues)
 
         # PLOT 1 (LEFT) - error pts and mean/std lines
 
@@ -495,9 +507,9 @@ class MyPlots:
                       label=self.leg_error)
         # extra stats
         ax[0].axhline(error_mean, color=self.color_mean, linestyle=self.line_mean, linewidth=2,
-                      label=f"{self.label_mean_symbol} {e_mean_km3:.4f} km$^3$")
+                      label=f"{self.label_mean_symbol} {e_mean:.4f} {myunit}$^3$")
         ax[0].axhline(error_mean + error_std, color=self.color_std, linestyle=self.line_std,
-                      label=f"$\pm \sigma$ = {e_std_km3:.4f} km$^3$")
+                      label=f"$\pm \sigma$ = {e_std:.4f} {myunit}$^3$")
         ax[0].axhline(error_mean - error_std, color=self.color_std, linestyle=self.line_std)
 
         # median
@@ -515,20 +527,19 @@ class MyPlots:
         ylim = max(yvalues) * self.yth
         ax[0].set(ylim=(min(yvalues) - 2 * ylim, max(yvalues) + ylim))
 
-        # ------------------------------------- PLOT 2 (RIGHT) - ERROR HISTOGRAM
-        # Plot histogram with KDE
+        # ------------PLOT 2 (RIGHT) - ERROR HISTOGRAM with KDE
         sns.histplot(yvalues, kde=True, ax=ax[1], color=self.color_hist, bins=self.n_bins)
 
         # plot identifiers
         plt.title(self.title_error_hist, fontdict=self.title_font)
         # plot stats
         plt.axvline(error_mean, color=self.color_mean, linestyle=self.line_mean,
-                    label=f"{self.label_mean_symbol} {e_mean_km3:.4f} km$^3$")
+                    label=f"{self.label_mean_symbol} {e_mean:.4f} {myunit}$^3$")
         plt.axvline(error_mean + error_std, color=self.color_std, linestyle=self.line_std,
-                    label=f"$\pm \sigma$ = {e_std_km3:.4f} km$^3$")
+                    label=f"$\pm \sigma$ = {e_std:.4f} {myunit}$^3$")
         plt.axvline(error_mean - error_std, color=self.color_std, linestyle=self.line_std)
 
-        plt.xlabel(self.label_vol, fontdict=self.label_font)
+        plt.xlabel(vollabel, fontdict=self.label_font)
         plt.ylabel(self.label_freq, fontdict=self.label_font)
         plt.legend(frameon=False, prop=self.leg_font)
 
@@ -536,14 +547,14 @@ class MyPlots:
 
         print(f"-----------")
         print(f"Error Statistics ({option} {method}):")
-        print(f"Min: {e_min_km3:.6f} | Max: {e_max_km3:.6f} km3")
-        print(f"Median: {e_median_km3:.4f} km3")
-        print(f"Mean: {e_mean_km3:.6f} +- {e_std_km3:.4f} km3")
-        print(f"Variance: {e_var_km3:.6f} km6")
-        print(f"MSE: {e_mse_km3:.9f} km6")
-        print(f"RMSE: {e_rmse_km3:.6f} km3")
+        print(f"Min: {e_min:.6f} | Max: {e_max:.6f} km3")
+        print(f"Median: {e_median:.4f} km3")
+        print(f"Mean: {e_mean:.6f} +- {e_std:.4f} km3")
+        print(f"Variance: {e_var:.6f} km6")
+        print(f"MSE: {e_mse:.9f} km6")
+        print(f"RMSE: {e_rmse:.6f} km3")
 
-        abs_error = [abs(e) for e in yvalues_km3]
+        abs_error = [abs(e) for e in yvalues]
         abs_e_min, abs_e_max = bf.compute_limits(abs_error)
         abs_e_mean, _ = bf.compute_mean_std(abs_error)
         abs_e_sum = np.sum(abs_error)
@@ -663,36 +674,41 @@ class MyPlots:
 
     # wrapper for each method plots
     def det_plots(self, eruptions: list, show_plot: bool):
+        # convert m3 to km3
+        myunit = 'km'
 
         # Plot 1: CVOL real vs expected (DET)
         base_name = f'{self.volcano_nickname}_Period0_Cvol_Det'
         self.plot_real_vs_expected(eruptions, 'cvol', 'det',
-                                   base_name, show_plot)
+                                   base_name, show_plot, myunit)
 
-        # Plot 2: CVOL error
+        # Plot 2: CVOL ERROR
         base_name = f'{self.volcano_nickname}_Period0_Cvol_DetError'
         self.plot_volume_error(eruptions, 'cvol', 'det',
-                                   base_name, show_plot)
-
+                                   base_name, show_plot, myunit)
+        # -- extra plots --
         # Plot 3: EVOL real vs expected
         base_name = f'{self.volcano_nickname}_Period0_Evol_Det'
         self.plot_real_vs_expected(eruptions, 'evol', 'det',
-                                   base_name, show_plot)
+                                   base_name, show_plot, myunit)
 
         # Plot 4: EVOL error
         base_name = f'{self.volcano_nickname}_Period0_Evol_DetError'
         self.plot_volume_error(eruptions, 'evol', 'det',
-                                   base_name, show_plot)
+                                   base_name, show_plot, myunit)
 
     def linear_plots(self, eruptions: list, show_plot: bool):
         # Plot 5: CVOL real vs expected (LINEAR)
         base_name = f'{self.volcano_nickname}_Period0_Cvol_QLine'
+        # convert m3 to km3
+        myunit = 'km'
         self.plot_real_vs_expected(eruptions, 'cvol', 'qline',
-                                   base_name, show_plot)
+                                   base_name, show_plot, myunit)
 
+        # ERROR HISTOGRAM
         base_name = f'{self.volcano_nickname}_Period0_Cvol_QLineError'
         self.plot_volume_error(eruptions, 'cvol', 'qline',
-                                   base_name, show_plot)
+                                   base_name, show_plot, myunit)
 
     def stoc_plots(self, eruptions: list, eruptions_to_plot: list, show_plot: bool = True):
         """Plot stochastic forecast for all eruptions."""
@@ -704,6 +720,13 @@ class MyPlots:
 
         return
 
+    @staticmethod
+    def adjust_units(values, myunit):
+        """Adjust volume units."""
+        if myunit == 'm':
+            return values
+        else:
+            return bf.m3_to_km3(values)
 
     @staticmethod
     def get_save_path():
@@ -720,6 +743,8 @@ class MyPlots:
 
     @staticmethod
     def sanity_piton_periods(ep1: list, ep2: list):
+
+        #  sanity check for Piton de la Fournaise volcano (this was for initial tests, make it general)
 
         # sanity check (date and q used)
         assert len(ep1) == 73, f"Period I should have 73 eruptions, it has {len(ep1)}"
