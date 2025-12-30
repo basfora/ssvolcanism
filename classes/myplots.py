@@ -90,9 +90,6 @@ class MyPlots:
         self.leg_exp = "Expected"
 
         self.leg_Q = "Episode "
-        self.leg_Q1 = f"{self.leg_Q} I, Q = " # "Period I, Q = "
-        self.leg_Q2 = f"{self.leg_Q} II, Q = " # "Period II, Q = "
-        self.leg_Q3 = f"{self.leg_Q} III, Q = " # "Period III, Q = "
         self.leg_error = "Error"
         self.leg_ptcloud = "Simulated"
         self.leg_qhat = "$\hat{Q}$"
@@ -159,8 +156,11 @@ class MyPlots:
 
         self.savepath = self.get_save_path()
 
-    def legend_label(self, pi_num, q_value):
+    def set_legend_label(self, pi_num, q_value, opt='single'):
         """Return legend label for period number."""
+
+        Qval = f"Q = {q_value:.4f} {self.label_q}"
+
         # lazy conversion
         if pi_num == 1:
             r_num = "I"
@@ -179,14 +179,17 @@ class MyPlots:
         else:
             r_num = pi_num
 
-        return f"{self.leg_Q}{r_num}, Q = {q_value:.4f} {self.label_q}"
+        if opt == 'single':
+            return f"{Qval}"
+        else:
+            return f"{self.leg_Q}{r_num}, {Qval}"
 
-    def legend_real(self, n_eruptions):
+    def set_legend_real(self, n_eruptions):
         """Return legend label for real data with number of eruptions."""
         # old: f"{self.leg_realf}, {n_eruptions} eruptions (real data)"
         return f"{self.leg_realf} (real data)"
 
-    def label_volume(self, option, myunit):
+    def set_label_volume(self, option, myunit):
 
         if option == 'cvol':
             myvol = f"{self.title_cvol}"
@@ -369,7 +372,7 @@ class MyPlots:
         fig.suptitle(suptitle, fontproperties=self.suptitle_font)
 
         # get title and label (method, unit)
-        myvol, vollabel = self.label_volume(option, myunit)
+        myvol, vollabel = self.set_label_volume(option, myunit)
 
         # separate eruptions by periods
         ep_numbers = set(oe.period for oe in eruptions)
@@ -422,7 +425,7 @@ class MyPlots:
         yvalues_real_plot = self.adjust_units(yvalues_real, myunit)
 
         # PLOT REAL VALUES (n)
-        real_label=self.legend_real(len(eruptions))
+        real_label=self.set_legend_real(len(eruptions))
         ax.scatter(xvalues[0], yvalues_real_plot, marker=self.marker_real, facecolors='none', color=self.color_real, linewidth=1,
                    label=f"{real_label}")
 
@@ -433,7 +436,9 @@ class MyPlots:
             yvals = yvalues[pi]
             q = q_dict[pi]
             # label for each period
-            mylabel = self.legend_label(pi, q)
+            if len(ep_dict.keys()) == 1:
+                leg_opt = 'single'
+            mylabel = self.set_legend_label(pi, q, leg_opt)
 
             yvals_plot = self.adjust_units(yvals, myunit)
             # plot predicted values for period pi
@@ -472,7 +477,7 @@ class MyPlots:
         fig.suptitle(suptitle, fontproperties=self.suptitle_font)
 
         # get title and label (method, unit)
-        myvol, vollabel = self.label_volume(option, myunit)
+        myvol, vollabel = self.set_label_volume(option, myunit)
 
         # get data pts (option)
         yvalues = [getattr(getattr(e, option), method).error for e in eruptions if getattr(e.cvol, method).value is not None]
