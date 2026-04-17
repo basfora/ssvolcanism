@@ -17,18 +17,19 @@ This repo showcases 3 methods:
 
 ## Citing this Work
 
-If you use this code or associated algorithms, please cite our paper. Thank you!
+If you use this code or associated algorithms, please cite [our paper](https://doi.org/10.30909/vol/kgch7634). Thank you!
 
-> Galetto, F., Asfora, B., and Pritchard, M. E. (2025). *Evaluating steady-state volcanism in Iceland, La Réunion, Hawaiʻi and western Galápagos: Connections with volcanic hazards and future perspectives.* Manuscript under review.
-
-Note: this citation will be updated upon publication decision.
+> Galetto, F., Asfora, B., and Pritchard, M. E. (2026). *Evaluating steady-state volcanism in Iceland, La Réunion, Hawaiʻi and western Galápagos: Connections with volcanic hazards and future perspectives.* Volcanica 9(1), pp 101–121.
 
 ``` 
- @unpublished{GalettoAsforaPritchard2025,
-  author    = {Galetto, Federico and Asfora, Beatriz and Pritchard, Matthew E.},
-  title     = {Evaluating steady-state volcanism in Iceland, La R{\'e}union, Hawai{\textquotesingle}i and western Gal{\'a}pagos: connections with volcanic hazards and future perspectives},
-  year      = {2025},
-  note      = {Manuscript under review}
+@article{galetto2026eval,
+  title={Evaluating steady-state volcanism in Iceland, La R{\'e}union, Hawaiʻi and western Gal{\'a}pagos: connections with volcanic hazards and future perspectives},
+  author={Galetto, Federico and Asfora, Beatriz and Pritchard, Matthew E},
+  journal={Volcanica},
+  volume={9},
+  number={1},
+  pages={101--121},
+  year={2026}
 }
 ```
 
