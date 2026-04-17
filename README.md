@@ -1,7 +1,5 @@
 # Steady-State Volcanism
 
-## Overview
-
 This repository analyzes steady-state volcanism in frequently erupting oceanic hotspots (Iceland, La Réunion, Hawaiʻi, and the western Galápagos). We examine how near-constant long-term eruption rates are punctuated by shorter-term cycles that rebalance erupted volumes, offering insight into maximum expected eruptive output and implications for volcanic hazard assessment
 
 ### Citing this Work
