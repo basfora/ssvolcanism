@@ -1,21 +1,10 @@
 # Steady-State Volcanism
 
+## Overview
+
 This repository analyzes steady-state volcanism in frequently erupting oceanic hotspots (Iceland, La Réunion, Hawaiʻi, and the western Galápagos). We examine how near-constant long-term eruption rates are punctuated by shorter-term cycles that rebalance erupted volumes, offering insight into maximum expected eruptive output and implications for volcanic hazard assessment
 
-## Evaluating Steady-State Volcanism
-
-We want to predict variations in eruptions, given:
-- Average steady-state rate (Q)
-- Date and volume of previous eruptions (observed data)
-- Cumulative volume (sum of previous eruption volumes)
-
-This repo showcases 3 methods:
-
-1. **Q-Line Fitting**
-2. **Deterministic Time Interval**
-3. Stochastic Forecast
-
-## Citing this Work
+### Citing this Work
 
 If you use this code or associated algorithms, please cite [our paper](https://doi.org/10.30909/vol/kgch7634). Thank you!
 
@@ -33,8 +22,18 @@ If you use this code or associated algorithms, please cite [our paper](https://d
 }
 ```
 
+## Evaluating Steady-State Volcanism
 
+We want to predict variations in eruptions, given:
+- Average steady-state rate (Q)
+- Date and volume of previous eruptions (observed data)
+- Cumulative volume (sum of previous eruption volumes)
 
+This repo showcases 3 methods:
+
+1. **Q-Line Fitting**
+2. **Deterministic Time Interval**
+3. Stochastic Forecast
 
 ## Code Structure
 
